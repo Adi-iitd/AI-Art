@@ -7,8 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1KOyxk86YlKBiUfnq8T3ONDNReqGB0V5s
 """
 
-!wget --output-document=imagenet-vgg-verydeep-19.mat 'https://storage.googleapis.com/marketing-files/colab-notebooks/style-transfer/imagenet-vgg-verydeep-19.mat'
-# !ls
+# !wget --output-document=imagenet-vgg-verydeep-19.mat 'https://storage.googleapis.com/marketing-files/colab-notebooks/style-transfer/imagenet-vgg-verydeep-19.mat'
 
 from google.colab import files; uploaded = files.upload()
 for fn in uploaded.keys():
