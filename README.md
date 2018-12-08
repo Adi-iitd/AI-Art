@@ -84,3 +84,15 @@ Now let's see what brush-strokes do we get after running the experiment taking i
 ![5_4](https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png)
 
 > *These are brush-strokes that the model learned when layers **Conv_2_2, Conv_3_1, and Conv_3_2, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4** (left to right and top to bottom) were used one at a time in the Style cost.*
+
+***You might be wondering why am I showing these images, what one can conclude after looking at these brush-strokes?***
+
+So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the total Style Cost (summation of style loss corresponding to different layers). Now, that's not intuitive at all, after looking at these images because we can see that, styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we should assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper would be one way.
+
+> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 performing the best (earlier layers are very good in reconstructing the ditto original image).*
+
+***
+
+## Results
+
+
