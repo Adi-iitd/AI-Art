@@ -117,11 +117,17 @@ So, the reason behind running this experiment was that - authors of the original
 
 ## Pix2pix
 
-> ***If you are unfamiliar with GANs, I would request you to look into my tutorials (GAN_Zoo) and then only proceed forward.***
+![1](https://user-images.githubusercontent.com/41862477/49689620-be60cf00-fb49-11e8-97b4-6cf53801ad3d.JPG)
 
-From now on, I will only be giving you the overview of **Pix2pix** paper and the changes (mostly in the architecture and loss function) that I made to make the model work properly; remaining details are nearly the same. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function you are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for image-to-image translation tasks, where we condition on an input image and generate a corresponding output image. 
+The authors investigated Conditional adversarial networks as a general-purpose solution to **Image-to-Image Translation** problems in this [paper](https://arxiv.org/pdf/1611.07004.pdf). These networks not only learn the mapping from input image to output image, but also learn a loss function to train this mapping. In analogy to automatic language translation, we define automatic image-to-image translation as the task of translating one possible representation of a scene into another, given sufficient training data.
 
-> If mathematically expressed, CGANs learn a mapping from observed image X and random noise vector z, to y, G : {x, z} → y. The generator G is trained to produce outputs that cannot be distinguished from **real** images by an adversarially trained discriminator, D, which in turn is itself optimized to do as well as possible at identifying the generator’s **fakes**.
+In Generative Adversarial Networks settings, we could specify only a high-level goal, like “make the output indistinguishable from reality”, and then it automatically learn a loss function appropriate for satisfying this goal. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function we are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for Image-to-Image translation tasks, where we condition on an input image and generate a corresponding output image. 
+
+> If mathematically expressed, CGANs learn a mapping from observed image X and random noise vector z, to y, *G : {x, z} → y*. The generator G is trained to produce outputs that cannot be distinguished from **real** images by an adversarially trained discriminator, D, which in turn is itself optimized to do as well as possible at identifying the generator’s **fakes**.
+
+![2](https://user-images.githubusercontent.com/41862477/49689774-1698d080-fb4c-11e8-92af-dc3d48e66ec2.JPG)
+
+> *The figure shown above illustrates the working of GAN in Conditional setting.*
 
 ### Loss Function
 
