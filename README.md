@@ -156,14 +156,9 @@ Decoder:  D(512, 2) - D(512, 2) - D(512, 2) - D(256, 2) - D(128, 2) - D(64, 2) -
 
 #### Discriminator:
 
-The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed PatchGAN – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. Run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D.
+The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed PatchGAN – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The recpetive field of the discriminator used was 70 * 70 (and was performing best compared to smaller and larger receptive fields).
 
-> Instead of using vanilla convolutional layers to increase the receptive field (or decrease the size of the image), use Res-Block or WideRes-Block with the instance normalization sliced between the layers. This way, we can get an increment in the capacity of the discriminator (necessary in this case) which ultimately resulted in better composites. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter.
-
-The original Patch-gan was giving some weird artifacts due to the fact that, it was optimized for some different task (Authors pointed out that receptive field of 70 * 70 was giving best results, compared to any smaller or larger receptive field). 
-It is always preferred to use Instance normalization compared to Batch Normalization in the case of GANs, but in this case, both were giving nearly same results and batch normalization was faster (batch size of 10, so GPU computations were done much more efficiently).
-
-```Architecture: WRB64 - WRB128 - WRB256 - WRB256```
+```Architecture: C64 - C128 - C256 - C512```
 
 ***
 
