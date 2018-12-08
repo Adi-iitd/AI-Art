@@ -82,7 +82,7 @@ Here are the brush-strokes that we get after running the experiment taking into 
 ![5_1](https://user-images.githubusercontent.com/41862477/49683618-e28ec280-faed-11e8-92b3-f48787c98f8a.png)
 ![5_4](https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png)
 
-> *These are brush-strokes that the model learned when layers **Conv_2_2, Conv_3_1, and Conv_3_2, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4** (left to right and top to bottom) were used one at a time in the Style cost.*
+> *These are brush-strokes that the model learned when layers **Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4** (left to right and top to bottom) were used one at a time in the Style cost.*
 
 ***You might be wondering why am I showing these images, what one can conclude after looking at these brush-strokes?***
 
