@@ -109,6 +109,9 @@ So, the reason behind running this experiment was that - authors of the original
 ![1](https://user-images.githubusercontent.com/41862477/49685487-3ad3bd80-fb0a-11e8-833b-e34dfd340957.jpg)
 ![2](https://user-images.githubusercontent.com/41862477/49685488-3ad3bd80-fb0a-11e8-8c9c-4fecff45f42b.jpg)
 ![res_5](https://user-images.githubusercontent.com/41862477/49685498-3d361780-fb0a-11e8-8728-a92867787e9a.png)
+![3](https://user-images.githubusercontent.com/41862477/49686281-44642200-fb18-11e8-8e75-6cb5ab4d32c8.JPG)
+![2](https://user-images.githubusercontent.com/41862477/49686280-44642200-fb18-11e8-914d-3127fd6dcd2e.JPG)
+![50_3_2](https://user-images.githubusercontent.com/41862477/49686282-44642200-fb18-11e8-80b3-6b2216370595.png)
 
 ***
 
