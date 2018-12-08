@@ -28,4 +28,18 @@ Neural Style Transfer (NST) uses a previously trained convolutional network, and
 
 *Putting all together*  :  J(G) = (alpha) * Jcontent (C, G) + (beta) * Jstyle (S, G) + (gamma)* Jtv (G).
 
-### 
+> Let's delve deeper to know more profoundly what's going on under the hood of these algorithms.
+
+###  Content Cost
+
+The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that **generated** image G has similar content as the input image C and for that, we choose some layer's activations to represent the content of an image. Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network -- neither too shallow nor too deep is. 
+
+Suppose we picked activations of **Conv_2** layer to represent the content cost. Now, set the image C as the input to the pretrained VGG network, and run forward propagation. Let  a(C) be the hidden layer activations which will be a **nH * nW * nC** tensor. Repeat the same process for the generated image. Let  a(G) be the corresponding hidden layer activations. Then the **Content Cost** function is defined as follows:
+
+![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
+
+
+
+
+
+
