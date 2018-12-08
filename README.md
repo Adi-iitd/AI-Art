@@ -112,5 +112,12 @@ So, the reason behind running this experiment was that - authors of the original
 
 ***
 
-## PIX2PIX
+## Pix2pix
 
+***
+
+## CycleGAN
+
+***
+
+***Thanks for going through this post! Any feedbacks are duly appreciated.***
