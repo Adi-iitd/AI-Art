@@ -22,9 +22,9 @@ Neural Style Transfer (NST) is one of the most fun techniques in deep learning. 
 
 Neural Style Transfer (NST) uses a previously trained convolutional network, and builds on top of that. I will use VGG-19 which has already been trained on the very large ImageNet database. It learned to recognize a variety of *low level features* (at the earlier layers) and *high level features* (at the deeper layers). Building the NST algorithm takes three steps:
 
-**Content Cost**:  ```Jcontent (C, G)```
-**Style Cost**  :  ```Jstyle (S, G)``` 
-**TV Cost**     :  ```Jtv (G) ```
+**Content Cost** : ```Jcontent (C, G)```
+**Style Cost** : ```Jstyle (S, G)``` 
+**Total Variation (TV) Cost** : ```Jtv (G) ```
 
 *Putting all together*  :  J(G) = (alpha) * Jcontent (C, G) + (beta) * Jstyle (S, G) + (gamma)* Jtv (G).
 
@@ -51,11 +51,19 @@ First we need to know something about the **Gram Matrix**. In linear algebra, th
 
 The result is a matrix of dimension  **(nC, nC)** where nC is the number of filters. The value G (i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  G (i, i) also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. 
 
->*By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Gram matrix G measures the style of an image.*
+>*By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together  G (i, j), the Gram matrix G measures the style of an image.*
 
 After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate Style cost as opposed to Content cost (in which only one layer was sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as:
 
 ![4](https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG)
+
+### Total Variation (TV) Cost
+
+It acts like a regularizer which encourages spatial smoothness in the generated image. This was not used in the original paper proposed by [Gatys et al](https://arxiv.org/pdf/1508.06576.pdf) but it can sometimes improve the results. For 2D signal (image), it is defined as follows: 
+
+![5](https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG)
+
+
 
 
 
