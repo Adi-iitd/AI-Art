@@ -45,12 +45,19 @@ nH, nW, and nC are the height, width and number of channels of the hidden layer 
 
 ### Style Cost
 
-First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  G (i, j) = np.dot(vi, vj). In other words,  G (i, j)  compares how similar vi  is to vj. If they are highly similar, the outcome would be a large dot product, otherwise, it would be low suggesting lower co-relation. In NST, we can compute the Style matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
+First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  G (i, j) = np.dot(vi, vj). In other words,  G (i, j)  compares how similar vi  is to vj. If they are highly similar, the outcome would be a large dot product, otherwise, it would be low suggesting lower co-relation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
 
 ![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
 
 The result is a matrix of dimension  **(nC, nC)** where nC is the number of filters. The value G (i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  G (i, i) also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. 
 
-> *By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Style matrix G measures the style of an image. *
+>*By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Gram matrix G measures the style of an image.*
+
+After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate Style cost as opposed to Content cost (in which only one layer was sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as:
+
+![4](https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG)
+
+
+
 
 
