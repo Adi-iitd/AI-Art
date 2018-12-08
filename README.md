@@ -45,7 +45,7 @@ nH, nW, and nC are the height, width and number of channels of the hidden layer 
 
 ### Style Cost
 
-First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  G (i, j) = np.dot(vi, vj). In other words,  G (i, j)  compares how similar vi  is to vj. If they are highly similar, the outcome would be a large dot product, otherwise, it would be low suggesting lower co-relation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
+First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  G (i, j) = np.dot(vi, vj). In other words,  G (i, j)  compares how similar vi  is to vj. If they are highly similar, the outcome would be a large dot product, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
 
 ![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
 
@@ -93,6 +93,6 @@ So, the reason behind running this experiment was that - authors of the original
 
 ***
 
-## Results
+### Results
 
 
