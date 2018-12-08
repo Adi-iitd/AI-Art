@@ -20,13 +20,13 @@ Neural Style Transfer (NST) is one of the most fun techniques in deep learning. 
 
 ![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
 
-Neural Style Transfer (NST) uses a previously trained convolutional network, and builds on top of that. I will use VGG-19 which has already been trained on the very large ImageNet database. It learned to recognize a variety of *low level features* (at the earlier layers) and *high level features* (at the deeper layers). Building the NST algorithm takes three steps:
+Neural Style Transfer (NST) uses a previously trained convolutional network, and builds on top of that. I will be using VGG-19 which has already been trained on the very large ImageNet database. It learned to recognize a variety of *low level features* (at the earlier layers) and *high level features* (at the deeper layers). Building the NST algorithm takes three steps:
 
-**Content Cost** : ```Jcontent (C, G)```
-**Style Cost** : ```Jstyle (S, G)``` 
-**Total Variation (TV) Cost** : ```Jtv (G) ```
+- **Content Cost** : **J***content* (C, G)
+- **Style Cost** : **J***style* (S, G) 
+- **Total Variation (TV) Cost** : **J***tv* (G)
 
-*Putting all together*  :  J(G) = (alpha) * Jcontent (C, G) + (beta) * Jstyle (S, G) + (gamma)* Jtv (G).
+*Putting all together*  :  **J***tot* (G) = (alpha) * **J***content* (C, G) + (beta) * **J***style* (S, G) + (gamma)* **J***tv* (G)
 
 > Let's delve deeper to know more profoundly what's going on under the hood of these algorithms.
 
