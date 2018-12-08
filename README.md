@@ -44,33 +44,33 @@ nH, nW, and nC are the height, width and number of channels of the hidden layer 
 
 ### Style Cost
 
-First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  G (i, j) = np.dot(vi, vj). In other words,  G (i, j)  compares how similar vi  is to vj. If they are highly similar, the outcome would be a large dot product, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
+First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  *G (i, j) = np.dot(vi, vj)*. In other words,  *G (i, j)*  compares how similar vi is to vj. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
 
 ![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
 
-The result is a matrix of dimension  **(nC, nC)** where nC is the number of filters. The value G (i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  G (i, i) also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. 
+The result is a matrix of dimension  *(nC, nC)* where nC is the number of filters. The value *G (i, j)* measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  *G (i, i)* also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then *G (i, i)*  measures how common vertical textures are in the image as a whole. 
 
->*By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together  G (i, j), the Gram matrix G measures the style of an image.*
+>*By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together  G (i, j), the Gram matrix G measures the **style** of an image.*
 
-After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate Style cost as opposed to Content cost (in which only one layer was sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as:
+After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate **Style cost** as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as:
 
 ![4](https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG)
 
 ### Total Variation (TV) Cost
 
-It acts like a regularizer which encourages spatial smoothness in the generated image. This was not used in the original paper proposed by [Gatys et al](https://arxiv.org/pdf/1508.06576.pdf) but it can sometimes improve the results. For 2D signal (image), it is defined as follows: 
+It acts like a regularizer which encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by [Gatys et al.](https://arxiv.org/pdf/1508.06576.pdf) but it can sometimes improve the results. For 2D signal (or image), it is defined as follows: 
 
 ![5](https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG)
 
 ### Experiments
 
-> What will happen if we zero out the coefficients of the content and TV loss, assuming we are taking only one layer's activation to compute style cost?
+> What will happen if we zero out the coefficients of the Content and TV loss, assuming we are taking only one layer's activation to compute Style cost?
 
-As many of you might have guessed, the optimization algorithm will now only have to minimize the Style cost. So, for a given Style image, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous **The great wall of Kanagawa** shown below:
+As many of you might have guessed, the optimization algorithm will now only have to minimize the Style cost. So, for a given **Style image**, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous **The great wall of Kanagawa** shown below:
 
 ![6](https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg)
 
-Now let's see what brush-strokes do we get after running the experiment taking into the account different layers, one at a time.
+Here are the brush-strokes that we get after running the experiment taking into account the different layers, one at a time.
 
 ![2_2](https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png)
 ![3_1](https://user-images.githubusercontent.com/41862477/49683611-e15d9580-faed-11e8-80d6-3d216487f678.png)
@@ -86,9 +86,9 @@ Now let's see what brush-strokes do we get after running the experiment taking i
 
 ***You might be wondering why am I showing these images, what one can conclude after looking at these brush-strokes?***
 
-So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the total Style Cost (summation of style loss corresponding to different layers). Now, that's not intuitive at all, after looking at these images because we can see that, styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we should assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper would be one way.
+So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the **Total Style Cost** (weighted summation of style loss corresponding to different layers). Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; Exponentially decreasing the weights as we go deeper and deeper could be one way.
 
-> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good in reconstructing the ditto original image).*
+> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that, you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good in reconstructing the ditto original image).*
 
 ***
 
