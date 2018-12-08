@@ -139,11 +139,7 @@ The objective of a conditional GAN can be expressed as:
 
 Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore fail to match any distribution other than a **delta function**. Instead, the authors of Pix2pix provided noise only in the form of **dropout**, applied on several layers of the generator at **both training and test time**.
 
-The Min-Max objective that I mentioned above was used in the original paper when GAN was first proposed by **Ian Goodfellow** in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss functions (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. 
-
-None of the loss functions are optimal in every scenario, it's always task dependent (maybe WGAN performs better than LS-GAN in one task, while the other way around, in some other). Moreover, there was a recent paper by **Google** which also addressed this issue and showed that all loss functions give you nearly the same results, with the only condition that you need to do extensive hyper-parameter optimization. Training GANs is very tricky, and it will never work in the first attempt. You might even have to look into the capacity of your architecture. There was this, one recent theoretical paper on GANs by [Sanjeev Arora](https://arxiv.org/abs/1706.08224) in which he mentioned that the generator's capacity should be as large as twice the capacity of the discriminator. 
-
-> Now, we can conclude that one needs to spend a lot of time, tweaking the hyper-parameters of the GANs to make it work properly. For this task, Wasserstein Gan was giving the best results, and the discriminator was trained 5 more times compared to the generator.
+The Min-Max objective mentioned above was used in the original paper, when GAN was first proposed by **Ian Goodfellow** in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulation (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. 
 
 ### Network Architecture
 
