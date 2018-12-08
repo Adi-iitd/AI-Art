@@ -89,7 +89,7 @@ Now let's see what brush-strokes do we get after running the experiment taking i
 
 So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the total Style Cost (summation of style loss corresponding to different layers). Now, that's not intuitive at all, after looking at these images because we can see that, styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we should assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper would be one way.
 
-> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 performing the best (earlier layers are very good in reconstructing the ditto original image).*
+> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good in reconstructing the ditto original image).*
 
 ***
 
