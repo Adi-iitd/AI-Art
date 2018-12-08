@@ -63,9 +63,24 @@ It acts like a regularizer which encourages spatial smoothness in the generated 
 
 ![5](https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG)
 
+### Experiments
 
+> What will happen if we zero out the coefficients of the content and TV loss, assuming we are taking only one layer's activation to compute style cost?
 
+As many of you might have guessed, the optimization algorithm will now only have to minimize the Style cost. So, for a given Style image, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous **The great wall of Kanagawa** shown below:
 
+![6](https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg)
 
+Now let's see what brush-strokes do we get after running the experiment taking into the account different layers, one at a time.
 
+![2_2](https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png)
+![3_1](https://user-images.githubusercontent.com/41862477/49683611-e15d9580-faed-11e8-80d6-3d216487f678.png)
+![3_2](https://user-images.githubusercontent.com/41862477/49683613-e15d9580-faed-11e8-836f-b8d3dab32f03.png)
+![3_3](https://user-images.githubusercontent.com/41862477/49683614-e1f62c00-faed-11e8-964f-6e0e4085cc3d.png)
+![4_1](https://user-images.githubusercontent.com/41862477/49683615-e1f62c00-faed-11e8-9583-a6ca7cfc058b.png)
+![4_3](https://user-images.githubusercontent.com/41862477/49683616-e1f62c00-faed-11e8-9cf2-cbc5c3f5e18b.png)
+![4_4](https://user-images.githubusercontent.com/41862477/49683617-e1f62c00-faed-11e8-9e09-4147889c3b01.png)
+![5_1](https://user-images.githubusercontent.com/41862477/49683618-e28ec280-faed-11e8-92b3-f48787c98f8a.png)
+![5_4](https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png)
 
+> *These are brush-strokes that the model learned when layers **Conv_2_2, Conv_3_1, and Conv_3_2, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4** (left to right and top to bottom) were used one at a time in the Style cost.*
