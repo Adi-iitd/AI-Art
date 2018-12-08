@@ -20,7 +20,7 @@ Neural Style Transfer (NST) is one of the most fun techniques in deep learning. 
 
 ![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
 
-Neural Style Transfer (NST) uses a previously trained convolutional network, and builds on top of that. I will be using VGG-19 which has already been trained on the very large ImageNet database. It learned to recognize a variety of *low level features* (at the earlier layers) and *high level features* (at the deeper layers). Building the NST algorithm takes three steps:
+Neural Style Transfer (NST) uses a previously trained convolutional network and builds on top of that. I will be using VGG-19 which has already been trained on the very large ImageNet database. It learned to recognize a variety of * low-level features* (at the earlier layers) and * high-level features* (at the deeper layers). Building the NST algorithm takes three steps:
 
 - **Content Cost** : **J***content* (C, G)
 - **Style Cost** : **J***style* (S, G) 
@@ -32,19 +32,19 @@ Neural Style Transfer (NST) uses a previously trained convolutional network, and
 
 ###  Content Cost
 
-The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that "generated" image G has similar content as the input image C. For that, we need to choose some layer's activation to represent the content of an image. *Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep.* Suppose we picked activations of **Conv_3_2** layer to represent the content cost. Now, set the image C as the input to the pretrained VGG network, and run forward propagation. 
+The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that "generated" image G has similar content as the input image C. For that, we need to choose some layer's activation to represent the content of an image. *Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep.* Suppose we picked activations of **Conv_3_2** layer to represent the content cost. Now, set the image C as the input to the pre-trained VGG network, and run forward propagation. 
 
 Let  a(C) be the hidden layer activations which will be a **nH * nW * nC** tensor. Repeat the same process for the generated image and let  a(G) be the corresponding hidden layer activations. Finally, the **Content Cost** function is defined as follows:
 
 ![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
 
-nH, nW, and nC are the height, width and number of channels of the hidden layer chosen. In order to compute the cost **J***content* (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below.
+nH, nW, and nC are the height, width, and the number of channels of the hidden layer chosen. In order to compute the cost **J***content* (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below.
 
 ![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
 
 ### Style Cost
 
-First we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  *G (i, j) = np.dot(vi, vj)*. In other words,  *G (i, j)*  compares how similar vi is to vj. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
+First, we need to know something about the **Gram Matrix**. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are  *G (i, j) = np.dot(vi, vj)*. In other words,  *G (i, j)*  compares how similar vi is to vj. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the **unrolled** filter matrix with their transpose as shown below:
 
 ![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
 
@@ -88,7 +88,7 @@ Here are the brush-strokes that we get after running the experiment taking into 
 
 So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the **Total Style Cost** (weighted summation of style loss corresponding to different layers). Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; Exponentially decreasing the weights as we go deeper and deeper could be one way.
 
-> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that, you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good in reconstructing the ditto original image).*
+> *Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that, you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good at reconstructing the ditto original image).*
 
 ***
 
