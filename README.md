@@ -115,6 +115,8 @@ So, the reason behind running this experiment was that - authors of the original
 
 ***
 
+***
+
 ## Pix2pix
 
 ![1](https://user-images.githubusercontent.com/41862477/49689620-be60cf00-fb49-11e8-97b4-6cf53801ad3d.JPG)
@@ -133,7 +135,7 @@ In Generative Adversarial Networks settings, we could specify only a high-level 
 
 The objective of a conditional GAN can be expressed as:
 
-> **```Lc GAN (G, D) = Ex,y (log D(x, y)) + Ex,z (log(1 − D(x, G(x, z)))```** where G tries to minimize this objective against an adversarial D that tries to maximize it, i.e. **```G = arg min(G)max(D) Lc GAN (G, D)```**. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance. **```L(G) = Ex,y,z ( ||y − G(x, z)|| )```**.
+> **```Lc GAN (G, D) = Ex,y (log D(x, y)) + Ex,z (log(1 − D(x, G(x, z)))```** where G tries to minimize this objective against an adversarial D that tries to maximize it, i.e. **```G∗ = arg min(G)max(D) Lc GAN (G, D)```**. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance to make sure that, the ground truth and the output are close to each other in L1 sense **```L(G) = Ex,y,z ( ||y − G(x, z)|| )```**.
 
 Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore fail to match any distribution other than a **delta function**. Instead, the authors of Pix2pix provided noise only in the form of **dropout**, applied on several layers of the generator at **both training and test time**.
 
