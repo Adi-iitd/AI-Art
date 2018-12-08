@@ -117,6 +117,50 @@ So, the reason behind running this experiment was that - authors of the original
 
 ## Pix2pix
 
+> ***If you are unfamiliar with GANs, I would request you to look into my tutorials (GAN_Zoo) and then only proceed forward.***
+
+From now on, I will only be giving you the overview of **Pix2pix** paper and the changes (mostly in the architecture and loss function) that I made to make the model work properly; remaining details are nearly the same. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function you are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for image-to-image translation tasks, where we condition on an input image and generate a corresponding output image. 
+
+> If mathematically expressed, CGANs learn a mapping from observed image X and random noise vector z, to y, G : {x, z} → y. The generator G is trained to produce outputs that cannot be distinguished from **real** images by an adversarially trained discriminator, D, which in turn is itself optimized to do as well as possible at identifying the generator’s **fakes**.
+
+### Loss Function
+
+The objective of a conditional GAN can be expressed as:
+
+> **```Lc GAN (G, D) = Ex,y (log D(x, y)) + Ex,z (log(1 − D(x, G(x, z)))```** where G tries to minimize this objective against an adversarial D that tries to maximize it, i.e. **```G = arg min(G)max(D) Lc GAN (G, D)```**. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance. **```L(G) = Ex,y,z ( ||y − G(x, z)|| )```**.
+
+Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore fail to match any distribution other than a **delta function**. Instead, the authors of Pix2pix provided noise only in the form of **dropout**, applied on several layers of the generator at **both training and test time**.
+
+The Min-Max objective that I mentioned above was used in the original paper when GAN was first proposed by **Ian Goodfellow** in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss functions (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. 
+
+None of the loss functions are optimal in every scenario, it's always task dependent (maybe WGAN performs better than LS-GAN in one task, while the other way around, in some other). Moreover, there was a recent paper by **Google** which also addressed this issue and showed that all loss functions give you nearly the same results, with the only condition that you need to do extensive hyper-parameter optimization. Training GANs is very tricky, and it will never work in the first attempt. You might even have to look into the capacity of your architecture. There was this, one recent theoretical paper on GANs by [Sanjeev Arora](https://arxiv.org/abs/1706.08224) in which he mentioned that the generator's capacity should be as large as twice the capacity of the discriminator. 
+
+> Now, we can conclude that one needs to spend a lot of time, tweaking the hyper-parameters of the GANs to make it work properly. For this task, Wasserstein Gan was giving the best results, and the discriminator was trained 5 more times compared to the generator.
+
+### Network Architecture
+
+#### Generator: 
+
+In Image-to-image translation problems, we map a high resolution input grid to a high resolution output grid. Both are renderings of the same underlying structure with the only difference in the surface appearance. The authors designed the generator architecture around these considerations. They used an encoder-decoder network in which the input is passed through a series of layers that progressively downsample, until a bottleneck layer, at which point the process is reversed. 
+
+> To preserve the low-level details, skip connections are used. Specifically, skip connections are added between each layer i and layer n − i, where n is the total number of layers. Each skip connection simply concatenates all channels at layer i with those at layer n − i.
+
+```Architecture: 
+Encoder:  E(64, 1) - E(64, 1) - E(64, 2) - E(128, 2) - E(256, 2) - E(512, 2) - E(512, 2) - E(512, 2) - E(512, 2)
+Decoder:  D(512, 2) - D(512, 2) - D(512, 2) - D(256, 2) - D(128, 2) - D(64, 2) - D(64, 2) - D(64, 1) - D(3, 1)
+```
+
+#### Discriminator:
+
+The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed PatchGAN – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. Run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D.
+
+> Instead of using vanilla convolutional layers to increase the receptive field (or decrease the size of the image), use Res-Block or WideRes-Block with the instance normalization sliced between the layers. This way, we can get an increment in the capacity of the discriminator (necessary in this case) which ultimately resulted in better composites. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter.
+
+The original Patch-gan was giving some weird artifacts due to the fact that, it was optimized for some different task (Authors pointed out that receptive field of 70 * 70 was giving best results, compared to any smaller or larger receptive field). 
+It is always preferred to use Instance normalization compared to Batch Normalization in the case of GANs, but in this case, both were giving nearly same results and batch normalization was faster (batch size of 10, so GPU computations were done much more efficiently).
+
+```Architecture: WRB64 - WRB128 - WRB256 - WRB256```
+
 ***
 
 ## CycleGAN
