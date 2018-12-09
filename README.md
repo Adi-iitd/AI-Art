@@ -13,6 +13,7 @@ Recent art experiments are the use of "generative adversarial networks" (GANs). 
 I will cover three different methods by which you can create novel arts, solely by code - **Neural Style Transfer, CycleGAN,** and **Pix2pix.**  
 
 ***
+***
 
 ## Neural Style Transfer
 
