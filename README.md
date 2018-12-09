@@ -158,8 +158,19 @@ Decoder:  D(512, 2) - D(512, 2) - D(512, 2) - D(256, 2) - D(128, 2) - D(64, 2) -
 
 The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed PatchGAN – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The recpetive field of the discriminator used was 70 * 70 (and was performing best compared to smaller and larger receptive fields).
 
-```Architecture: C64 - C128 - C256 - C512```
+```The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512```
 
+#### Optimization
+
+- Alternate between one gradient descent step on D, and one step on G. 
+- The objective function was divided by 2 while optimizing D, which slows down the rate at which D learns relative to G. 
+- Use **Adam solver**, with a learning rate of 2e-4, and momentum parameters β1 = 0.5, β2 = 0.999.
+- Use **Dropout** both at the training and test time.
+- Use **instance normalization** (normalization using the statistics of the test batch) instead of batch normalization.
+- Can work even with the much smaller datasets.
+- Both L1 and cGAN loss are important to reduce the artifacts in the final output.
+
+***
 ***
 
 ## CycleGAN
