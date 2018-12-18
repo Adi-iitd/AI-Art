@@ -251,7 +251,7 @@ def train(num_epochs, num_iters):
                     show_images(image_batch);
                 
                     print(f'D_A_Loss: {tot_D_A_Loss/iters}, D_B_Loss: {tot_D_B_Loss/iters}, G_B2A_loss: {tot_G_A_loss/iters}, \
-                          G_A2B_Loss: {G_B_Loss/iters}');
+                          G_A2B_Loss: {tot_G_B_Loss/iters}');
                 
     tf.reset_default_graph(); return;
 
