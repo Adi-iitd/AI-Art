@@ -47,12 +47,12 @@ def get_iterators(sess):
     
     return handle, next_element, mon_iterator, mon_handle, cez_iterator, cez_handle;
 
-def conv_2d(inp_ten, kernel_sz = 3, strides = 1, out_channels = 64, is_conv = True, is_act = True, activation = "relu", 
-            leak_param = 1/5.5, is_norm = True, normalization = "instance"):
+def conv_2d(inp_ten, kernel_sz = 4, strides = 1, out_channels = 64, is_conv = True, is_act = True, activation = "relu", 
+            leak_param = 1/5.5, is_norm = True, normalization = "instance", use_bias = False):
     
     if is_conv:
         x = tf.layers.conv2d(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, padding = "SAME", 
-                             use_bias = False, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
+                             use_bias = use_bias, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
     
     if is_norm:
         if normalization == "batch": x = tf.layers.batch_normalization(x, momentum = 0.9, epsilon = 1e-5, training = train_mode);
@@ -69,11 +69,11 @@ def conv_2d(inp_ten, kernel_sz = 3, strides = 1, out_channels = 64, is_conv = Tr
   
 
 def conv_2d_transpose(inp_ten, kernel_sz = 3, strides = 1, out_channels = 64, is_deconv = True, is_act = True, activation = "relu",
-                      leak_param = 1/5.5, is_norm = True, normalization = "instance", is_dropout = False):
+                      leak_param = 1/5.5, is_norm = True, normalization = "instance", is_dropout = False, use_bias = False):
     
     if is_deconv:
         x = tf.layers.conv2d_transpose(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, 
-                             padding = "SAME", use_bias = False, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
+                             padding = "SAME", use_bias = use_bias, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
     
     if is_norm:
         if normalization == "batch": x = tf.layers.batch_normalization(x, momentum = 0.9, epsilon = 1e-6, training = train_mode);
@@ -105,21 +105,21 @@ def Generator(inp_ten, out_channels = 32, name = None, reuse = False):
     with tf.variable_scope(name, reuse = reuse):
         
         with tf.variable_scope("Block_1"):
-            x = conv_2d(inp_ten = inp_ten, kernel_sz = 9, strides = 1, out_channels = out_channels*1); 
-            x = conv_2d(inp_ten = x, kernel_sz = 4, strides = 2, out_channels = out_channels*2); 
-            x = conv_2d(inp_ten = x, kernel_sz = 4, strides = 2, out_channels = out_channels*4); 
+            x = conv_2d(inp_ten = inp_ten, kernel_sz = 7, strides = 1, out_channels = out_channels*1); 
+            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*2); 
+            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*4); 
 
         with tf.variable_scope("Block_2"):
-            for i in range(6): x = res_blk(x, 4, 1, 128, name = "ResBlk_" + str(i));
+            for i in range(6): x = res_blk(x, 3, 1, out_channels*4, name = "ResBlk_" + str(i));
 
         with tf.variable_scope("Block_3"):
-            x = conv_2d_transpose(x, kernel_sz = 4, strides = 2, out_channels = 64);
-            x = conv_2d_transpose(x, kernel_sz = 4, strides = 2, out_channels = 32);
-            x = conv_2d(x, kernel_sz = 4, strides = 1, out_channels = 3, activation = "tanh", is_norm = False);
+            x = conv_2d_transpose(x, kernel_sz = 3, strides = 2, out_channels = 64);
+            x = conv_2d_transpose(x, kernel_sz = 3, strides = 2, out_channels = 32);
+            x = conv_2d(x, kernel_sz = 3, strides = 1, out_channels = 3, activation = "tanh", is_norm = False);
 
         return x;
 
-def Discriminator(inp_ten, out_channels = 32, use_sigmoid = False, name = None, reuse = False):
+def Discriminator(inp_ten, out_channels = 64, use_sigmoid = False, name = None, reuse = False):
     
     with tf.variable_scope(name, reuse = reuse):
         
@@ -127,12 +127,11 @@ def Discriminator(inp_ten, out_channels = 32, use_sigmoid = False, name = None, 
             x = conv_2d(inp_ten, kernel_sz = 4, strides = 2, out_channels = out_channels, is_norm = False, activation = "leaky_relu")
 
         with tf.variable_scope("Block_2"):
-            for i in range(1, 5): x = conv_2d(x, kernel_sz = 4, strides = 2, out_channels = out_channels*min(2**i, 8),
+            for i in range(1, 4): x = conv_2d(x, kernel_sz = 4, strides = 2, out_channels = out_channels*min(2**i, 8),
                                               activation = "leaky_relu");
 
         with tf.variable_scope("Block_3"):
-            x = conv_2d(x, kernel_sz = 4, strides = 1, out_channels = out_channels*8, activation = "leaky_relu");
-            x = conv_2d(x, kernel_sz = 4, strides = 1, out_channels = 1, is_norm = False, is_act = False)
+            x = conv_2d(x, kernel_sz = 4, strides = 1, out_channels = 1, is_norm = False, is_act = False, use_bias = True)
 
         if use_sigmoid == True:
             x = tf.nn.sigmoid(x); print('Sigmoid activation in the discriminator')
