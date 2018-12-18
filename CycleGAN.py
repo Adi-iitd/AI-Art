@@ -163,7 +163,7 @@ def initialize_model(lambda_1 = 10, lambda_2 = 0.5):
     recon_b = Generator(inp_ten = fake_a,  name = "Generator_a2b", reuse = True);
     
     fake_b_ = Generator(inp_ten = input_b, name = "Generator_a2b", reuse = True);
-	fake_a_ = Generator(inp_ten = input_a, name = "Generator_b2a", reuse = True);
+    fake_a_ = Generator(inp_ten = input_a, name = "Generator_b2a", reuse = True);
 
     real_prob_a = Discriminator(inp_ten = input_a, name = "Discriminator_a", reuse = False);
     fake_prob_a = Discriminator(inp_ten = fake_a,  name = "Discriminator_a", reuse = True);
