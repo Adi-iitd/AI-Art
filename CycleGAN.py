@@ -248,8 +248,7 @@ def train(num_epochs, num_iters):
                     image_batch = np.concatenate((img_a, Fake_img_B, Recon_img_A, img_b, Fake_img_A, Recon_img_B)); 
                     show_images(image_batch);
                 
-                    print(f'D_A_Loss: {D_A_Loss/iters}, D_B_Loss: {D_B_Loss/iters}, G_B2A_loss: {G_A_loss/iters}, G_A2B_Loss: \
-                          {G_B_Loss/iters}');
+                    print(f'D_A_Loss: {D_A_Loss/iters}, D_B_Loss: {D_B_Loss/iters}, G_B2A_loss: {G_A_loss/iters}, G_A2B_Loss: {G_B_Loss/iters}');
                 
     tf.reset_default_graph(); return;
 
