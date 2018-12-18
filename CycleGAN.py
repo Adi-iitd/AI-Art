@@ -214,7 +214,7 @@ def train(num_epochs, num_iters):
             
             handle, next_element, mon_iterator, mon_handle, cez_iterator, cez_handle = get_iterators(sess);
             sess.run(tf.global_variables_initializer()); sess.run(mon_iterator.initializer); sess.run(cez_iterator.initializer); 
-            print("Training Started...");
+            print("Training Started..."); tot_D_A_Loss = tot_G_A_loss = tot_D_B_Loss = tot_G_B_Loss = 0;
             
             for iters in range(1, num_epochs*num_iters):
                     
@@ -248,7 +248,8 @@ def train(num_epochs, num_iters):
                     image_batch = np.concatenate((img_a, Fake_img_B, Recon_img_A, img_b, Fake_img_A, Recon_img_B)); 
                     show_images(image_batch);
                 
-                    print(f'D_A_Loss: {D_A_Loss}, D_B_Loss: {D_B_Loss}, G_B2A_loss: {G_A_loss}, G_A2B_Loss: {G_B_Loss}');
+                    print(f'D_A_Loss: {D_A_Loss/iters}, D_B_Loss: {D_B_Loss/iters}, G_B2A_loss: {G_A_loss/iters}, G_A2B_Loss: \
+                          {G_B_Loss/iters}');
                 
     tf.reset_default_graph(); return;
 
