@@ -28,15 +28,18 @@ def get_iterators(sess):
     mon_dataset = get_tensor_slices(tf.constant(mon_file_name)); cez_dataset = get_tensor_slices(tf.constant(cez_file_name));
 
     mon_dataset = mon_dataset.shuffle(500).repeat(); 
-    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+                                                                                      [img_height, img_width]), 127.5), 1))
 
     cez_dataset = cez_dataset.shuffle(500).repeat();
-    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+                                                                                      [img_height, img_width]), 127.5), 1))
 
     mon_dataset = (mon_dataset.batch(batch_sz)).prefetch(1); cez_dataset = (cez_dataset.batch(batch_sz)).prefetch(1);
     
     handle = tf.placeholder(tf.string, shape = []);
-    iterator = tf.data.Iterator.from_string_handle(handle, output_types = mon_dataset.output_types, output_shapes = mon_dataset.output_shapes)
+    iterator = tf.data.Iterator.from_string_handle(handle, output_types = mon_dataset.output_types, 
+                                                   output_shapes = mon_dataset.output_shapes)
     next_element = iterator.get_next();
     
     mon_iterator = mon_dataset.make_initializable_iterator(); mon_handle = sess.run(mon_iterator.string_handle());
@@ -69,8 +72,8 @@ def conv_2d_transpose(inp_ten, kernel_sz = 3, strides = 1, out_channels = 64, is
                       leak_param = 1/5.5, is_norm = True, normalization = "instance", is_dropout = False):
     
     if is_deconv:
-        x = tf.layers.conv2d_transpose(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, padding = "SAME",
-                                       use_bias = False, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
+        x = tf.layers.conv2d_transpose(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, 
+                             padding = "SAME", use_bias = False, kernel_initializer = tf.contrib.layers.xavier_initializer_conv2d());
     
     if is_norm:
         if normalization == "batch": x = tf.layers.batch_normalization(x, momentum = 0.9, epsilon = 1e-6, training = train_mode);
@@ -219,11 +222,15 @@ def train(num_epochs, num_iters):
                 try: img_b = sess.run(next_element, feed_dict = {handle: cez_handle})
                 except tf.errors.OutOfRangeError: sess.run(cez_iterator.initializer); 
              
-                _, D_A_Loss = sess.run([d_a_train_op, d_a_loss],     feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0, lr: curr_lr})
-                _, G_A_loss = sess.run([g_b2a_train_op, g_b2a_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0, lr: curr_lr})
+                _, D_A_Loss = sess.run([d_a_train_op, d_a_loss],     feed_dict = {input_a: img_a, input_b: img_b, train_mode: True,
+                                                                                  dropout: 0, lr: curr_lr})
+                _, G_A_loss = sess.run([g_b2a_train_op, g_b2a_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, 
+                                                                                  dropout: 0, lr: curr_lr})
 
-                _, D_B_Loss = sess.run([d_b_train_op, d_b_loss],     feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0, lr: curr_lr})
-                _, G_B_Loss = sess.run([g_a2b_train_op, g_a2b_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0, lr: curr_lr})
+                _, D_B_Loss = sess.run([d_b_train_op, d_b_loss],     feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, 
+                                                                                  dropout: 0, lr: curr_lr})
+                _, G_B_Loss = sess.run([g_a2b_train_op, g_a2b_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, 
+                                                                                  dropout: 0, lr: curr_lr})
                 
                 if iters%num_iters == 0:
                   
