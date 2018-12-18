@@ -237,6 +237,8 @@ def train(num_epochs, num_iters):
                 _, G_B_Loss = sess.run([g_a2b_train_op, g_a2b_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, 
                                                                                   dropout: 0, lr: curr_lr})
                 
+                tot_D_A_Loss += D_A_Loss; tot_G_A_loss += G_A_loss; tot_D_B_Loss += D_B_Loss; tot_G_B_Loss += tot_G_B_Loss;
+                
                 if iters%num_iters == 0:
                   
                     Fake_img_B  = sess.run(fake_b, feed_dict = {input_a: img_a, train_mode: True, dropout: 0});
@@ -248,7 +250,8 @@ def train(num_epochs, num_iters):
                     image_batch = np.concatenate((img_a, Fake_img_B, Recon_img_A, img_b, Fake_img_A, Recon_img_B)); 
                     show_images(image_batch);
                 
-                    print(f'D_A_Loss: {D_A_Loss/iters}, D_B_Loss: {D_B_Loss/iters}, G_B2A_loss: {G_A_loss/iters}, G_A2B_Loss: {G_B_Loss/iters}');
+                    print(f'D_A_Loss: {tot_D_A_Loss/iters}, D_B_Loss: {tot_D_B_Loss/iters}, G_B2A_loss: {tot_G_A_loss/iters}, \
+                          G_A2B_Loss: {G_B_Loss/iters}');
                 
     tf.reset_default_graph(); return;
 
