@@ -237,7 +237,7 @@ def train(num_epochs, num_iters):
                 _, G_B_Loss = sess.run([g_a2b_train_op, g_a2b_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, 
                                                                                   dropout: 0, lr: curr_lr})
                 
-                tot_D_A_Loss += D_A_Loss; tot_G_A_loss += G_A_loss; tot_D_B_Loss += D_B_Loss; tot_G_B_Loss += tot_G_B_Loss;
+                tot_D_A_Loss += D_A_Loss; tot_G_A_loss += G_A_loss; tot_D_B_Loss += D_B_Loss; tot_G_B_Loss += G_B_Loss;
                 
                 if iters%num_iters == 0:
                   
