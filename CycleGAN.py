@@ -147,7 +147,7 @@ def get_loss(real_prob, fake_prob):
         d_loss += tf.reduce_mean(tf.square(fake_prob)); d_loss *= 0.5;
         return g_loss, d_loss
 
-def initialize_model(lambda_ = 10):
+def initialize_model(lambda_1 = 10, lambda_2 = 0.5):
     
     global input_a, input_b, train_mode, dropout, lr;
     
@@ -161,6 +161,9 @@ def initialize_model(lambda_ = 10):
     recon_a = Generator(inp_ten = fake_b,  name = "Generator_b2a", reuse = False);
     fake_a  = Generator(inp_ten = input_b, name = "Generator_b2a", reuse = True);
     recon_b = Generator(inp_ten = fake_a,  name = "Generator_a2b", reuse = True);
+    
+    fake_b_ = Generator(inp_ten = input_b, name = "Generator_a2b", reuse = True);
+	fake_a_ = Generator(inp_ten = input_a, name = "Generator_b2a", reuse = True);
 
     real_prob_a = Discriminator(inp_ten = input_a, name = "Discriminator_a", reuse = False);
     fake_prob_a = Discriminator(inp_ten = fake_a,  name = "Discriminator_a", reuse = True);
@@ -171,8 +174,11 @@ def initialize_model(lambda_ = 10):
     with tf.control_dependencies(update_ops):
 
         g_b2a_loss, d_a_loss = get_loss(real_prob_a, fake_prob_a); g_a2b_loss, d_b_loss = get_loss(real_prob_b, fake_prob_b);
-        cycle_consistency_loss = tf.reduce_mean(tf.abs(input_a - recon_a)) + tf.reduce_mean(tf.abs(input_b - recon_b));
-        g_b2a_loss += lambda_*cycle_consistency_loss; g_a2b_loss += lambda_*cycle_consistency_loss;
+        cycle_consistency_loss = lambda_1*(tf.reduce_mean(tf.abs(input_a - recon_a)) + tf.reduce_mean(tf.abs(input_b - recon_b)));
+        identity_loss = lambda_2*(tf.reduce_mean(tf.abs(input_a - fake_a_)) + tf.reduce_mean(tf.abs(input_b - fake_b_)));
+        
+        g_b2a_loss = g_b2a_loss + cycle_consistency_loss + identity_loss; 
+        g_a2b_loss = g_a2b_loss + cycle_consistency_loss + identity_loss;
 
         d_a_vars = [var for var in tf.trainable_variables() if "Discriminator_a" in var.name]
         d_b_vars = [var for var in tf.trainable_variables() if "Discriminator_b" in var.name]
