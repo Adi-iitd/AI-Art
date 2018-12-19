@@ -30,10 +30,12 @@ def get_iterators(sess):
     mon_dataset = get_tensor_slices(tf.constant(mon_file_name)); cez_dataset = get_tensor_slices(tf.constant(cez_file_name));
 
     mon_dataset = mon_dataset.shuffle(500).repeat(); 
-    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+										      [img_height, img_width]), 127.5), 1))
 
     cez_dataset = cez_dataset.shuffle(500).repeat();
-    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+										      [img_height, img_width]), 127.5), 1))
 
     mon_dataset = (mon_dataset.batch(batch_sz)).prefetch(1); cez_dataset = (cez_dataset.batch(batch_sz)).prefetch(1);
     
