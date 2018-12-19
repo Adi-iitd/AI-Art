@@ -159,7 +159,7 @@ def get_optimizer(loss, var_list):
 	start_decay_step = 100000; decay_steps = 100000; beta1 = 0.5;
 
 	learning_rate = (tf.where(tf.greater_equal(global_step, start_decay_step), tf.train.polynomial_decay(starter_learning_rate, 
-					    global_step - start_decay_step, decay_steps, end_learning_rate, power = 1.0), starter_learning_rate));
+			 global_step - start_decay_step, decay_steps, end_learning_rate, power = 1.0), starter_learning_rate));
 
 	learning_step = tf.train.AdamOptimizer(learning_rate, beta1 = beta1).minimize(loss, global_step = global_step, var_list = var_list);
 	
@@ -195,7 +195,8 @@ def initialize_model(lambda_1 = 10, lambda_2 = 0.5):
 		cycle_consistency_loss = lambda_1*(tf.reduce_mean(tf.abs(input_a - recon_a)) + tf.reduce_mean(tf.abs(input_b - recon_b)));
 		identity_loss = lambda_2*(tf.reduce_mean(tf.abs(input_a - fake_a_)) + tf.reduce_mean(tf.abs(input_b - fake_b_)));
 
-		g_b2a_loss = g_b2a_loss + cycle_consistency_loss + identity_loss; g_a2b_loss = g_a2b_loss + cycle_consistency_loss + identity_loss;
+		g_b2a_loss = g_b2a_loss + cycle_consistency_loss + identity_loss; 
+		g_a2b_loss = g_a2b_loss + cycle_consistency_loss + identity_loss;
 
 		d_a_vars = [var for var in tf.trainable_variables() if "Discriminator_a" in var.name]
 		d_b_vars = [var for var in tf.trainable_variables() if "Discriminator_b" in var.name]
