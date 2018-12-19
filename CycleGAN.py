@@ -99,8 +99,8 @@ def Generator(inp_ten, out_channels = 64, name = None, reuse = False):
         
         with tf.variable_scope("Block_1"):
             x = conv_2d(inp_ten = inp_ten, kernel_sz = 7, strides = 1, out_channels = out_channels*1, padding = "VALID"); 
-            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*2, padding = "SAME"); 
-            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*4, padding = "SAME"); 
+            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*2, padding = "VALID"); 
+            x = conv_2d(inp_ten = x, kernel_sz = 3, strides = 2, out_channels = out_channels*4, padding = "VALID"); 
 
         with tf.variable_scope("Block_2"):
             for i in range(6): x = res_blk(x, 3, 1, out_channels*4, name = "ResBlk_" + str(i));
