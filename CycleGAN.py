@@ -93,7 +93,7 @@ def res_blk(inp_ten, kernel_sz = 3, strides = 1, out_channels = 256, name = None
         
         return x + inp_ten;
 
-def Generator(inp_ten, out_channels = 32, name = None, reuse = False):
+def Generator(inp_ten, out_channels = 64, name = None, reuse = False):
     
     with tf.variable_scope(name, reuse = reuse):
         
@@ -108,7 +108,7 @@ def Generator(inp_ten, out_channels = 32, name = None, reuse = False):
         with tf.variable_scope("Block_3"):
             x = conv_2d_transpose(x, kernel_sz = 3, strides = 2, out_channels = out_channels*2);
             x = conv_2d_transpose(x, kernel_sz = 3, strides = 2, out_channels = out_channels*1);
-            x = conv_2d(x, kernel_sz = 3, strides = 1, out_channels = 3, activation = "tanh", is_norm = False, padding = "VALID");
+            x = conv_2d(x, kernel_sz = 7, strides = 1, out_channels = 3, activation = "tanh", is_norm = False, padding = "VALID");
 
         return x;
 
