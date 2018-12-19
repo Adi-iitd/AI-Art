@@ -57,7 +57,7 @@ def conv_2d(inp_ten, kernel_sz = 4, strides = 1, out_channels = 64, is_conv = Tr
     
 	if is_conv:
 		x = tf.layers.conv2d(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, padding = padding, 
-					         use_bias = use_bias, kernel_initializer = tf.random_normal_initializer(mean = 0, stddev = 0.02, dtype = tf.float32));
+			      use_bias = use_bias, kernel_initializer = tf.random_normal_initializer(mean = 0, stddev = 0.02, dtype = tf.float32));
     
 	if is_norm:
 		if normalization == "batch": x = tf.layers.batch_normalization(x, momentum = 0.9, epsilon = 1e-5, training = train_mode);
