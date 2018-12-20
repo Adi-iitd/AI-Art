@@ -8,13 +8,12 @@ Original file is located at
 
 # Import relevant libraries and fix the random seeds of both tensorflow and numpy!
 import tensorflow as tf; tf.set_random_seed(0); import numpy as np; np.random.seed(0);
-import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt; import pylab; 
-import os; from os import listdir; os.environ["CUDA_VISIBLE_DEVICES"] = '0';
+import matplotlib.pyplot as plt; import pylab; import os; from os import listdir; 
 import warnings; warnings.filterwarnings("ignore"); import random;
 
 # Some Global Variables
 batch_sz = 1; img_height = 256; img_width = 256; img_channels = 3; pool_size = 50;
-mon_rel_dir = "./Dataset/Monet/"; cez_rel_dir = "./Dataset/Photo/";
+mon_rel_dir = "./Dataset/Monet/"; cez_rel_dir = "./Dataset/Cezzane/";
 
 # File names of the corresponding dataset (Monet painitings and Cezzane paintings)
 mon_file_name = [mon_rel_dir + s for s in os.listdir(mon_rel_dir)]; 
@@ -55,9 +54,9 @@ def get_tensor_slices(tensor):
 # Get the iterators corresponding to both the dataset
 def get_iterators(sess):
     
-	# Shuffle and repeat the datset, Apply the mapping transformation, Batch and prefetch (one or n) of them
+    #  Shuffle and repeat the datset, Apply the mapping transformation, Batch and prefetch (one or n) of them
 
-	"""
+    """
     Arguments:
     sess:           Session of tensorflow
     
@@ -71,15 +70,18 @@ def get_iterators(sess):
     mon_dataset = get_tensor_slices(tf.constant(mon_file_name)); cez_dataset = get_tensor_slices(tf.constant(cez_file_name));
 
     mon_dataset = mon_dataset.shuffle(500).repeat(); 
-    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    mon_dataset = mon_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+										      [img_height, img_width]), 127.5), 1))
 
     cez_dataset = cez_dataset.shuffle(500).repeat();
-    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), [img_height, img_width]), 127.5), 1))
+    cez_dataset = cez_dataset.map(lambda x: tf.subtract(tf.div(tf.image.resize_images(tf.image.decode_jpeg(tf.read_file(x)), \
+										      [img_height, img_width]), 127.5), 1))
 
     mon_dataset = (mon_dataset.batch(batch_sz)).prefetch(1); cez_dataset = (cez_dataset.batch(batch_sz)).prefetch(1);
     
     handle = tf.placeholder(tf.string, shape = []);
-    iterator = tf.data.Iterator.from_string_handle(handle, output_types = mon_dataset.output_types, output_shapes = mon_dataset.output_shapes)
+    iterator = tf.data.Iterator.from_string_handle(handle, output_types = mon_dataset.output_types, 
+						   output_shapes = mon_dataset.output_shapes)
     next_element = iterator.get_next();
     
     mon_iterator = mon_dataset.make_initializable_iterator(); mon_handle = sess.run(mon_iterator.string_handle());
@@ -114,8 +116,8 @@ def conv_2d(inp_ten, kernel_sz = 4, strides = 1, out_channels = 64, is_conv = Tr
 		inp_ten = tf.pad(inp_ten, [[0,0],[kernel_sz//2, kernel_sz//2],[kernel_sz//2, kernel_sz//2],[0,0]], 'REFLECT'); 
     
 	if is_conv:
-		x = tf.layers.conv2d(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, padding = padding, 
-					  use_bias = use_bias, kernel_initializer = tf.random_normal_initializer(mean = 0, stddev = 0.02, dtype = tf.float32));
+		x = tf.layers.conv2d(inputs = inp_ten, filters = out_channels, kernel_size = kernel_sz, strides = strides, padding = padding,
+		    use_bias = use_bias, kernel_initializer = tf.random_normal_initializer(mean = 0, stddev = 0.02, dtype = tf.float32));
     
 	if is_norm:
 		if normalization == "batch": x = tf.layers.batch_normalization(x, momentum = 0.9, epsilon = 1e-5, training = train_mode);
@@ -134,7 +136,7 @@ def conv_2d(inp_ten, kernel_sz = 4, strides = 1, out_channels = 64, is_conv = Tr
 def conv_2d_transpose(inp_ten, kernel_sz = 3, strides = 2, out_channels = 64, is_deconv = True, is_act = True, activation = "relu",
                       leak_param = 1/5.5, is_norm = True, normalization = "instance", is_dropout = False, use_bias = False):
     
-	"""
+    """
     Arguments:
     inp_ten:       Input Tensor
     kernel_sz:     Integer or tuple/list of 2 integers, specifying the height and width of the 2D convolution window
@@ -233,7 +235,7 @@ def Generator(inp_ten, out_channels = 64, name = None, reuse = False):
 
 def Discriminator(inp_ten, out_channels = 64, use_sigmoid = False, name = None, reuse = False):
 
-	"""
+    """
     Arguments:
     inp_ten:       Input tensor
     out_channels:  Number of output filters in convolutional layer
@@ -269,8 +271,8 @@ def Discriminator(inp_ten, out_channels = 64, use_sigmoid = False, name = None, 
 
 
 def fake_image_pool(num_fakes, fake, fake_pool):
-
-	"""
+    
+    """
     Arguments:
     num_fakes: Number of fake images generated till now
     fake_img:  Fake image generated by Generator
@@ -326,10 +328,11 @@ def get_optimizer(loss, var_list):
 
 	# Constant learning rate till 100 epochs, after that linearly decrease it to 0
 	learning_rate = (tf.where(tf.greater_equal(global_step, start_decay_step), tf.train.polynomial_decay(starter_learning_rate, 
-					    global_step - start_decay_step, decay_steps, end_learning_rate, power = 1.0), starter_learning_rate));
+			 global_step - start_decay_step, decay_steps, end_learning_rate, power = 1.0), starter_learning_rate));
 
     # Define the Adam optimizer with the non-default beta1
-	learning_step = tf.train.AdamOptimizer(learning_rate, beta1 = beta1).minimize(loss, global_step = global_step, var_list = var_list);
+	learning_step = tf.train.AdamOptimizer(learning_rate, beta1 = beta1).minimize(loss, global_step = global_step, 
+										      var_list = var_list);
 	
 	return learning_step;
 
@@ -382,7 +385,8 @@ def initialize_model(lambda_1 = 10, lambda_2 = 0.5):
 		identity_loss = lambda_1*lambda_2*(tf.reduce_mean(tf.abs(input_a - fake_a_)) + tf.reduce_mean(tf.abs(input_b - fake_b_)));
 
 		# Net Loss of both the generators
-		g_b2a_loss = g_b2a_loss + cycle_consistency_loss + identity_loss; g_a2b_loss = g_a2b_loss + cycle_consistency_loss + identity_loss;
+		g_b2a_loss = g_b2a_loss + cycle_consistency_loss + identity_loss; 
+		g_a2b_loss = g_a2b_loss + cycle_consistency_loss + identity_loss;
 
 		# Seperate out the variables of each network
 		d_a_vars = [var for var in tf.trainable_variables() if "Discriminator_a" in var.name]
@@ -435,18 +439,24 @@ def train(num_epochs, num_iters):
 				if img_a.shape[-1] != 3 or img_b.shape[-1] != 3: continue;
 
 				# Update Generator and Discriminator alternately (Start with the Generator) 
-				_, Fake_A, G_A_loss = sess.run([g_b2a_train_op, fake_a, g_b2a_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0})
+				_, Fake_A, G_A_loss = sess.run([g_b2a_train_op, fake_a, g_b2a_loss], feed_dict = {input_a: img_a, 
+								input_b: img_b, train_mode: True, dropout: 0})
 				
 				Fake_pool_A = fake_image_pool(num_fake_imgs, Fake_A, fake_a_arr);
-				_, D_A_Loss = sess.run([d_a_train_op, d_a_loss], feed_dict = {input_a: img_a, input_b: img_b, fake_pool_a: Fake_pool_A, train_mode: True, dropout: 0})
+				_, D_A_Loss = sess.run([d_a_train_op, d_a_loss], feed_dict = {input_a: img_a, input_b: img_b, 
+							fake_pool_a: Fake_pool_A, train_mode: True, dropout: 0})
 				
-				_, Fake_B, G_B_Loss = sess.run([g_a2b_train_op, fake_b, g_a2b_loss], feed_dict = {input_a: img_a, input_b: img_b, train_mode: True, dropout: 0})
+				_, Fake_B, G_B_Loss = sess.run([g_a2b_train_op, fake_b, g_a2b_loss], feed_dict = {input_a: img_a, 
+								input_b: img_b, train_mode: True, dropout: 0})
 				
 				Fake_pool_B = fake_image_pool(num_fake_imgs, Fake_B, fake_b_arr);
-				_, D_B_Loss = sess.run([d_b_train_op, d_b_loss], feed_dict = {input_a: img_a, input_b: img_b, fake_pool_b: Fake_pool_B, train_mode: True, dropout: 0})
+				_, D_B_Loss = sess.run([d_b_train_op, d_b_loss], feed_dict = {input_a: img_a, input_b: img_b, 
+							fake_pool_b: Fake_pool_B, train_mode: True, dropout: 0})
 
 				# Gather some Statistics
-				tot_D_A_Loss += D_A_Loss; tot_G_A_loss += G_A_loss; tot_D_B_Loss += D_B_Loss; tot_G_B_Loss += G_B_Loss; num_fake_imgs += 1;
+				tot_D_A_Loss += D_A_Loss; tot_G_A_loss += G_A_loss; 
+				tot_D_B_Loss += D_B_Loss; tot_G_B_Loss += G_B_Loss; 
+				num_fake_imgs += 1;
 
 				if iters%num_iters == 0:
 
@@ -459,9 +469,9 @@ def train(num_epochs, num_iters):
 					image_batch = np.concatenate((img_a, Fake_img_B, Recon_img_A, img_b, Fake_img_A, Recon_img_B)); 
 					show_images(image_batch, tmp_path = "./CycleGAN/", id = iters);
 
-					print('After ' + str(iters)+ ': D_A_Loss: ' + str(tot_D_A_Loss/iters) + ', D_B_Loss: ' + str(tot_D_B_Loss/iters) + ', G_B2A_loss: ' + str(tot_G_A_loss/iters) \
-					+ ', G_A2B_Loss: ' + str(tot_G_B_Loss/iters));
-
+					print('After ' + str(iters)+ ': D_A_Loss: ' + str(tot_D_A_Loss/iters) + ', D_B_Loss: ' + \
+					str(tot_D_B_Loss/iters) + ', G_B2A_loss: ' + str(tot_G_A_loss/iters) + ', G_A2B_Loss: ' + str(tot_G_B_Loss/iters));
+					
 	tf.reset_default_graph(); return;
 
 tf.get_default_graph(); train(200, min(len(mon_file_name), len(cez_file_name)));
