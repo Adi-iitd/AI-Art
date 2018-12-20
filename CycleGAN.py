@@ -470,8 +470,10 @@ def train(num_epochs, num_iters):
 					show_images(image_batch, tmp_path = "./CycleGAN/", id = iters);
 
 					print('After ' + str(iters)+ ': D_A_Loss: ' + str(tot_D_A_Loss/iters) + ', D_B_Loss: ' + \
-					str(tot_D_B_Loss/iters) + ', G_B2A_loss: ' + str(tot_G_A_loss/iters) + ', G_A2B_Loss: ' + str(tot_G_B_Loss/iters));
+					      str(tot_D_B_Loss/iters) + ', G_B2A_loss: ' + str(tot_G_A_loss/iters) + ', G_A2B_Loss: ' + \
+					      str(tot_G_B_Loss/iters));
 					
 	tf.reset_default_graph(); return;
 
 tf.get_default_graph(); train(200, min(len(mon_file_name), len(cez_file_name)));
+
