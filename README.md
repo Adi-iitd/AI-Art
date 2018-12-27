@@ -182,6 +182,9 @@ Image-to-Image translation is a class of vision and graphics problems where the 
 
 *The goal is to learn a mapping **G : X → Y** such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, they coupled it with an inverse mapping **F : Y → X** and introduced a cycle consistency loss to enforce **F(G(X)) ≈ X** (and vice-versa).*
 
+### Motivation:
+
+Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like **artistic stylization** can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like **object transfiguration** (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is some underlying relationship between the domains – for example, that they are two different renderings of the same underlying scene – and seek to learn that relationship. Although there is a lack of supervision in the form of paired examples, *supervision at the level of sets can still be exploited: one set of images in domain X and a different set in domain Y.*
 
 ***
 
