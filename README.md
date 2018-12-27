@@ -176,9 +176,12 @@ The GAN discriminator models high-frequency structure term, relying on an L1 ter
 
 ## CycleGAN
 
+![1](https://user-images.githubusercontent.com/41862477/50483300-416e9a00-0a11-11e9-8b77-e91d30a409bb.jpg)
+
 Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in [this](https://arxiv.org/pdf/1703.10593.pdf) paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. 
 
 *The goal is to learn a mapping **G : X → Y** such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, they coupled it with an inverse mapping **F : Y → X** and introduced a cycle consistency loss to enforce **F(G(X)) ≈ X** (and vice-versa).*
+
 
 ***
 
