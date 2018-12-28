@@ -240,14 +240,16 @@ The full objective is: ``` L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX,
 Generator:
 - Network with 6 residual blocks: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3
 - Network with 9 residual blocks: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3
-```
-> *c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2*.
 
-```
 Discriminator:
 - C64-C128-C256-C512
 ```
-> *Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2.*
+> *c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2*
+
+#### Application - Photo generation from paintings: 
+
+For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples
+of the target domain are provided as the input to the generator i.e., ``` Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||```
 
 ***
 
