@@ -196,6 +196,34 @@ The optimal G thereby translates the domain X to a domain Y* distributed identic
 
 > *As illustrated in figure, their model includes two mappings **G : X → Y and F : Y → X**. In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other.*
 
+#### Adversarial Loss:
+
+Adversarial loss is applied to both mapping functions -  G : X → Y and its discriminator DY and  F : Y → X and its discriminator DX, where G tries to generate images G(x) that look similar to images from domain Y , while DY aims to distinguish between translated samples G(x) and real samples y (similar condition holds for the other one).
+
+- Generator (G) tries to minimize ``` E[x∼pdata(x)] (D(G(x)) − 1)** 2```
+- Discriminator (DY) tries to minimize ``` E[y∼pdata(y)] (D(y) − 1)**2 + E[x∼pdata(x)] D(G(x))**2```
+- Generator (F) tries to minimize ``` E[y∼pdata(y)] (D(G(y)) − 1)** 2```
+- Discriminator (DX) tries to minimize ``` E[x∼pdata(x)] (D(x) − 1)**2 + E[y∼pdata(y)] D(G(y))**2```
+
+#### Cycle Consistency Loss:
+
+Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can
+induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent.
+
+``` Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) − y || ``` 
+
+#### Full Objective:
+
+The full objective is: ``` L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)```, where lambda controls the relative importance of the two objectives.
+
+#### Insights:
+
+- This model can be viewed as training two **autoencoders**: first **F◦G : X → X** jointly with second **G◦F : Y → Y**. 
+- These have special internal structures - map an image to itself via an intermediate representation that is a translation of the image into another domain. 
+- Can also be seen as a special case of **adversarial autoencoders**, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. 
+- The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X.
+
+
 ***
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
