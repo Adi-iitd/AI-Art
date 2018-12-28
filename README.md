@@ -184,7 +184,13 @@ Image-to-Image translation is a class of vision and graphics problems where the 
 
 ### Motivation:
 
-Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like **artistic stylization** can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like **object transfiguration** (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is some underlying relationship between the domains – for example, that they are two different renderings of the same underlying scene – and seek to learn that relationship. Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: *one set of images in domain X and a different set in domain Y.*
+Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like **artistic stylization** can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like **object transfiguration** (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is that there exists some underlying relationship between the domains. Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: *one set of images in domain X and a different set in domain Y.*
+
+The optimal G thereby translates the domain X to a domain Y* distributed identically to Y. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – there are infinitely many mappings G that will induce the same distribution over y*. Key points:
+
+- Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse
+- Exploited the property that translation should be **Cycle consistent**. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). 
+- Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages ***F(G(x)) ≈ x and G(F(y)) ≈ y***.
 
 ***
 
