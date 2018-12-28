@@ -260,6 +260,26 @@ of the target domain are provided as the input to the generator i.e.,
 Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||
 ```
 
+### Results:
+
+#### Photo -> Cezzane Painitings:
+
+![2](https://user-images.githubusercontent.com/41862477/50507791-fd2cd980-0aa4-11e9-9456-6bbf25f54a49.jpg)
+![3](https://user-images.githubusercontent.com/41862477/50507793-fdc57000-0aa4-11e9-8981-365b56c92b73.jpg)
+![5](https://user-images.githubusercontent.com/41862477/50507794-fdc57000-0aa4-11e9-8b06-2e260f23ac8e.jpg)
+![8](https://user-images.githubusercontent.com/41862477/50507795-fdc57000-0aa4-11e9-8da8-d92cb4775264.jpg)
+
+#### Cezzane Painitings -> Photo:
+
+![1](https://user-images.githubusercontent.com/41862477/50507839-2a798780-0aa5-11e9-99e6-7f7770ae8bdb.jpg)
+![4](https://user-images.githubusercontent.com/41862477/50507840-2a798780-0aa5-11e9-9022-96e648314a86.jpg)
+![6](https://user-images.githubusercontent.com/41862477/50507841-2b121e00-0aa5-11e9-9172-64c3750df36e.jpg)
+![7](https://user-images.githubusercontent.com/41862477/50507842-2b121e00-0aa5-11e9-85f8-1eb7276cfd8f.jpg)
+
+
+
+
+
 ***
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
