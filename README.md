@@ -261,14 +261,14 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 ### Results:
 
-#### Photo -> Cezzane Painitings:
+#### Photo -> Cezzane Paintings:
 
 ![2](https://user-images.githubusercontent.com/41862477/50507791-fd2cd980-0aa4-11e9-9456-6bbf25f54a49.jpg)
 ![3](https://user-images.githubusercontent.com/41862477/50507793-fdc57000-0aa4-11e9-8981-365b56c92b73.jpg)
 ![5](https://user-images.githubusercontent.com/41862477/50507794-fdc57000-0aa4-11e9-8b06-2e260f23ac8e.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50507795-fdc57000-0aa4-11e9-8da8-d92cb4775264.jpg)
 
-#### Cezzane Painitings -> Photo:
+#### Cezzane Paintings -> Photo:
 
 ![1](https://user-images.githubusercontent.com/41862477/50507839-2a798780-0aa5-11e9-99e6-7f7770ae8bdb.jpg)
 ![4](https://user-images.githubusercontent.com/41862477/50507840-2a798780-0aa5-11e9-9022-96e648314a86.jpg)
@@ -277,14 +277,14 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 ***
 
-#### Monet Painitings -> Photo:
+#### Monet Paintings -> Photo:
 
 ![1](https://user-images.githubusercontent.com/41862477/50508107-6b25d080-0aa6-11e9-93d3-2be4796b98c3.jpg)
 ![2](https://user-images.githubusercontent.com/41862477/50508108-6b25d080-0aa6-11e9-854c-abb7b70ac864.jpg)
 ![3](https://user-images.githubusercontent.com/41862477/50508109-6bbe6700-0aa6-11e9-9065-81a591e9946d.jpg)
 ![7](https://user-images.githubusercontent.com/41862477/50508110-6bbe6700-0aa6-11e9-8fc5-912233b6b72c.jpg)
 
-#### Photo -> Monet Painitings:
+#### Photo -> Monet Paintings:
 
 ![4](https://user-images.githubusercontent.com/41862477/50508126-7aa51980-0aa6-11e9-8d28-bdbc0f4faf8e.jpg)
 ![5](https://user-images.githubusercontent.com/41862477/50508127-7aa51980-0aa6-11e9-91b6-1e2094dd9ab9.jpg)
@@ -293,14 +293,14 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 ***
 
-#### Van_Gogh Painitings -> Photo:
+#### Van_Gogh Paintings -> Photo:
 
 ![5](https://user-images.githubusercontent.com/41862477/50508432-ea67d400-0aa7-11e9-9c7b-44ae39321303.jpg)
 ![6](https://user-images.githubusercontent.com/41862477/50508433-ea67d400-0aa7-11e9-9c48-2f200b5f29c2.jpg)
 ![7](https://user-images.githubusercontent.com/41862477/50508434-eb006a80-0aa7-11e9-91e8-d19c2b61879a.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50508435-eb006a80-0aa7-11e9-8be6-52907c335052.jpg)
 
-#### Photo -> Van_Gogh Painitings:
+#### Photo -> Van_Gogh Paintings:
 
 ![1](https://user-images.githubusercontent.com/41862477/50508407-d1f7b980-0aa7-11e9-80c0-c32d24b35764.jpg)
 ![2](https://user-images.githubusercontent.com/41862477/50508409-d2905000-0aa7-11e9-8a1a-f2913d03b6ee.jpg)
@@ -308,5 +308,7 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
 
 ***
+
+#### Many more experiment results are coming soon!
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
