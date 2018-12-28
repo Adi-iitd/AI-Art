@@ -115,7 +115,6 @@ So, the reason behind running this experiment was that - authors of the original
 ![50_3_2](https://user-images.githubusercontent.com/41862477/49686282-44642200-fb18-11e8-80b3-6b2216370595.png)
 
 ***
-
 ***
 
 ## Pix2pix
@@ -276,6 +275,8 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![6](https://user-images.githubusercontent.com/41862477/50507841-2b121e00-0aa5-11e9-9172-64c3750df36e.jpg)
 ![7](https://user-images.githubusercontent.com/41862477/50507842-2b121e00-0aa5-11e9-85f8-1eb7276cfd8f.jpg)
 
+***
+
 #### Monet Painitings -> Photo:
 
 ![1](https://user-images.githubusercontent.com/41862477/50508107-6b25d080-0aa6-11e9-93d3-2be4796b98c3.jpg)
@@ -289,6 +290,8 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![5](https://user-images.githubusercontent.com/41862477/50508127-7aa51980-0aa6-11e9-91b6-1e2094dd9ab9.jpg)
 ![6](https://user-images.githubusercontent.com/41862477/50508128-7b3db000-0aa6-11e9-8f3f-dc52dd8751b9.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50508129-7b3db000-0aa6-11e9-8e0d-545b1fd77390.jpg)
+
+***
 
 #### Van_Gogh Painitings -> Photo:
 
