@@ -192,6 +192,10 @@ The optimal G thereby translates the domain X to a domain Y* distributed identic
 - Exploited the property that translation should be **Cycle consistent**. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). 
 - Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages ***F(G(x)) ≈ x and G(F(y)) ≈ y***.
 
+![2](https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg)
+
+> *As illustrated in figure, their model includes two mappings **G : X → Y and F : Y → X**. In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other.*
+
 ***
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
