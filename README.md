@@ -290,6 +290,20 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![6](https://user-images.githubusercontent.com/41862477/50508128-7b3db000-0aa6-11e9-8f3f-dc52dd8751b9.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50508129-7b3db000-0aa6-11e9-8e0d-545b1fd77390.jpg)
 
+#### Van_Gogh Painitings -> Photo:
+
+![5](https://user-images.githubusercontent.com/41862477/50508432-ea67d400-0aa7-11e9-9c7b-44ae39321303.jpg)
+![6](https://user-images.githubusercontent.com/41862477/50508433-ea67d400-0aa7-11e9-9c48-2f200b5f29c2.jpg)
+![7](https://user-images.githubusercontent.com/41862477/50508434-eb006a80-0aa7-11e9-91e8-d19c2b61879a.jpg)
+![8](https://user-images.githubusercontent.com/41862477/50508435-eb006a80-0aa7-11e9-8be6-52907c335052.jpg)
+
+#### Photo -> Van_Gogh Painitings:
+
+![1](https://user-images.githubusercontent.com/41862477/50508407-d1f7b980-0aa7-11e9-80c0-c32d24b35764.jpg)
+![2](https://user-images.githubusercontent.com/41862477/50508409-d2905000-0aa7-11e9-8a1a-f2913d03b6ee.jpg)
+![3](https://user-images.githubusercontent.com/41862477/50508410-d2905000-0aa7-11e9-9663-4c1b4f92e9d9.jpg)
+![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
+
 ***
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
