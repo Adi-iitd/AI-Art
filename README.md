@@ -210,11 +210,17 @@ Adversarial loss is applied to both mapping functions -  G : X → Y and its dis
 Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can
 induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent.
 
-``` Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) − y || ``` 
+``` 
+Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) − y || 
+``` 
 
 #### Full Objective:
 
-The full objective is: ``` L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)```, where lambda controls the relative importance of the two objectives.
+The full objective is: 
+``` 
+L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)
+```
+, where lambda controls the relative importance of the two objectives.
 
 #### Insights:
 
@@ -249,7 +255,10 @@ Discriminator:
 #### Application - Photo generation from paintings: 
 
 For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples
-of the target domain are provided as the input to the generator i.e., ``` Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||```
+of the target domain are provided as the input to the generator i.e., 
+```
+Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||
+```
 
 ***
 
