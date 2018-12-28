@@ -223,6 +223,31 @@ The full objective is: ``` L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX,
 - Can also be seen as a special case of **adversarial autoencoders**, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. 
 - The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X.
 
+## Implementation:
+
+#### Training Details:
+
+- Two **stride-2** convolutions, several **residual** blocks, and two **fractionally strided** convolutions with stride 1/2.
+- 6 blocks for 128 × 128 images and 9 blocks for 256 × 256 and higher resolution training images.
+- **Instance** normalization instead of batch normalization.
+- **Patch Discriminator** - 70 × 70 PatchGANs, which aim to classify whether 70 × 70 overlapping image patches are real or fake (more parameter efficient compared to full-image discriminator)
+- To reduce model oscillation, update the discriminators using a history of generated images rather than the latest ones - always keep an image buffer of 50 previously generated images.
+- Set λ to 10 in total loss equation, use the Adam solver with a batch size of 1 
+- Learning rate of 0.0002 for the first 100 epochs and then linearly decay the rate to zero over the next 100 epochs.
+
+#### Architecture Details:
+```
+Generator:
+- Network with 6 residual blocks: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3
+- Network with 9 residual blocks: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3
+```
+> *c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2*.
+
+```
+Discriminator:
+- C64-C128-C256-C512
+```
+> *Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2.*
 
 ***
 
