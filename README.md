@@ -10,7 +10,7 @@ Creativity is something we closely associate with what it means to be human. But
 
 Recent art experiments are the use of "generative adversarial networks" (GANs). GANs are "neural networks" that teach themselves through their own experimentation, rather than being programmed by humans. *It could be argued that the ability of machines to learn what things look like, and then make convincing new examples, marks the advent of "creative" AI.*
 
-I will cover three different methods by which you can create novel arts, solely by code - **Neural Style Transfer, CycleGAN,** and **Pix2pix.**  
+I will cover three different methods by which you can create novel arts, solely by code - **Neural Style Transfer, Deep Dream, CycleGAN,** and **Pix2pix.**  
 
 ***
 ***
@@ -306,6 +306,11 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![2](https://user-images.githubusercontent.com/41862477/50508409-d2905000-0aa7-11e9-8a1a-f2913d03b6ee.jpg)
 ![3](https://user-images.githubusercontent.com/41862477/50508410-d2905000-0aa7-11e9-9663-4c1b4f92e9d9.jpg)
 ![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
+
+***
+***
+
+## Deep Dream
 
 ***
 
