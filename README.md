@@ -314,6 +314,6 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 ***
 
-#### Many more experiment results are coming soon!
+#### Many more to come soon!
 
 ***Thanks for going through this post! Any feedbacks are duly appreciated.***
