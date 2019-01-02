@@ -191,7 +191,7 @@ The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512
 <p align = "justify"> The optimal G thereby translates the domain X to a domain Y <i> distributed identically to Y. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – there are infinitely many mappings G that will induce the same distribution over y </i>. Key points: </p>
 
 - <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. </p>
-- <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections) </p>. 
+- <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). </p> 
 - <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> <i> F(G(x)) ≈ x and G(F(y)) ≈ y </b> </i> </p>.
 
 ![2](https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg)
@@ -228,8 +228,8 @@ L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)
 #### Insights:
 
 - This model can be viewed as training two **autoencoders**: first **F◦G : X → X** jointly with second **G◦F : Y → Y**. 
-- <p align = "justify"> These have special internal structures - map an image to itself via an intermediate representation that is a translation of the image into another domain </p>. 
-- <p align = "justify"> Can also be seen as a special case of <b> adversarial autoencoders </b>, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution </p>. 
+- <p align = "justify"> These have special internal structures - map an image to itself via an intermediate representation that is a translation of the image into another domain. </p>
+- <p align = "justify"> Can also be seen as a special case of <b> adversarial autoencoders </b>, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. </p> 
 - <p align = "justify"> The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X. </p>
 
 ## Implementation:
