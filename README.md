@@ -51,7 +51,7 @@
 
 <p align = "justify"> The result is a matrix of dimension <i> (nC, nC) </i> where nC is the number of filters. The value <i> G (i, j) </i> measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  G (i, i) also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. 
 
-><p align = "justify"> <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together  G (i, j), the Gram matrix G measures the <b> style </b> of an image. </i> </p>
+><p align = "justify"> <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together   G (i, j), the Gram matrix G measures the <b> style </b> of an image. </i> </p>
 
 <p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
 
@@ -83,7 +83,7 @@ Here are the brush-strokes that we get after running the experiment taking into 
 ![5_1](https://user-images.githubusercontent.com/41862477/49683618-e28ec280-faed-11e8-92b3-f48787c98f8a.png)
 ![5_4](https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png)
 
-> <p align = "justify"> <i> These are brush-strokes that the model learned when layers **Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4** (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
+> <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
 ***You might be wondering why am I showing these images, what one can conclude after looking at these brush-strokes?***
 
