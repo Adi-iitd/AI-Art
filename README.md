@@ -121,11 +121,11 @@ Here are the brush-strokes that we get after running the experiment taking into 
 
 ![1](https://user-images.githubusercontent.com/41862477/49689620-be60cf00-fb49-11e8-97b4-6cf53801ad3d.JPG)
 
-The authors investigated Conditional adversarial networks as a general-purpose solution to **Image-to-Image Translation** problems in this [paper](https://arxiv.org/pdf/1611.07004.pdf). These networks not only learn the mapping from input image to output image, but also learn a loss function to train this mapping. In analogy to automatic language translation, we define automatic image-to-image translation as the task of translating one possible representation of a scene into another, given sufficient training data.
+<p align = "justify"> The authors investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems in this [paper](https://arxiv.org/pdf/1611.07004.pdf). These networks not only learn the mapping from input image to output image, but also learn a loss function to train this mapping. In analogy to automatic language translation, we define automatic image-to-image translation as the task of translating one possible representation of a scene into another, given sufficient training data. </p>
 
-In Generative Adversarial Networks settings, we could specify only a high-level goal, like “make the output indistinguishable from reality”, and then it automatically learn a loss function appropriate for satisfying this goal. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function we are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for Image-to-Image translation tasks, where we condition on an input image and generate a corresponding output image. 
+<p align = "justify"> In Generative Adversarial Networks settings, we could specify only a high-level goal, like “make the output indistinguishable from reality”, and then it automatically learn a loss function appropriate for satisfying this goal. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function we are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for Image-to-Image translation tasks, where we condition on an input image and generate a corresponding output image. </p>
 
-> If mathematically expressed, CGANs learn a mapping from observed image X and random noise vector z, to y, *G : {x, z} → y*. The generator G is trained to produce outputs that cannot be distinguished from **real** images by an adversarially trained discriminator, D, which in turn is itself optimized to do as well as possible at identifying the generator’s **fakes**.
+> <p align = "justify"> If mathematically expressed, CGANs learn a mapping from observed image X and random noise vector z, to y, <i> G : {x, z} → y </i>. The generator G is trained to produce outputs that cannot be distinguished from <b> real </b> images by an adversarially trained discriminator, D, which in turn is itself optimized to do as well as possible at identifying the generator’s <b> fakes. </b> </p>
 
 ![2](https://user-images.githubusercontent.com/41862477/49689774-1698d080-fb4c-11e8-92af-dc3d48e66ec2.JPG)
 
@@ -135,30 +135,33 @@ In Generative Adversarial Networks settings, we could specify only a high-level 
 
 The objective of a conditional GAN can be expressed as:
 
-> **```Lc GAN (G, D) = Ex,y (log D(x, y)) + Ex,z (log(1 − D(x, G(x, z)))```** where G tries to minimize this objective against an adversarial D that tries to maximize it, i.e. **```G∗ = arg min(G)max(D) Lc GAN (G, D)```**. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance to make sure that, the ground truth and the output are close to each other in L1 sense **```L(G) = Ex,y,z ( ||y − G(x, z)|| )```**.
+```
+Lc GAN (G, D) = Ex,y (log D(x, y)) + Ex,z (log(1 − D(x, G(x, z)))
+```
 
-Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore fail to match any distribution other than a **delta function**. Instead, the authors of Pix2pix provided noise only in the form of **dropout**, applied on several layers of the generator at **both training and test time**.
+<p align = "justify"> , where G tries to minimize this objective against an adversarial D that tries to maximize it, i.e. </p> 
 
-The Min-Max objective mentioned above was used in the original paper, when GAN was first proposed by **Ian Goodfellow** in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulation (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. 
+```
+G∗ = arg min(G)max(D) Lc GAN (G, D)
+```
+
+<p align = "justify"> It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance to make sure that, the ground truth and the output are close to each other in L1 sense </p>
+
+```
+L(G) = Ex,y,z ( ||y − G(x, z)|| )
+```
+
+<p align = "justify"> Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore would fail to match any distribution other than a <b> delta function </b>. Instead, the authors of Pix2pix provided noise only in the form of <b> dropout </b>, applied on several layers of the generator at <b> both training and test time </b>. </p>
+
+<p align = "justify"> The Min-Max objective mentioned above was used in the original paper when GAN was first proposed by <b> Ian Goodfellow </b> in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulation (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. </p>
 
 ### Network Architecture
 
-#### Generator: 
+<p align = "justify"> The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed <b> PatchGAN </b> – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The recpetive field of the discriminator used was 70 * 70 (and was performing best compared to smaller and larger receptive fields). </p>
 
-In Image-to-image translation problems, we map a high resolution input grid to a high resolution output grid. Both are renderings of the same underlying structure with the only difference in the surface appearance. The authors designed the generator architecture around these considerations. They used an encoder-decoder network in which the input is passed through a series of layers that progressively downsample, until a bottleneck layer, at which point the process is reversed. 
-
-> To preserve the low-level details, skip connections are used. Specifically, skip connections are added between each layer i and layer n − i, where n is the total number of layers. Each skip connection simply concatenates all channels at layer i with those at layer n − i.
-
-```Architecture: 
-Encoder:  E(64, 1) - E(64, 1) - E(64, 2) - E(128, 2) - E(256, 2) - E(512, 2) - E(512, 2) - E(512, 2) - E(512, 2)
-Decoder:  D(512, 2) - D(512, 2) - D(512, 2) - D(256, 2) - D(128, 2) - D(64, 2) - D(64, 2) - D(64, 1) - D(3, 1)
 ```
-
-#### Discriminator:
-
-The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed PatchGAN – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The recpetive field of the discriminator used was 70 * 70 (and was performing best compared to smaller and larger receptive fields).
-
-```The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512```
+The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512
+```
 
 #### Optimization
 
