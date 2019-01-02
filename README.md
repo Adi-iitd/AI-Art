@@ -10,7 +10,7 @@
 
 <p align = "justify"> Recent art experiments are the use of "generative adversarial networks" (GANs). GANs are "neural networks" that teach themselves through their own experimentation, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples, marks the advent of "creative" AI. </i> </p>
 
-I will cover four different methods by which you can create novel arts, solely by code - <b> Neural Style Transfer, Deep Dream, CycleGAN, and Pix2pix. </b>  
+<p align = "justify"> I will cover four different methods by which you can create novel arts, solely by code - <b> Neural Style Transfer, Deep Dream, CycleGAN, and Pix2pix. </b> </p>
 
 ***
 ***
