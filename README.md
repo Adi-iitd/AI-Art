@@ -153,7 +153,7 @@ L(G) = Ex,y,z ( ||y − G(x, z)|| )
 
 <p align = "justify"> Without z, the net could still learn a mapping from x to y, but would produce deterministic outputs, and therefore would fail to match any distribution other than a <b> delta function </b>. Instead, the authors of Pix2pix provided noise only in the form of <b> dropout </b>, applied on several layers of the generator at <b> both training and test time </b>. </p>
 
-<p align = "justify"> The Min-Max objective mentioned above was used in the original paper when GAN was first proposed by <b> Ian Goodfellow </b> in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulation (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used **Least-square** objective function while running their optimization process. </p>
+<p align = "justify"> The Min-Max objective mentioned above was used in the original paper when GAN was first proposed by <b> Ian Goodfellow </b> in 2014, but unfortunately, it doesn't perform well due to vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulation (LS-GAN, WGAN, WGAN-GP) to overcome these issues. Authors of this paper used <b> Least-square </b> objective function while running their optimization process. </p>
 
 ### Network Architecture
 
@@ -180,27 +180,27 @@ The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512
 
 ![1](https://user-images.githubusercontent.com/41862477/50483300-416e9a00-0a11-11e9-8b77-e91d30a409bb.jpg)
 
-Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in [this](https://arxiv.org/pdf/1703.10593.pdf) paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. 
+<p align = "justify"> Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in [this](https://arxiv.org/pdf/1703.10593.pdf) paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
-*The goal is to learn a mapping **G : X → Y** such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, they coupled it with an inverse mapping **F : Y → X** and introduced a cycle consistency loss to enforce **F(G(X)) ≈ X** (and vice-versa).*
+<p align = "justify"> <i> The goal is to learn a mapping <b> G : X → Y </b> such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, they coupled it with an inverse mapping <b> F : Y → X </b> and introduced a cycle consistency loss to enforce <b> F(G(X)) ≈ X </b> (and vice-versa). </i> </p>
 
 ### Motivation:
 
-Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like **artistic stylization** can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like **object transfiguration** (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is that there exists some underlying relationship between the domains. Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: *one set of images in domain X and a different set in domain Y.*
+<p align = "justify"> Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like <b> artistic stylization </b> can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like <b> object transfiguration </b> (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is that there exists some underlying relationship between the domains. Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: <i> one set of images in domain X and a different set in domain Y. </i> </p>
 
-The optimal G thereby translates the domain X to a domain Y* distributed identically to Y. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – there are infinitely many mappings G that will induce the same distribution over y*. Key points:
+<p align = "justify"> The optimal G thereby translates the domain X to a domain Y <i> distributed identically to Y. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – there are infinitely many mappings G that will induce the same distribution over y </i>. Key points: </p>
 
-- Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse
-- Exploited the property that translation should be **Cycle consistent**. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). 
-- Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages ***F(G(x)) ≈ x and G(F(y)) ≈ y***.
+- <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. </p>
+- <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections) </p>. 
+- <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> <i> F(G(x)) ≈ x and G(F(y)) ≈ y </b> </i> </p>.
 
 ![2](https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg)
 
-> *As illustrated in figure, their model includes two mappings **G : X → Y and F : Y → X**. In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other.*
+> <p align = "justify"> <i> As illustrated in figure, their model includes two mappings <b> G : X → Y and F : Y → X. </b> In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other. </i> </p>
 
 #### Adversarial Loss:
 
-Adversarial loss is applied to both mapping functions -  G : X → Y and its discriminator DY and  F : Y → X and its discriminator DX, where G tries to generate images G(x) that look similar to images from domain Y , while DY aims to distinguish between translated samples G(x) and real samples y (similar condition holds for the other one).
+<p align = "justify"> Adversarial loss is applied to both mapping functions -  G : X → Y and its discriminator DY and  F : Y → X and its discriminator DX, where G tries to generate images G(x) that look similar to images from domain Y , while DY aims to distinguish between translated samples G(x) and real samples y (similar condition holds for the other one). </p>
 
 - Generator (G) tries to minimize ``` E[x∼pdata(x)] (D(G(x)) − 1)** 2```
 - Discriminator (DY) tries to minimize ``` E[y∼pdata(y)] (D(y) − 1)**2 + E[x∼pdata(x)] D(G(x))**2```
@@ -209,8 +209,7 @@ Adversarial loss is applied to both mapping functions -  G : X → Y and its dis
 
 #### Cycle Consistency Loss:
 
-Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can
-induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent.
+<p align = "justify"> Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent. </p>
 
 ``` 
 Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) − y || 
@@ -219,17 +218,19 @@ Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) �
 #### Full Objective:
 
 The full objective is: 
+
 ``` 
 L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)
 ```
+
 , where lambda controls the relative importance of the two objectives.
 
 #### Insights:
 
 - This model can be viewed as training two **autoencoders**: first **F◦G : X → X** jointly with second **G◦F : Y → Y**. 
-- These have special internal structures - map an image to itself via an intermediate representation that is a translation of the image into another domain. 
-- Can also be seen as a special case of **adversarial autoencoders**, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. 
-- The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X.
+- <p align = "justify"> These have special internal structures - map an image to itself via an intermediate representation that is a translation of the image into another domain </p>. 
+- <p align = "justify"> Can also be seen as a special case of <b> adversarial autoencoders </b>, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution </p>. 
+- <p align = "justify"> The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X. </p>
 
 ## Implementation:
 
@@ -238,12 +239,13 @@ L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)
 - Two **stride-2** convolutions, several **residual** blocks, and two **fractionally strided** convolutions with stride 1/2.
 - 6 blocks for 128 × 128 images and 9 blocks for 256 × 256 and higher resolution training images.
 - **Instance** normalization instead of batch normalization.
-- **Patch Discriminator** - 70 × 70 PatchGANs, which aim to classify whether 70 × 70 overlapping image patches are real or fake (more parameter efficient compared to full-image discriminator)
-- To reduce model oscillation, update the discriminators using a history of generated images rather than the latest ones - always keep an image buffer of 50 previously generated images.
+- <p align = "justify"> <b> Patch Discriminator </b> - 70 × 70 PatchGANs, which aim to classify whether 70 × 70 overlapping image patches are real or fake (more parameter efficient compared to full-image discriminator) </p>
+- <p align = "justify"> To reduce model oscillation, update the discriminators using a history of generated images rather than the latest ones - always keep an image buffer of 50 previously generated images. </p>
 - Set λ to 10 in total loss equation, use the Adam solver with a batch size of 1 
 - Learning rate of 0.0002 for the first 100 epochs and then linearly decay the rate to zero over the next 100 epochs.
 
 #### Architecture Details:
+
 ```
 Generator:
 - Network with 6 residual blocks: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3
@@ -252,12 +254,13 @@ Generator:
 Discriminator:
 - C64-C128-C256-C512
 ```
-> *c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2*
+
+> <p align = "justify"> <i> c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2 </i>
 
 #### Application - Photo generation from paintings: 
 
-For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples
-of the target domain are provided as the input to the generator i.e., 
+<p align = "justify"> For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples of the target domain are provided as the input to the generator i.e., </p>
+
 ```
 Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||
 ```
