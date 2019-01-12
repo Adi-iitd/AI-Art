@@ -318,13 +318,14 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 ## Deep Dream
 
-![tony_stark](https://user-images.githubusercontent.com/41862477/51070708-dad1b900-166b-11e9-980d-83c849ab2ed1.jpg)
-![layer_3](https://user-images.githubusercontent.com/41862477/51070702-da392280-166b-11e9-821a-3dfea03aca52.jpg)
-![layer_4](https://user-images.githubusercontent.com/41862477/51070704-da392280-166b-11e9-980f-fac2b5efc93b.jpg)
-![layer_7](https://user-images.githubusercontent.com/41862477/51070705-da392280-166b-11e9-8588-a8eebd1d678b.jpg)
-![layer_9](https://user-images.githubusercontent.com/41862477/51070706-dad1b900-166b-11e9-9d06-8e199c312e6f.jpg)
-![layer_10](https://user-images.githubusercontent.com/41862477/51070707-dad1b900-166b-11e9-9645-3d530f06da94.jpg)
+![tony_stark](https://user-images.githubusercontent.com/41862477/51070752-72cfa280-166c-11e9-92de-e5805804602e.jpg)
+![layer_3](https://user-images.githubusercontent.com/41862477/51070747-72370c00-166c-11e9-9590-29b2afad65d7.jpg)
+![layer_4](https://user-images.githubusercontent.com/41862477/51070748-72370c00-166c-11e9-9539-e505346cc2fa.jpg)
+![layer_7](https://user-images.githubusercontent.com/41862477/51070749-72370c00-166c-11e9-9d8d-ee42be071f52.jpg)
+![layer_9](https://user-images.githubusercontent.com/41862477/51070750-72370c00-166c-11e9-932d-2bb959ab04f1.jpg)
+![layer_10](https://user-images.githubusercontent.com/41862477/51070751-72cfa280-166c-11e9-9668-06851dda4e01.jpg)
 
+***
 ***
 
 #### Many more to come soon!
