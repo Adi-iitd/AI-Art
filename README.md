@@ -107,12 +107,6 @@ Here are the brush-strokes that we get after running the experiment taking into 
 ![3](https://user-images.githubusercontent.com/41862477/49685490-3b6c5400-fb0a-11e8-876a-526a95591cb5.jpg)
 ![5](https://user-images.githubusercontent.com/41862477/49685492-3c04ea80-fb0a-11e8-8308-d770f4d0185d.jpg)
 ![res_4](https://user-images.githubusercontent.com/41862477/49685497-3d361780-fb0a-11e8-8f13-57d2965ccbd0.png)
-![1](https://user-images.githubusercontent.com/41862477/49685487-3ad3bd80-fb0a-11e8-833b-e34dfd340957.jpg)
-![2](https://user-images.githubusercontent.com/41862477/49685488-3ad3bd80-fb0a-11e8-8c9c-4fecff45f42b.jpg)
-![res_5](https://user-images.githubusercontent.com/41862477/49685498-3d361780-fb0a-11e8-8728-a92867787e9a.png)
-![3](https://user-images.githubusercontent.com/41862477/49686281-44642200-fb18-11e8-8e75-6cb5ab4d32c8.JPG)
-![2](https://user-images.githubusercontent.com/41862477/49686280-44642200-fb18-11e8-914d-3127fd6dcd2e.JPG)
-![50_3_2](https://user-images.githubusercontent.com/41862477/49686282-44642200-fb18-11e8-80b3-6b2216370595.png)
 
 ***
 ***
@@ -269,48 +263,36 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 
 #### Photo -> Cezzane Paintings:
 
-![2](https://user-images.githubusercontent.com/41862477/50507791-fd2cd980-0aa4-11e9-9456-6bbf25f54a49.jpg)
 ![3](https://user-images.githubusercontent.com/41862477/50507793-fdc57000-0aa4-11e9-8981-365b56c92b73.jpg)
-![5](https://user-images.githubusercontent.com/41862477/50507794-fdc57000-0aa4-11e9-8b06-2e260f23ac8e.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50507795-fdc57000-0aa4-11e9-8da8-d92cb4775264.jpg)
 
 #### Cezzane Paintings -> Photo:
 
 ![1](https://user-images.githubusercontent.com/41862477/50507839-2a798780-0aa5-11e9-99e6-7f7770ae8bdb.jpg)
 ![4](https://user-images.githubusercontent.com/41862477/50507840-2a798780-0aa5-11e9-9022-96e648314a86.jpg)
-![6](https://user-images.githubusercontent.com/41862477/50507841-2b121e00-0aa5-11e9-9172-64c3750df36e.jpg)
-![7](https://user-images.githubusercontent.com/41862477/50507842-2b121e00-0aa5-11e9-85f8-1eb7276cfd8f.jpg)
 
 ***
 
 #### Monet Paintings -> Photo:
 
-![1](https://user-images.githubusercontent.com/41862477/50508107-6b25d080-0aa6-11e9-93d3-2be4796b98c3.jpg)
 ![2](https://user-images.githubusercontent.com/41862477/50508108-6b25d080-0aa6-11e9-854c-abb7b70ac864.jpg)
 ![3](https://user-images.githubusercontent.com/41862477/50508109-6bbe6700-0aa6-11e9-9065-81a591e9946d.jpg)
-![7](https://user-images.githubusercontent.com/41862477/50508110-6bbe6700-0aa6-11e9-8fc5-912233b6b72c.jpg)
 
 #### Photo -> Monet Paintings:
 
 ![4](https://user-images.githubusercontent.com/41862477/50508126-7aa51980-0aa6-11e9-8d28-bdbc0f4faf8e.jpg)
 ![5](https://user-images.githubusercontent.com/41862477/50508127-7aa51980-0aa6-11e9-91b6-1e2094dd9ab9.jpg)
-![6](https://user-images.githubusercontent.com/41862477/50508128-7b3db000-0aa6-11e9-8f3f-dc52dd8751b9.jpg)
-![8](https://user-images.githubusercontent.com/41862477/50508129-7b3db000-0aa6-11e9-8e0d-545b1fd77390.jpg)
 
 ***
 
 #### Van_Gogh Paintings -> Photo:
 
-![5](https://user-images.githubusercontent.com/41862477/50508432-ea67d400-0aa7-11e9-9c7b-44ae39321303.jpg)
 ![6](https://user-images.githubusercontent.com/41862477/50508433-ea67d400-0aa7-11e9-9c48-2f200b5f29c2.jpg)
-![7](https://user-images.githubusercontent.com/41862477/50508434-eb006a80-0aa7-11e9-91e8-d19c2b61879a.jpg)
 ![8](https://user-images.githubusercontent.com/41862477/50508435-eb006a80-0aa7-11e9-8be6-52907c335052.jpg)
 
 #### Photo -> Van_Gogh Paintings:
 
 ![1](https://user-images.githubusercontent.com/41862477/50508407-d1f7b980-0aa7-11e9-80c0-c32d24b35764.jpg)
-![2](https://user-images.githubusercontent.com/41862477/50508409-d2905000-0aa7-11e9-8a1a-f2913d03b6ee.jpg)
-![3](https://user-images.githubusercontent.com/41862477/50508410-d2905000-0aa7-11e9-9663-4c1b4f92e9d9.jpg)
 ![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
 
 ***
