@@ -10,10 +10,9 @@ Original file is located at
 from google.colab import files; uploaded = files.upload(); 
 for fn in uploaded.keys(): print('User uploaded file "{name}" with length {length} bytes'.format(name = fn, length = len(uploaded[fn])))
 
-import numpy as np; np.random.seed(42); import tensorflow as tf; tf.set_random_seed(42); import os; import math;
-import matplotlib.pyplot as plt; from IPython.display import Image, display; import PIL.Image; import random; 
-from scipy.ndimage.filters import gaussian_filter; import urllib.request;  import scipy; 
-import zipfile; import tarfile; import warnings; warnings.filterwarnings("ignore"); 
+import numpy as np; np.random.seed(42); import tensorflow as tf; tf.set_random_seed(42); import os; import math; import random; 
+import matplotlib.pyplot as plt; from IPython.display import Image, display; import PIL.Image; import zipfile; import tarfile;
+from scipy.ndimage.filters import gaussian_filter; import urllib.request; import warnings; warnings.filterwarnings("ignore"); 
 
 # %matplotlib inline
 
@@ -70,6 +69,7 @@ class Inception_Model():
 
 model = Inception_Model();
 
+
 def open_image(filename): image = PIL.Image.open(filename); return np.float32(image);
 
 def normalize(tensor): return (tensor - np.min(tensor))/(np.max(tensor) - np.min(tensor));
@@ -84,6 +84,7 @@ def plot_image(image):
 def plot_gradient(gradient): 
     norm_gradient = normalize(gradient); plt.imshow(norm_gradient, interpolation = 'bilinear'); plt.show();
 
+    
 def resize_image(image, size = None, factor = None):
   
     if factor is not None: size = np.array(image.shape[0:2])*factor; size = size.astype(int)
@@ -125,6 +126,7 @@ def get_tiled_gradient(gradient, image, tile_size):
     
     return grad
 
+
 def optimize_image(tensor, image, num_iterations, step_size, tile_size, show_gradient = False):
     
     img_copy = image.copy(); print("Before:"); plot_image(img_copy);
@@ -140,6 +142,7 @@ def optimize_image(tensor, image, num_iterations, step_size, tile_size, show_gra
     
     print("After:"); plot_image(img_copy); return img_copy
 
+
 def recursive_optimize(tensor, image, num_repeats = 5, rescale_factor = 0.75, blend = 0.25, num_iterations = 25, step_size = 3.0, tile_size = 400):
   
     if num_repeats > 0:
@@ -153,6 +156,7 @@ def recursive_optimize(tensor, image, num_repeats = 5, rescale_factor = 0.75, bl
     
     img_result = optimize_image(tensor, image, num_iterations, step_size, tile_size)
     return img_result;
+
 
 image = open_image("./Tony_Stark.jpg"); sess = tf.InteractiveSession(graph = model.graph); tensor = model.layer_tensor[7];
 img_result = recursive_optimize(tensor, image, num_iterations = 25, step_size = 3.0, rescale_factor = 0.75, num_repeats = 5, blend = 0.25);
