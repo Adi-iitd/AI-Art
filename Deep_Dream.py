@@ -104,7 +104,7 @@ def get_tile_size(num_pixels, tile_size = 400):
 def get_tiled_gradient(gradient, image, tile_size):
     
     grad = np.zeros_like(image); width, height, _ = image.shape;
-    x_tile_size = get_tile_size(width, tile_size = 400); y_tile_size = get_tile_size(width, tile_size = 400);
+    x_tile_size = get_tile_size(width, tile_size = 400); y_tile_size = get_tile_size(height, tile_size = 400);
     
     x_start = random.randint(-3*(x_tile_size//4), -1*(x_tile_size//4));
     while x_start < width:
