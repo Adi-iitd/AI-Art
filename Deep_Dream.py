@@ -143,24 +143,25 @@ def optimize_image(tensor, image, num_iterations, step_size, tile_size, show_gra
     print("After:"); plot_image(img_copy); return img_copy
 
 
-def recursive_optimize(tensor, image, num_repeats = 5, rescale_factor = 0.75, blend = 0.25, num_iterations = 25, step_size = 3.0, tile_size = 400):
+def recursive_optimize(tensor, image, num_repeats = 5, rescale_factor = 0.75, blend = 0.25, num_iterations = 25, 
+                       step_size = 3.0, tile_size = 400):
   
     if num_repeats > 0:
       
         sigma = 0.5; img_blur = gaussian_filter(image, sigma = (sigma, sigma, 0));
         img_downscaled = resize_image(img_blur, factor = rescale_factor);
-        img_result = recursive_optimize(tensor, img_downscaled, num_repeats - 1, rescale_factor, blend , num_iterations, step_size, tile_size);
+        img_result = recursive_optimize(tensor, img_downscaled, num_repeats - 1, rescale_factor, blend , num_iterations, 
+                                        step_size, tile_size);
         
-        img_upscaled = resize_image(img_result, size = image.shape);
-        image = blend*image + (1.0 - blend)*img_upscaled; print(f"Recursive_level: {num_repeats}");
+        img_upscaled = resize_image(img_result, size = image.shape); image = blend*image + (1.0 - blend)*img_upscaled;
+        print(f"Recursive_level: {num_repeats}");
     
     img_result = optimize_image(tensor, image, num_iterations, step_size, tile_size)
     return img_result;
 
 
 image = open_image("./Tony_Stark.jpg"); sess = tf.InteractiveSession(graph = model.graph); tensor = model.layer_tensor[7];
-img_result = recursive_optimize(tensor, image, num_iterations = 25, step_size = 3.0, rescale_factor = 0.75, num_repeats = 5, blend = 0.25);
-
+img_result = recursive_optimize(tensor, image, num_iterations = 25, step_size = 3.0, rescale_factor = 0.75, num_repeats = 5, blend = 0.25)
 save_image(img_result, "./Layer_4.jpg"); from google.colab import files; files.download('./Layer_4.jpg')
 
 
