@@ -1,7 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
+# Pytorch implementation of the paper "Neural Style Transfer"
+# You can find the original paper at https://arxiv.org/pdf/1508.06576v2.pdf 
 
 
 import torch, torch.nn as nn, torch.nn.functional as F,  torch.optim as optim
@@ -13,15 +11,10 @@ import skimage.io as io, os, time, copy, PIL.Image as Image
 get_ipython().run_line_magic('matplotlib', 'inline')
 
 
-# In[ ]:
-
-
 # Use GPU if it's available, otherwise choose the default option of CPU
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
 print(f"Device in use: {device}")
 
-
-# In[ ]:
 
 
 class ImageLoader:
@@ -75,9 +68,7 @@ class ImageLoader:
         if save_: img.save(fp = fname);
 
 
-# In[ ]:
-
-
+            
 class MyModel(nn.Module):
     
     def __init__(self, con_layers: list = None, sty_layers: list = None, 
@@ -155,8 +146,6 @@ class MyModel(nn.Module):
         return {"Con_Output": con_output, "Sty_Output": sty_output}
 
 
-# In[ ]:
-
 
 class NeuralStyleTransfer:
     
@@ -227,8 +216,8 @@ class NeuralStyleTransfer:
         sty_output = output["Sty_Output"]; nb_sty_layers = len(sty_output);
         
         # calculate the content and style loss for each layer
-        con_loss = [self._get_con_loss(con_output[idx], self.con_target[idx]) for idx in                     range(nb_con_layers)]
-        sty_loss = [self._get_sty_loss(sty_output[idx], self.sty_target[idx]) for idx in                     range(nb_sty_layers)]
+        con_loss = [self._get_con_loss(con_output[idx], self.con_target[idx]) for idx in range(nb_con_layers)]
+        sty_loss = [self._get_sty_loss(sty_output[idx], self.sty_target[idx]) for idx in range(nb_sty_layers)]
         
         # weigh the loss by the appropiate weighing parameters
         con_loss = torch.mean(torch.stack(con_loss))  * self.con_loss_wt / nb_con_layers;
@@ -252,6 +241,7 @@ class NeuralStyleTransfer:
                 con_loss, sty_loss, var_loss = self.get_tot_loss(output)
                 tot_loss = con_loss + sty_loss + var_loss
                 
+                # calculate the gradients and update the parameters accordingly
                 tot_loss.backward(); optimizer.step()
                 
             print(f"After epoch {epoch}:"); 
@@ -263,16 +253,14 @@ class NeuralStyleTransfer:
         return self.var_image.data.clamp_(0, 1)
 
 
-# In[ ]:
-
-
+# You need to put the absolute path of the Content and Style image
 con_img_fp = "Dataset/Vision/Content.jpg"; sty_img_fp = "Dataset/Vision/Style.jpg"
 
 img_loader = ImageLoader(size = 512, resize = True)
 con_image  = img_loader.read_image(filepath = con_img_fp)
 sty_image  = img_loader.read_image(filepath = sty_img_fp)
 
-print(f"Con_img shape: {con_image.shape}, Sty_img shape: {sty_image.shape} \n")
+print(f"Con_img shp: {con_image.shape}, Sty_img shp: {sty_image.shape} \n")
 print(f"Con_img max: {torch.max(con_image)}, Sty_img max: {torch.max(sty_image)}")
 print(f"Con_img min: {torch.min(con_image)}, Sty_img min: {torch.min(sty_image)}")
 
@@ -280,45 +268,17 @@ plt.figure(figsize = (12, 6)); img_loader.show_image(con_image, title = "Content
 plt.figure(figsize = (12, 6)); img_loader.show_image(sty_image, title = "Style Image")
 
 
-# In[ ]:
-
-
-con_layers = ["conv5_2"]; sty_layers = ["conv1_1","conv2_1","conv3_1","conv4_1","conv5_1"];
+# Content and Style layers to be used for the optimization purposes
+con_layers = ["conv5_2"]; sty_layers = ["conv1_1","conv2_1","conv3_1","conv4_1","conv5_1"]
 
 _NST_ = NeuralStyleTransfer(con_image, sty_image, con_layers, sty_layers, con_loss_wt = 1e-3, 
                           sty_loss_wt = 1e7, var_loss_wt = 1e4);
+
+# Run the Adam optimizer for 10,000 iterations with the default values of epsilon and betas
 image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, learning_rate = 0.01)
 
 
-# In[ ]:
-
-
-plt.figure(figsize = (12, 6))
-
-loader = ImageLoader(size = 512, resize = True); 
-loader.show_image(image, title = "Output Image", save_ = True, fname = "Results/Output_0.jpg")
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
+# Declare the output directory where you want to save the final image
+plt.figure(figsize = (12, 6)); loader = ImageLoader(size = 512, resize = True)
+loader.show_image(image, title = "Output Image", save_ = True, fname = "Output_Image.jpg")
 
