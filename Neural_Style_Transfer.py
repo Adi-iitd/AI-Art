@@ -229,7 +229,7 @@ class NeuralStyleTransfer:
     
     
     @staticmethod
-    def _print_statistics(image, con_loss, sty_loss, var_loss):
+    def _print_statistics(epoch, image, tot_loss, con_loss, sty_loss, var_loss):
         
         loader = ImageLoader(size = 512, resize = False); clear_output(wait = True)
         loader.show_image(image, title = "Output_Img")
@@ -262,7 +262,7 @@ class NeuralStyleTransfer:
                 tot_loss.backward(); optimizer.step()
             
             # print statistics after every epoch
-            self._print_statistics(self.var_image, con_loss, sty_loss, var_loss);
+            self._print_statistics(epoch, self.var_image, tot_loss, con_loss, sty_loss, var_loss)
         
         # clamp the image one final time
         return self.var_image.data.clamp_(0, 1)
