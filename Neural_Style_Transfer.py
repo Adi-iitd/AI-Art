@@ -256,7 +256,7 @@ class NeuralStyleTransfer:
 # You need to put the absolute path of the Content and Style image
 con_img_fp = "Dataset/Vision/Content.jpg"; sty_img_fp = "Dataset/Vision/Style.jpg"
 
-img_loader = ImageLoader(size = 512, resize = True)
+img_loader = ImageLoader(size = (512,512), resize = True)
 con_image  = img_loader.read_image(filepath = con_img_fp)
 sty_image  = img_loader.read_image(filepath = sty_img_fp)
 
