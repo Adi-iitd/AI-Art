@@ -56,7 +56,7 @@ class ImageLoader:
         # Clone the tensor to CPU (to avoid any modifications to the original tensor)
         tensor = tensor.cpu().clone(); 
         
-        # squeeze or unsqueeze the tensor to bring it to an appropiate shape
+        # squeeze or unsqueeze the tensor to bring it to an appropriate shape
         if   len(tensor.shape) == 4: tensor = tensor.squeeze(0)
         elif len(tensor.shape) == 2: tensor = tensor.unsqueeze(0)
         elif len(tensor.shape) > 4 or len(tensor.shape) < 2: 
