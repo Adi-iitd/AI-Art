@@ -5,6 +5,7 @@
 import torch, torch.nn as nn, torch.nn.functional as F,  torch.optim as optim
 import torchvision, torchvision.models as models, torchvision.transforms as T
 
+from IPython.display import clear_output;  import warnings
 import numpy as np, pandas as pd,  matplotlib.pyplot as plt
 import skimage.io as io, os, time, copy, PIL.Image as Image
 
@@ -227,50 +228,66 @@ class NeuralStyleTransfer:
         return con_loss, sty_loss, var_loss
     
     
+    @staticmethod
+    def _print_statistics(image, con_loss, sty_loss, var_loss):
+        
+        loader = ImageLoader(size = 512, resize = False); clear_output(wait = True)
+        loader.show_image(self.var_image, title = "Output_Img")
+        
+        sty_loss = round(sty_loss.item(), 2); con_loss = round(con_loss.item(), 2)
+        tot_loss = round(tot_loss.item(), 2); var_loss = round(var_loss.item(), 2)
+        
+        print(f"After epoch {epoch}:: Tot_loss: {tot_loss}")
+        print(f"Sty_loss: {sty_loss}, Con_loss: {con_loss}, Var_loss: {var_loss}")
+        
+        
     def fit(self, nb_epochs: int = 10, nb_iters: int = 1000, learning_rate: int = 0.01, 
             betas: tuple = (0.9, 0.999)) -> torch.Tensor:
         
+        # define the Adam Optimizer; you can use LBFGS too
         optimizer = optim.Adam([self.var_image], lr = learning_rate, betas = betas)
         
         for epoch in range(nb_epochs):
             for iter_ in range(nb_iters):
-            
+                
+                # zero out the gradients at the start of every iteration
                 self.var_image.data.clamp_(0, 1); optimizer.zero_grad();
                 output = self.model(self.var_image);
-
+                
+                # get the total loss
                 con_loss, sty_loss, var_loss = self.get_tot_loss(output)
                 tot_loss = con_loss + sty_loss + var_loss
                 
-                # calculate the gradients and update the parameters accordingly
+                # calculate the gradients and update the parameters 
                 tot_loss.backward(); optimizer.step()
-                
-            print(f"After epoch {epoch}:"); 
-            print(f"Total loss: {round(tot_loss.item(), 4)}")
-            print(f"Style loss: {round(sty_loss.item(), 4)}")
-            print(f"Content loss: {round(con_loss.item(), 4)}")
-            print(f"Var loss: {round(var_loss.item(), 4)} \n ")
+            
+            # print statistics after every epoch
+            self._print_statistics(self.var_image, con_loss, sty_loss, var_loss);
         
+        # clamp the image one final time
         return self.var_image.data.clamp_(0, 1)
-
+    
 
 # You need to put the absolute path of the Content and Style image
 con_img_fp = "Dataset/Vision/Content.jpg"; sty_img_fp = "Dataset/Vision/Style.jpg"
 
+# load the content and style images
 img_loader = ImageLoader(size = (512,512), resize = True)
 con_image  = img_loader.read_image(filepath = con_img_fp)
 sty_image  = img_loader.read_image(filepath = sty_img_fp)
 
+# print some statistics just for debuggig purposes
 print(f"Con_img shp: {con_image.shape}, Sty_img shp: {sty_image.shape} \n")
 print(f"Con_img max: {torch.max(con_image)}, Sty_img max: {torch.max(sty_image)}")
 print(f"Con_img min: {torch.min(con_image)}, Sty_img min: {torch.min(sty_image)}")
 
+# display the images 
 plt.figure(figsize = (12, 6)); img_loader.show_image(con_image, title = "Content Image")
 plt.figure(figsize = (12, 6)); img_loader.show_image(sty_image, title = "Style Image")
 
 
 # Content and Style layers to be used for the optimization purposes
-con_layers = ["conv5_2"]; sty_layers = ["conv1_1","conv2_1","conv3_1","conv4_1","conv5_1"]
-
+con_layers = ["conv5_2"]; sty_layers = ["conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1"]
 _NST_ = NeuralStyleTransfer(con_image, sty_image, con_layers, sty_layers, con_loss_wt = 1e-3, 
                           sty_loss_wt = 1e7, var_loss_wt = 1e4);
 
@@ -278,7 +295,8 @@ _NST_ = NeuralStyleTransfer(con_image, sty_image, con_layers, sty_layers, con_lo
 image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, learning_rate = 0.01)
 
 
-# Declare the output directory where you want to save the final image
-plt.figure(figsize = (12, 6)); loader = ImageLoader(size = 512, resize = True)
-loader.show_image(image, title = "Output Image", save_ = True, fname = "Output_Image.jpg")
+# Create and declare the output directory where you want to save the final image
+plt.figure(figsize = (12, 6)); loader = ImageLoader(size = (512,512), resize = True)
+loader.show_image(image, title = "Output Image", save_ = True, fname = "Output_Img.jpg")
 
+### NST Done!
