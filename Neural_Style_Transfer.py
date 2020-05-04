@@ -232,7 +232,7 @@ class NeuralStyleTransfer:
     def _print_statistics(epoch, image, tot_loss, con_loss, sty_loss, var_loss):
         
         loader = ImageLoader(size = 512, resize = False); clear_output(wait = True)
-        loader.show_image(image, title = "Output_Img")
+        loader.show_image(image.data.clamp_(0, 1), title = "Output_Img")
         
         sty_loss = round(sty_loss.item(), 2); con_loss = round(con_loss.item(), 2)
         tot_loss = round(tot_loss.item(), 2); var_loss = round(var_loss.item(), 2)
