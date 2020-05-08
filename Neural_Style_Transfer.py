@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import torch, torch.nn as nn, torch.nn.functional as F,  torch.optim as optim
 import torchvision, torchvision.models as models, torchvision.transforms as T
@@ -13,15 +8,9 @@ import PIL.Image as Image, warnings; from IPython.display import clear_output
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 
 
-# In[2]:
-
-
 # Set the device as GPU if it's available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
 print(f"Device in use: {device}")
-
-
-# In[3]:
 
 
 class ImageLoader:
@@ -65,8 +54,7 @@ class ImageLoader:
     
     
     @staticmethod
-    def show_image(tensor: torch.Tensor, title: str = "Image", save_: bool = False, 
-                   filename: str = None):
+    def show_image(tensor: torch.Tensor, title: str = "Image", save_: bool = False, filename: str = None):
         
         """
         Args:
@@ -89,13 +77,11 @@ class ImageLoader:
         if save_: img.save(fp = filename)
 
 
-# In[4]:
-
 
 class MyModel(nn.Module):
     
-    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, 
-                 mean: list = [0.485, 0.456, 0.406], stdv: list = [0.229, 0.224, 0.225]):
+    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, mean: list = [0.485, 0.456, 0.406], 
+                 stdv: list = [0.229, 0.224, 0.225]):
         
         """
         Args:
@@ -169,15 +155,12 @@ class MyModel(nn.Module):
         # return a dictionary of content and style output
         return {"Con_Output": con_output, "Sty_Output": sty_output}
 
-
-# In[5]:
-
+    
 
 class NeuralStyleTransfer:
     
-    def __init__(self, con_image: torch.Tensor, sty_image: torch.Tensor, size = (512,512),
-                 con_layers = None, sty_layers: list = None, con_loss_wt: float = 1., 
-                 sty_loss_wt: float = 1., var_loss_wt: float = 1.):
+    def __init__(self, con_image: torch.Tensor, sty_image: torch.Tensor, size = (512,512), con_layers = None, 
+                 sty_layers: list = None, con_loss_wt: float = 1., sty_loss_wt: float = 1., var_loss_wt = 1.):
         
         """
         Args:
@@ -202,8 +185,8 @@ class NeuralStyleTransfer:
         # This is the only learnable parameters in our computational graph
         
         # self.var_image = con_image.clone().requires_grad_(True).to(device)
-        self.var_image = torch.rand_like(con_image.clone(), dtype = torch.float, 
-                                         device = device,  requires_grad = True)
+        self.var_image = torch.rand_like(con_image.clone(), dtype = torch.float, device = device, 
+                                         requires_grad = True)
                                          
     
     @staticmethod
@@ -239,8 +222,8 @@ class NeuralStyleTransfer:
         sty_output = output["Sty_Output"]; nb_sty_layers = len(sty_output);
         
         # calculate the content and style loss for each layer
-        con_loss = [self._get_con_loss(con_output[idx], self.con_target[idx]) for idx in                     range(nb_con_layers)]
-        sty_loss = [self._get_sty_loss(sty_output[idx], self.sty_target[idx]) for idx in                     range(nb_sty_layers)]
+        con_loss = [self._get_con_loss(con_output[idx], self.con_target[idx]) for idx in range(nb_con_layers)]
+        sty_loss = [self._get_sty_loss(sty_output[idx], self.sty_target[idx]) for idx in range(nb_sty_layers)]
         
         # weigh the loss by the appropiate weighing hyper-parameters
         con_loss = torch.mean(torch.stack(con_loss))  * self.con_loss_wt;
@@ -250,8 +233,8 @@ class NeuralStyleTransfer:
         return con_loss.to(device), sty_loss.to(device), var_loss.to(device)
     
     
-    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, 
-                          con_loss, sty_loss, var_loss):
+    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, con_loss: torch.Tensor, 
+                          sty_loss: torch.Tensor, var_loss: torch.Tensor):
         
         loader = ImageLoader(size = self.size, resize = True); clear_output(wait = True)
         loader.show_image(image.data.clamp_(0, 1), title = "Output_Img")
@@ -264,8 +247,8 @@ class NeuralStyleTransfer:
         
     
     # Using Adam to solve the optimization problem
-    def fit(self, nb_epochs: int = 10, nb_iters: int = 1000, lr: float = 1e-2, 
-            eps: float = 1e-8, betas: tuple = (0.9, 0.999)) -> torch.Tensor:
+    def fit(self, nb_epochs: int = 10, nb_iters: int = 1000, lr: float = 1e-2, eps: float = 1e-8, 
+            betas: tuple = (0.9, 0.999)) -> torch.Tensor:
         
         optimizer = optim.Adam([self.var_image], lr = lr, betas = betas, eps = eps)
         
@@ -285,9 +268,8 @@ class NeuralStyleTransfer:
         
         return self.var_image.data.clamp_(0, 1)
 
-
-# In[6]:
-
+    
+# ***********************************************************************************************************************
 
 con_img_fp = "Dataset/Vision/Content_0.jpg"; sty_img_fp = "Dataset/Vision/Style_5.jpg"
 img_loader = ImageLoader(size = (512, 512), resize = True, interpolation = 2);
@@ -303,88 +285,22 @@ img_loader.show_image(con_image, title = "Content Image")
 img_loader.show_image(sty_image, title = "Style Image")
 
 
-# In[ ]:
+# ***********************************************************************************************************************
 
 
-con_layers = ["conv3_2"]; sty_layers = ["conv1_1","conv2_1","conv3_1","conv4_1","conv5_1"];
+con_layers = ["conv4_2"]; sty_layers = ["conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1"];
 
-_NST_ = NeuralStyleTransfer(con_image = con_image, sty_image = sty_image, size = (512, 512),
-                            con_layers = con_layers, sty_layers = sty_layers, con_loss_wt \
-                            = 1, sty_loss_wt = 0, var_loss_wt = 0);
+_NST_ = NeuralStyleTransfer(con_image = con_image, sty_image = sty_image, size = (512, 512), con_layers = con_layers, 
+                            sty_layers = sty_layers, con_loss_wt = 1e-3, sty_loss_wt = 1e7, var_loss_wt = 1e4);
 
-output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8, 
-                         betas = (0.9, 0.999))
+output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8, betas = (0.9, 0.999))
 
 
-# In[ ]:
+# ***********************************************************************************************************************
 
 
 img_loader = ImageLoader(size = 512, resize = True); 
 img_loader.show_image(output_image, save_ = True, filename = "Results/Con_recons_3_2.jpg")
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-#     # Using LBFGS to solve the optimization problem 
-#     def fit_quad_opt(self, nb_iters: int = 5000, lr: float = 1.) -> torch.Tensor:
-
-#         optimizer = optim.LBFGS([self.var_image], lr = lr, max_iter = 20)
-#         curr_iter = [0]; # will be updating this var inside the closure function
-        
-#         while curr_iter[0] <= nb_iters:
-            
-#             def closure():
-                
-#                 self.var_image.data.clamp_(0, 1); optimizer.zero_grad()
-#                 output = self.model(self.var_image);  curr_iter[0] += 1
-
-#                 con_loss, sty_loss, var_loss = self._get_tot_loss(output)
-#                 tot_loss = con_loss + sty_loss + var_loss;  tot_loss.backward()
-                
-#                 if curr_iter[0] % 500 == 0:
-#                     self._print_statistics(curr_iter[0], self.var_image, tot_loss, con_loss,
-#                                            sty_loss, var_loss)
-                
-#                 return tot_loss
-            
-#             optimizer.step(closure)
-        
-#         return self.var_image.data.clamp_(0, 1)
-
+# ***********************************************************************************************************************
