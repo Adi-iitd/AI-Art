@@ -8,9 +8,11 @@ import PIL.Image as Image, warnings; from IPython.display import clear_output
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 
 
+
 # Set the device as GPU if it's available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
 print(f"Device in use: {device}")
+
 
 
 class ImageLoader:
@@ -80,8 +82,8 @@ class ImageLoader:
 
 class MyModel(nn.Module):
     
-    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, 
-                 mean: list = [0.485, 0.456, 0.406], stdv: list = [0.229, 0.224, 0.225]):
+    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, mean: list = [0.485, 0.456, 0.406], 
+                 stdv: list = [0.229, 0.224, 0.225]):
         
         """
         Args:
@@ -143,7 +145,7 @@ class MyModel(nn.Module):
 class NeuralStyleTransfer:
     
     def __init__(self, con_image: torch.Tensor, sty_image: torch.Tensor, size = 512, con_layers: list = None, 
-                 sty_layers = None, con_loss_wt: float = 1., sty_loss_wt: float = 1., var_loss_wt: float = 1.):
+                 sty_layers: list = None, con_loss_wt: float = 1., sty_loss_wt: float = 1., var_loss_wt = 1.):
         
         """
         Args:
@@ -224,8 +226,8 @@ class NeuralStyleTransfer:
         return con_loss.to(device), sty_loss.to(device), var_loss.to(device)
     
     
-    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, 
-                          con_loss, sty_loss, var_loss):
+    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, con_loss: torch.Tensor, 
+                          sty_loss: torch.Tensor, var_loss: torch.Tensor):
         
         loader = ImageLoader(size = self.size, resize = True); clear_output(wait = True)
         loader.show_image(image.data.clamp_(0, 1), title = "Output_Image")
