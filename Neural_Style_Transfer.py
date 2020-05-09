@@ -80,8 +80,8 @@ class ImageLoader:
 
 class MyModel(nn.Module):
     
-    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, mean: list = [0.485, 0.456, 0.406], 
-                 stdv: list = [0.229, 0.224, 0.225]):
+    def __init__(self, con_layers: list = ['conv4_2'], sty_layers: list = None, 
+                 mean: list = [0.485, 0.456, 0.406], stdv: list = [0.229, 0.224, 0.225]):
         
         """
         Args:
@@ -123,24 +123,11 @@ class MyModel(nn.Module):
                 self.vgg19[int(name)] = nn.AvgPool2d(kernel_size = 2, stride = 2)
         
         
-    @staticmethod
-    def _get_gram_matrix(tensor: torch.Tensor) -> torch.Tensor:
-        
-        """
-        Returns: Normalized Gram Matrix of the input tensor 
-        """
-        
-        b, c, h, w  = tensor.size(); tensor_ = tensor.view(b * c, h * w);
-        gram_matrix = torch.mm(tensor_, tensor_.t())
-        
-        return gram_matrix.div(2 * c * h * w)
-        
-        
     def forward(self, tensor: torch.Tensor) -> dict:
         
         sty_feat_maps = []; con_feat_maps = [];
-        # normalize the input image and add the batch dimension
-        tensor = self.transforms(tensor); x = tensor.unsqueeze(0);
+        # normalize the input tensor and add the batch dimension
+        tensor = self.transforms(tensor); x = tensor.unsqueeze(0)
         
         # collect the required feature maps 
         for name, layer in self.vgg19.named_children():
@@ -148,19 +135,15 @@ class MyModel(nn.Module):
             if int(name) in self.con_layers: con_feat_maps.append(x)
             if int(name) in self.sty_layers: sty_feat_maps.append(x)
         
-        # get the gram matrix of the style feature maps
-        sty_output = [(self._get_gram_matrix(feat)) for feat in sty_feat_maps]
-        con_output = con_feat_maps
-        
         # return a dictionary of content and style output
-        return {"Con_Output": con_output, "Sty_Output": sty_output}
+        return {"Con_features": con_feat_maps, "Sty_features": sty_feat_maps}
 
     
 
 class NeuralStyleTransfer:
     
-    def __init__(self, con_image: torch.Tensor, sty_image: torch.Tensor, size = (512,512), con_layers = None, 
-                 sty_layers: list = None, con_loss_wt: float = 1., sty_loss_wt: float = 1., var_loss_wt = 1.):
+    def __init__(self, con_image: torch.Tensor, sty_image: torch.Tensor, size = 512, con_layers: list = None, 
+                 sty_layers = None, con_loss_wt: float = 1., sty_loss_wt: float = 1., var_loss_wt: float = 1.):
         
         """
         Args:
@@ -174,19 +157,12 @@ class NeuralStyleTransfer:
         
         # initialize the model
         self.model = MyModel(con_layers = con_layers, sty_layers = sty_layers)
-        self.sty_target = self.model(sty_image)["Sty_Output"]
-        self.con_target = self.model(con_image)["Con_Output"]
-        
-        # detach the targets from the graph to stop the flow of grads through them
-        self.sty_target = [x.detach() for x in self.sty_target]
-        self.con_target = [x.detach() for x in self.con_target]
+        self.sty_target = self.model(sty_image)["Sty_features"]
+        self.con_target = self.model(con_image)["Con_features"]
         
         # initialize the variable image with requires_grad_ set to True
-        # This is the only learnable parameters in our computational graph
-        
-        # self.var_image = con_image.clone().requires_grad_(True).to(device)
-        self.var_image = torch.rand_like(con_image.clone(), dtype = torch.float, device = device, 
-                                         requires_grad = True)
+        self.var_image = con_image.clone().requires_grad_(True).to(device)
+        # self.var_image = torch.rand_like(con_image.clone(), device = device, requires_grad = True)
                                          
     
     @staticmethod
@@ -206,9 +182,24 @@ class NeuralStyleTransfer:
     
     
     @staticmethod
-    def _get_sty_loss(pred: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    def _get_gram_matrix(tensor: torch.Tensor) -> torch.Tensor:
         
-        return 1.0 * torch.sum(torch.pow(pred - target, 2))
+        """
+        Returns: Normalized Gram Matrix of the input tensor 
+        """
+        
+        b, c, h, w  = tensor.size(); tensor_ = tensor.view(b * c, h * w);
+        gram_matrix = torch.mm(tensor_, tensor_.t())
+        
+        return gram_matrix
+    
+    
+    def _get_sty_loss(self, pred: torch.Tensor, target: torch.Tensor):
+        
+        Z = np.power(np.prod(pred.size()), 2, dtype = np.float64)
+        pred = self._get_gram_matrix(pred)
+        
+        return 0.25 * torch.sum(torch.pow(pred - target, 2)).div(Z)
         
         
     def _get_tot_loss(self, output: torch.Tensor):
@@ -218,29 +209,29 @@ class NeuralStyleTransfer:
         
         """
         
-        con_output = output["Con_Output"]; nb_con_layers = len(con_output);
-        sty_output = output["Sty_Output"]; nb_sty_layers = len(sty_output);
+        con_output = output["Con_features"]; nb_con_layers = len(con_output);
+        sty_output = output["Sty_features"]; nb_sty_layers = len(sty_output);
         
         # calculate the content and style loss for each layer
         con_loss = [self._get_con_loss(con_output[idx], self.con_target[idx]) for idx in range(nb_con_layers)]
         sty_loss = [self._get_sty_loss(sty_output[idx], self.sty_target[idx]) for idx in range(nb_sty_layers)]
         
         # weigh the loss by the appropiate weighing hyper-parameters
-        con_loss = torch.mean(torch.stack(con_loss))  * self.con_loss_wt;
-        sty_loss = torch.mean(torch.stack(sty_loss))  * self.sty_loss_wt;
-        var_loss = self._get_var_loss(self.var_image) * self.var_loss_wt;
+        con_loss = torch.mean(torch.stack( con_loss)) * self.con_loss_wt
+        sty_loss = torch.mean(torch.stack( sty_loss)) * self.sty_loss_wt
+        var_loss = self._get_var_loss(self.var_image) * self.var_loss_wt
         
         return con_loss.to(device), sty_loss.to(device), var_loss.to(device)
     
     
-    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, con_loss: torch.Tensor, 
-                          sty_loss: torch.Tensor, var_loss: torch.Tensor):
+    def _print_statistics(self, epoch: int, image: torch.Tensor, tot_loss: torch.Tensor, 
+                          con_loss, sty_loss, var_loss):
         
         loader = ImageLoader(size = self.size, resize = True); clear_output(wait = True)
-        loader.show_image(image.data.clamp_(0, 1), title = "Output_Img")
+        loader.show_image(image.data.clamp_(0, 1), title = "Output_Image")
         
-        sty_loss = round(sty_loss.item(), 2); con_loss = round(con_loss.item(), 2)
-        tot_loss = round(tot_loss.item(), 2); var_loss = round(var_loss.item(), 2)
+        sty_loss = round(sty_loss.item(), 4); con_loss = round(con_loss.item(), 4)
+        tot_loss = round(tot_loss.item(), 4); var_loss = round(var_loss.item(), 4)
         
         print(f"After epoch {epoch + 1}:: Tot_loss: {tot_loss}")
         print(f"Sty_loss: {sty_loss}, Con_loss: {con_loss}, Var_loss: {var_loss}")
@@ -249,6 +240,10 @@ class NeuralStyleTransfer:
     # Using Adam to solve the optimization problem
     def fit(self, nb_epochs: int = 10, nb_iters: int = 1000, lr: float = 1e-2, eps: float = 1e-8, 
             betas: tuple = (0.9, 0.999)) -> torch.Tensor:
+        
+        # detach the targets from the graph to stop the flow of grads through them
+        self.sty_target = [self._get_gram_matrix(x).detach() for x in self.sty_target]
+        self.con_target = [x.detach() for x in self.con_target]
         
         optimizer = optim.Adam([self.var_image], lr = lr, betas = betas, eps = eps)
         
@@ -271,7 +266,7 @@ class NeuralStyleTransfer:
     
 # ***********************************************************************************************************************
 
-con_img_fp = "Dataset/Vision/Content_0.jpg"; sty_img_fp = "Dataset/Vision/Style_5.jpg"
+con_img_fp = "Dataset/Vision/Content.jpg"; sty_img_fp = "Dataset/Vision/Style.jpg"
 img_loader = ImageLoader(size = (512, 512), resize = True, interpolation = 2);
 
 con_image = img_loader.read_image(filepath = con_img_fp)
@@ -291,7 +286,7 @@ img_loader.show_image(sty_image, title = "Style Image")
 con_layers = ["conv4_2"]; sty_layers = ["conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1"];
 
 _NST_ = NeuralStyleTransfer(con_image = con_image, sty_image = sty_image, size = (512, 512), con_layers = con_layers, 
-                            sty_layers = sty_layers, con_loss_wt = 1e-3, sty_loss_wt = 1e7, var_loss_wt = 1e4);
+                            sty_layers = sty_layers, con_loss_wt = 1e-5, sty_loss_wt = 1e4, var_loss_wt = 1);
 
 output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8, betas = (0.9, 0.999))
 
@@ -300,7 +295,7 @@ output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8,
 
 
 img_loader = ImageLoader(size = 512, resize = True); 
-img_loader.show_image(output_image, save_ = True, filename = "Results/Con_recons_3_2.jpg")
+img_loader.show_image(output_image, save_ = True, filename = "Stylized_Image.jpg")
 
 
 # ***********************************************************************************************************************
