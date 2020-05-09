@@ -5,14 +5,10 @@ import torchvision, torchvision.models as models, torchvision.transforms as T
 import numpy as np, pandas as pd, matplotlib as mpl, matplotlib.pyplot as plt 
 import PIL.Image as Image, warnings; from IPython.display import clear_output
 
+
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
-
-
-
-# Set the device as GPU if it's available
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
 print(f"Device in use: {device}")
-
 
 
 class ImageLoader:
