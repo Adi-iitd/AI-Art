@@ -6,30 +6,30 @@
 
 <p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans and the world, an inevitable question follows: </p>
 
-> Can machine be creative? And will artificial intelligence ever be able to make art?
+> Can a machine be creative? And will artificial intelligence ever be able to make art?
 
-<p align = "justify"> Recent art experiments use "Generative Adversarial Networks" (GANs) that teach themselves through their own experimentation, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples, marks the advent of "creative" AI. </i> </p>
+<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their own experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples, marks the advent of "creative" AI. </i> </p>
 
-<p align = "justify"> I will cover four different methods by which you can create novel arts, solely by code - <b> Style Transfer, Deep Dream, Pix2pix, and CycleGAN. </b> </p>
+<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create your own novel arts, solely by code - <b> Style Transfer, Pix2pix, CycleGAN, and Deep Dream. </b> </p>
 
 ***
 ***
 
 ## Neural Style Transfer
 
-<p align = "justify"> Neural Style Transfer (NST) is one of the most fun techniques in Deep learning. It combines the two images, namely, a "Content" image (C) and a "Style" image (S), to create an "Output" image (G). The Output image G combines the "Content" of the image C with the "Style" of image S. </p> 
+<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a "Content" image (C) and a "Style" image (S), to create an "Output" image (G). The Output image G combines the "Content" of the image C with the "Style" of image S. </p> 
 
 ![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
 
-<p align = "justify"> Neural Style Transfer (NST) uses a pre-trained Convolutional Neural Network (VGG-19) learned to recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). NST has three different kind of losses: </p>
+<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network, VGG-19 (because of it's simple and hierarchical design) which already has the ability to recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). It incorporates three different kind of losses: </p>
 
-- **Content Cost** : **J***content* (C, G)
-- **Style Cost** : **J***style* (S, G) 
-- **Total Variation (TV) Cost** : **J***tv* (G)
+- **Content Cost** : **J**<sub>content</sub> (C, G)
+- **Style Cost** : **J**<sub>style</sub> (S, G) 
+- **Total Variation (TV) Cost** : **J**<sub>TV</sub> (G)
 
-*Putting all together*  :  **J***tot* (G) = (alpha) * **J***content* (C, G) + (beta) * **J***style* (S, G) + (gamma)* **J***tv* (G)
+*Putting all together*  :  **J**<sub>total</sub> (G) = \alpha<tab> * **J**<sub>content</sub> (C, G) + \beta<tab> * **J**<sub>style</sub> (S, G) + \gamma<tab> * **J**<sub>TV</sub> (G)
 
-> Let's delve deeper to know more profoundly what's going on under the hood of these algorithms.
+> Let's delve deeper to know more profoundly what's going on under the hood!
 
 ###  Content Cost
 
