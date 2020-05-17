@@ -21,19 +21,19 @@
 
 ![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
 
-<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network, VGG-19 (because of it's simple and hierarchical design) which already has the ability to recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). It incorporates three different kind of losses: </p>
+<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network, VGG-19 (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). It incorporates three different kinds of losses: </p>
 
 - **Content Cost** : **J**<sub>content</sub> (C, G)
 - **Style Cost** : **J**<sub>style</sub> (S, G) 
 - **Total Variation (TV) Cost** : **J**<sub>TV</sub> (G)
 
-*Putting all together*  :  **J**<sub>total</sub> (G) = \alpha  * **J**<sub>content</sub> (C, G) + \beta  * **J**<sub>style</sub> (S, G) + \gamma   * **J**<sub>TV</sub> (G)
+*Putting all together*: **J**<sub>total</sub> (G) = α * **J**<sub>content</sub> (C, G) + β * **J**<sub>style</sub> (S, G) + γ * **J**<sub>TV</sub> (G)
 
 > Let's delve deeper to know more profoundly what's going on under the hood!
 
 ###  Content Cost
 
-<p align = "justify"> The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that "generated" image G has similar content as the input image C. For that, we need to choose some layer's activation to represent the content of an image. <i> Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> Suppose we pick activations of <b> Conv_4_2 </b> layer to represent the content cost. Now, set the image C as the input to the pre-trained VGG network, and run forward propagation. </p>
+<p align = "justify"> The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that "generated" image G has similar content as the input image C. For that, we need to choose some layer's activation to represent the content of an image. <i> Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> Suppose we pick activations of <b> Conv_4_2 </b> layer to represent the content cost. Now, set the image C as the input to the pre-trained VGG network, and run the forward propagation. </p>
 
 <p align = "justify"> Let  a(C) be the hidden layer activations which will be a <b> nH * nW * nC </b> tensor. Repeat the same process for the generated image and let  a(G) be the corresponding hidden layer activations. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
