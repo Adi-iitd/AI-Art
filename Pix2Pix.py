@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 from skimage import io as io, transform as tfm; import PIL.Image as Image, warnings
@@ -16,17 +11,11 @@ mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print(f"GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class Resize(object):
@@ -116,9 +105,6 @@ class Normalize(object):
         return {'image': image, 'label': label}
 
 
-# In[4]:
-
-
 class MyDataset(Dataset):
     
     def __init__(self, path = None, transforms = None):
@@ -157,9 +143,6 @@ class Helper(object):
         image = np.transpose(image, (1, 2, 0)); plt.imshow(image); plt.show()
 
 
-# In[5]:
-
-
 trn_path = "./Dataset/Vision/Pix2Pix/Trn/"; val_path = "./Dataset/Vision/Pix2Pix/Val/"; 
 trn_tfms = [Resize(286), RandomCrop(256), Random_Flip(), To_Tensor(), Normalize()]
 val_tfms = [Resize(256), To_Tensor(), Normalize()]
@@ -174,28 +157,18 @@ trn_dataloader = DataLoader(trn_dataset, batch_size = 10 * len(devices), shuffle
 val_dataloader = DataLoader(val_dataset, batch_size = 64, shuffle = False, num_workers = 0)
 
 
-# In[6]:
+# helper = Helper(); rand_int = np.random.randint(0, len(trn_dataset)); sample = trn_dataset[rand_int]; 
+# helper.show_image(sample['image']); helper.show_image(sample['label'])
 
-
-helper = Helper(); rand_int = np.random.randint(0, len(trn_dataset)); sample = trn_dataset[rand_int]; 
-helper.show_image(sample['image']); helper.show_image(sample['label'])
-
-
-# In[7]:
-
-
-helper = Helper(); rand_int = np.random.randint(0, len(val_dataset)); sample = val_dataset[rand_int];
-helper.show_image(sample['image']); helper.show_image(sample['label'])
-
-
-# In[8]:
+# helper = Helper(); rand_int = np.random.randint(0, len(val_dataset)); sample = val_dataset[rand_int];
+# helper.show_image(sample['image']); helper.show_image(sample['label'])
 
 
 class My_Conv(nn.Module):
     
-    def __init__(self, in_channels: int = None, out_channels: int = None, kernel_size: int = 4, stride: int = 2, 
-                 apply_norm: bool = True, norm_mom: float = 0.1, track_norm_stats: bool = False, apply_nl: bool \
-                 = True, leak: float = 0.2, padding: int = 1):
+    def __init__(self, in_channels: int = None, out_channels: int = None, kernel_size: int = 4,  stride: int = 2, 
+                 apply_norm: bool = True, norm_mom: float = 0.1, track_norm_stats: bool = False, apply_nl: bool = True,
+                 leak: float = 0.2, padding: int = 1):
         
         super().__init__(); layers = []
         
@@ -208,8 +181,8 @@ class My_Conv(nn.Module):
         layers.append(self.conv)
         
         if  apply_norm:
-            self.norm = Norm(num_features = out_channels, momentum = norm_mom, 
-                             track_running_stats = track_norm_stats); layers.append(self.norm)
+            self.norm = Norm(num_features = out_channels, momentum = norm_mom, track_running_stats = track_norm_stats)
+            layers.append(self.norm)
         
         self.net = nn.Sequential(*layers)
     
@@ -245,9 +218,6 @@ class My_DeConv(nn.Module):
       
     
     def forward(self, x): return self.net(x)
-
-
-# In[9]:
 
 
 class UNetBlock(nn.Module):
@@ -286,9 +256,6 @@ class UNetBlock(nn.Module):
         return x
 
 
-# In[10]:
-
-
 class Generator(nn.Module):
     
     def __init__(self, in_channels: int = 3, out_channels: int = 64, nb_layers: int = 8, apply_dp: bool = True, 
@@ -318,9 +285,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[11]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels = 6, out_channels = 64, nb_layers = 3):
@@ -346,9 +310,6 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x, y): return self.net(torch.cat([x, y], dim = 1))
-
-
-# In[12]:
 
 
 class Initializer:
@@ -381,16 +342,10 @@ class Initializer:
         
         return net
 
-
-# In[13]:
-
-
 init = Initializer(init_type = 'normal', init_gain = 0.02)
 gen  = init(Generator(in_channels = 3, out_channels = 64, nb_layers = 8, apply_dp = True, add_skip_conn = True))
 dis  = init(Discriminator(in_channels = 6, out_channels = 64, nb_layers = 3))
 
-
-# In[14]:
 
 
 class Pix2Pix:
@@ -469,7 +424,8 @@ class Pix2Pix:
         return start_epoch
     
     
-    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2:             float = 0.999, root_dir: str = None, load_model: str = None, keep_only: int = 3, epoch_decay = 100):
+    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2: \
+            float = 0.999, root_dir: str = None, load_model: str = None, keep_only: int = 3, epoch_decay = 100):
         
         self.dis_optimizer = self._get_optimizer(self.dis.module.parameters(), lr = dis_lr, beta_1 = beta_1)
         self.gen_optimizer = self._get_optimizer(self.gen.module.parameters(), lr = gen_lr, beta_1 = beta_1)
@@ -528,27 +484,6 @@ class Pix2Pix:
         self.writer.close()
 
 
-# In[ ]:
-
-
 model = Pix2Pix(gen_model = gen, dis_model = dis, lambda_ = 100, loss_type = 'MSE')
 model.fit(nb_epochs = 200, root_dir = "./Results/Pix2Pix/Models/", load_model = None, epoch_decay = 100)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
