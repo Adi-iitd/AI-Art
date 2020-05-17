@@ -27,7 +27,7 @@
 - **Style Cost** : **J**<sub>style</sub> (S, G) 
 - **Total Variation (TV) Cost** : **J**<sub>TV</sub> (G)
 
-*Putting all together*  :  **J**<sub>total</sub> (G) = \alpha<tab> * **J**<sub>content</sub> (C, G) + \beta<tab> * **J**<sub>style</sub> (S, G) + \gamma<tab> * **J**<sub>TV</sub> (G)
+*Putting all together*  :  **J**<sub>total</sub> (G) = \alpha  * **J**<sub>content</sub> (C, G) + \beta  * **J**<sub>style</sub> (S, G) + \gamma   * **J**<sub>TV</sub> (G)
 
 > Let's delve deeper to know more profoundly what's going on under the hood!
 
