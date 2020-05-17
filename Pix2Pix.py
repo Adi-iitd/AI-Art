@@ -11,6 +11,7 @@ mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 warnings.filterwarnings("ignore")
 
 
+# Multi-GPU training
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
@@ -18,6 +19,7 @@ else:
     devices = [torch.device('cpu')]; print(f"GPU isn't available! :(")
 
 
+# Classes to perform image Augmentation
 class Resize(object):
     
     def __init__(self, image_size: (int, tuple) = 256): 
@@ -164,6 +166,7 @@ val_dataloader = DataLoader(val_dataset, batch_size = 64, shuffle = False, num_w
 # helper.show_image(sample['image']); helper.show_image(sample['label'])
 
 
+# Encapsulating Non-Linearity + Conv + Instance Normalization in My_Conv class
 class My_Conv(nn.Module):
     
     def __init__(self, in_channels: int = None, out_channels: int = None, kernel_size: int = 4,  stride: int = 2, 
@@ -190,6 +193,7 @@ class My_Conv(nn.Module):
     def forward(self, x): return self.net(x)
 
 
+# Encapsulating Non-Linearity + ConvTranspose + Instance Normalization in My_DeConv class
 class My_DeConv(nn.Module):
     
     def __init__(self, in_channels: int = None, out_channels: int = None, kernel_size: int = 4, stride: int = 2, 
@@ -220,6 +224,7 @@ class My_DeConv(nn.Module):
     def forward(self, x): return self.net(x)
 
 
+# UNet block that can grow recursively
 class UNetBlock(nn.Module):
     
     def __init__(self, input_channels: int, inner_channels: int, innermost: bool = False, outermost: bool = False,
@@ -256,6 +261,7 @@ class UNetBlock(nn.Module):
         return x
 
 
+# GAN's Generator
 class Generator(nn.Module):
     
     def __init__(self, in_channels: int = 3, out_channels: int = 64, nb_layers: int = 8, apply_dp: bool = True, 
@@ -285,6 +291,7 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
+# GAN's Discriminator
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels = 6, out_channels = 64, nb_layers = 3):
@@ -312,6 +319,7 @@ class Discriminator(nn.Module):
     def forward(self, x, y): return self.net(torch.cat([x, y], dim = 1))
 
 
+# Class to initialize the weights of Conv and Deconv layers
 class Initializer:
     
     def __init__(self, init_type: str = 'normal', init_gain: float = 0.02): 
@@ -347,7 +355,7 @@ gen  = init(Generator(in_channels = 3, out_channels = 64, nb_layers = 8, apply_d
 dis  = init(Discriminator(in_channels = 6, out_channels = 64, nb_layers = 3))
 
 
-
+# Main Class
 class Pix2Pix:
     
     def __init__(self, loss_type: str = 'MSE', lambda_: int = 100, gen_model = None, dis_model = None, 
