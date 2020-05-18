@@ -161,7 +161,6 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 ### Training details
 
 - All convolution kernels are of size 4 × 4 and are applied with stride 2.
-- Convolutions in the encoder, and in the discriminator, downsample by a factor of 2, whereas in the decoder they upsample by a factor of 2.
 - **Instance normalization** is used instead of batch normalization.
 - Normalization is not applied to the first layer in the encoder and discriminator. 
 - All ReLUs in the encoder and discriminator are leaky, with slope 0.2, while ReLUs in the decoder are not leaky.
