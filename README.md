@@ -8,9 +8,9 @@
 
 > <i> Can a machine be creative, and will artificial intelligence ever be able to make art? </i>
 
-<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their own experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. </i> </p>
+<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. </i> </p>
 
-<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create our own novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN, and Deep Dream. </b> </p>
+<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN</b>, and <b>Deep Dream. </b> </p>
 
 ***
 
@@ -22,9 +22,9 @@
 
 <p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
 
-- **Content Cost** : **J**<sub>Content</sub> (C, G)
-- **Style Cost** : **J**<sub>Style</sub> (S, G)
-- **Total Variation (TV) Cost** : **J**<sub>TV</sub> (G)
+- **Content Cost**: **J**<sub>Content</sub> (C, G)
+- **Style Cost**: **J**<sub>Style</sub> (S, G)
+- **Total Variation (TV) Cost**: **J**<sub>TV</sub> (G)
 
 *Putting all together*: **J**<sub>Total</sub> (G) = α * **J**<sub>Content</sub> (C, G) + β * **J**<sub>Style</sub> (S, G) + γ * **J**<sub>TV</sub> (G)
 
@@ -32,15 +32,15 @@
 
 ###  Content Cost
 
-<p align = "justify"> Generally each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. First few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as object classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we need to minimize the (<b>MSE</b>) loss between the feature maps of the respective images. 
+<p align = "justify"> Generally, each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. The first few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as features specific to different classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we minimize the (<b>MSE</b>) loss between the feature maps of the respective images.
  
-<i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep </i>. The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image, but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
+<i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image, but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
 
-<p align = "justify"> Let a(C) be the hidden layer activations which will be a <b> n<sub>h</sub> * n<sub>w</sub> * n<sub>c</sub> </b> tensor; repeating the same process for the Generated image, and let a(G) be the corresponding hidden layer activations. Finally, the <b> Content Cost </b> function is defined as follows: </p>
+<p align = "justify"> Let a(C) be the hidden layer activations which is a <b> N<sub>h</sub> * N<sub>w</sub> * N<sub>c</sub> </b> tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
 ![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
 
-<p align = "justify"> n<sub>h</sub>, n<sub>w</sub>, n<sub>c</sub> are the height, width, and the number of channels of the hidden layer chosen. In order to compute the cost **J**<sub>Content</sub> (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below. </p>
+<p align = "justify"> N<sub>h</sub>, N<sub>w</sub>, N<sub>c</sub> are the height, width, and the number of channels of the hidden layer chosen. To compute the cost J<sub>Content</sub> (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below. </p>
 
 ![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
 
