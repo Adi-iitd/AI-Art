@@ -72,13 +72,13 @@
 
 ### Experiments
 
-> What will happen if we zero out the coefficients of the Content and TV loss, assuming we are taking only one layer's activation to compute Style cost?
+> What will happen if we zero out the coefficients of the Content and TV loss, and take activation from only one layer  to compute the Style cost?
 
-<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only have to minimize the Style cost. So, for a given <b> Style image </b>, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
+<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost. So, for a given <b> Style image </b>, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
 
 ![6](https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg)
 
-Here are the brush-strokes that we get after running the experiment taking into account the different layers, one at a time.
+Here are the brush-strokes that we get after running the experiment taking different layers, one at a time!
 
 ![2_2](https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png)
 ![3_1](https://user-images.githubusercontent.com/41862477/49683611-e15d9580-faed-11e8-80d6-3d216487f678.png)
@@ -92,11 +92,7 @@ Here are the brush-strokes that we get after running the experiment taking into 
 
 > <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
-***You might be wondering why am I showing these images, what one can conclude after looking at these brush-strokes?***
-
-<p align = "justify"> So, the reason behind running this experiment was that - authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b> (weighted summation of style loss corresponding to different layers). Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; Exponentially decreasing the weights as we go deeper and deeper could be one way. </p>
-
-> <p align = "justify"> <i> Similarly, you can run the experiment to minimize only the content cost, and see which layer performs the best (You should always keep in mind that, you only want to transfer the content of the image not exactly copy paste it in the final generated image). I generally find Conv_3_2 to be the best (earlier layers are very good at reconstructing the ditto original image). </i> </p>
+<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper could be one way. </p>
 
 ***
 
