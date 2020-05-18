@@ -1,4 +1,4 @@
-# AI-Art
+# AI Art
 
 ***
 
@@ -6,35 +6,42 @@
 
 <p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans and the world, an inevitable question follows: </p>
 
-> Can a machine be creative? And will artificial intelligence ever be able to make art?
+> <i> Can a machine be creative, and will artificial intelligence ever be able to make art? </i>
 
-<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their own experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples, marks the advent of "creative" AI. </i> </p>
+<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their own experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. </i> </p>
 
-<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create your own novel arts, solely by code - <b> Style Transfer, Pix2pix, CycleGAN, and Deep Dream. </b> </p>
+<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create our own novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN, and Deep Dream. </b> </p>
 
 ***
-***
 
-## Neural Style Transfer
+## Style Transfer
 
-<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a "Content" image (C) and a "Style" image (S), to create an "Output" image (G). The Output image G combines the "Content" of the image C with the "Style" of image S. </p> 
+<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image G combines the Content of image C with the Style of image S. </p>
 
 ![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
 
-<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network, VGG-19 (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). It incorporates three different kinds of losses: </p>
+<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
 
-- **Content Cost** : **J**<sub>content</sub> (C, G)
-- **Style Cost** : **J**<sub>style</sub> (S, G) 
+- **Content Cost** : **J**<sub>Content</sub> (C, G)
+- **Style Cost** : **J**<sub>Style</sub> (S, G)
 - **Total Variation (TV) Cost** : **J**<sub>TV</sub> (G)
 
-*Putting all together*: **J**<sub>total</sub> (G) = α * **J**<sub>content</sub> (C, G) + β * **J**<sub>style</sub> (S, G) + γ * **J**<sub>TV</sub> (G)
+*Putting all together*: **J**<sub>Total</sub> (G) = α * **J**<sub>Content</sub> (C, G) + β * **J**<sub>Style</sub> (S, G) + γ * **J**<sub>TV</sub> (G)
 
 > Let's delve deeper to know more profoundly what's going on under the hood!
 
 ###  Content Cost
 
-<p align = "justify"> The earlier layers of a ConvNet tend to detect lower-level features such as edges and simple textures, and the later layers tend to detect higher-level features such as more complex textures as well as object classes. Content loss tries to make sure that "generated" image G has similar content as the input image C. For that, we need to choose some layer's activation to represent the content of an image. <i> Practically, we'll get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> Suppose we pick activations of <b> Conv_4_2 </b> layer to represent the content cost. Now, set the image C as the input to the pre-trained VGG network, and run the forward propagation. </p>
+<p align = "justify"> Generally each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. First few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as object classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we need to minimize the (<b>MSE</b>) loss between the feature maps of the respective images. <i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image (Fig 1, content reconstructions a–e). 
 
+![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
+![Con_recons_2_2](https://user-images.githubusercontent.com/41862477/82235682-aac9b280-9950-11ea-8885-4b8775638bbe.jpg)
+![Con_recons_3_2](https://user-images.githubusercontent.com/41862477/82235683-abfadf80-9950-11ea-95b8-d9b8836ffa58.jpg)
+![Con_recons_4_2](https://user-images.githubusercontent.com/41862477/82235686-ac937600-9950-11ea-9fe3-14dd979106cc.jpg)
+![Con_recons_5_2](https://user-images.githubusercontent.com/41862477/82235688-ad2c0c80-9950-11ea-8a3b-d592d2bfee82.jpg)  
+ 
+> <p align = "justify"> <i> These are reconstructions that the model generated when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) were used one at a time in the Content cost. </i> </p> 
+  
 <p align = "justify"> Let  a(C) be the hidden layer activations which will be a <b> nH * nW * nC </b> tensor. Repeat the same process for the generated image and let  a(G) be the corresponding hidden layer activations. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
 ![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
