@@ -135,16 +135,16 @@ The objective of a conditional GAN can be expressed as:
 L<sub>cGAN</sub> (G,D) = <b>E</b><sub>x,y</sub> [log D(x, y)] + <b>E</b><sub>x,z</sub> [log (1 − D(x, G(x, z))], 
 </code> 
 
-<p align = "justify"> where G tries to minimize this objective against an adversarial D that tries to maximize it. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance to make sure that, the ground truth and the output are close to each other in L1 sense. </p>
-
+<p align = "justify"> where G tries to minimize this objective against an adversarial D that tries to maximize it. It is beneficial to mix the GAN objective with a more traditional loss, such as L1 distance to make sure that, the ground truth and the output are close to each other in L1 sense.
 <code>
 L<sub>L1</sub> (G) = E<sub>x,y,z</sub> [ ||y − G(x, z)||<sub>1</sub> ].
-</code>
 
-<p align = "justify"> Without z, the net could still learn a mapping from x to y, but would produce deterministic output, and therefore would fail to match any distribution other than a <b> delta function. </b> So, the authors provided noise in the form of <b> dropout, </b> applied on several layers of the generator at <b> both the training and test time. The overall objective is stated below: </b> </p>
+</code></p>
+
+<p align = "justify"> Without z, the net could still learn a mapping from x to y, but would produce deterministic output, and therefore would fail to match any distribution other than a <b> delta function. </b> So, the authors provided noise in the form of <b> dropout, </b> applied on several layers of the generator at both the <b>training</b> and <b>test</b> time. Despite the dropout noise, there is only minor stochasticity in the output. The complete objective is now, </b>
 <code>
 G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G,D) + &lambda;L<sub>L1</sub> (G)
-</code>
+</code></p>
 
 <p align = "justify"> The Min-Max objective mentioned above was proposed by <b> Ian Goodfellow </b> in 2014 in his original paper, but unfortunately, it doesn't perform well because of vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulations (LS-GAN, WGAN, WGAN-GP) to alleviate vanishing gradients. I used <b> Least-square </b> objective function while optimizing the architecture. </p>
 
