@@ -32,23 +32,26 @@
 
 ###  Content Cost
 
-<p align = "justify"> Generally each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. First few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as object classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we need to minimize the (<b>MSE</b>) loss between the feature maps of the respective images. <i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image (Fig 1, content reconstructions a–e). 
+<p align = "justify"> Generally each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. First few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as object classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we need to minimize the (<b>MSE</b>) loss between the feature maps of the respective images. 
+ 
+<i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep </i>. The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image, but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
+
+<p align = "justify"> Let a(C) be the hidden layer activations which will be a <b> n<sub>h</sub> * n<sub>w</sub> * n<sub>c</sub> </b> tensor; repeating the same process for the Generated image, and let a(G) be the corresponding hidden layer activations. Finally, the <b> Content Cost </b> function is defined as follows: </p>
+
+![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
+
+<p align = "justify"> n<sub>h</sub>, n<sub>w</sub>, n<sub>c</sub> are the height, width, and the number of channels of the hidden layer chosen. In order to compute the cost **J**<sub>Content</sub> (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below. </p>
+
+![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
+
+> <p align = "justify"> <i> These are reconstructions that we get when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are used in the Content loss. </i> </p> 
 
 ![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
 ![Con_recons_2_2](https://user-images.githubusercontent.com/41862477/82235682-aac9b280-9950-11ea-8885-4b8775638bbe.jpg)
 ![Con_recons_3_2](https://user-images.githubusercontent.com/41862477/82235683-abfadf80-9950-11ea-95b8-d9b8836ffa58.jpg)
 ![Con_recons_4_2](https://user-images.githubusercontent.com/41862477/82235686-ac937600-9950-11ea-9fe3-14dd979106cc.jpg)
 ![Con_recons_5_2](https://user-images.githubusercontent.com/41862477/82235688-ad2c0c80-9950-11ea-8a3b-d592d2bfee82.jpg)  
- 
-> <p align = "justify"> <i> These are reconstructions that the model generated when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) were used one at a time in the Content cost. </i> </p> 
-  
-<p align = "justify"> Let  a(C) be the hidden layer activations which will be a <b> nH * nW * nC </b> tensor. Repeat the same process for the generated image and let  a(G) be the corresponding hidden layer activations. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
-![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
-
-<p align = "justify"> nH, nW, and nC are the height, width, and the number of channels of the hidden layer chosen. In order to compute the cost **J***content* (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below. </p>
-
-![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
 
 ### Style Cost
 
