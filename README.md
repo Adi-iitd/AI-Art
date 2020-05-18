@@ -26,9 +26,7 @@
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
 - **Total Variation (TV) Cost**: **J**<sub>TV</sub> (G)
 
-*Putting all together*: **J**<sub>Total</sub> (G) = α * **J**<sub>Content</sub> (C, G) + β * **J**<sub>Style</sub> (S, G) + γ * **J**<sub>TV</sub> (G)
-
-> Let's delve deeper to know more profoundly what's going on under the hood!
+*Putting all together*: **J**<sub>Total</sub> (G) = α * **J**<sub>Content</sub> (C, G) + β * **J**<sub>Style</sub> (S, G) + γ * **J**<sub>TV</sub> (G). Let's delve deeper to know more profoundly what's going on under the hood!
 
 ###  Content Cost
 
@@ -44,7 +42,7 @@
 
 ![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
 
-> <p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions that we get when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are used in the Content loss. </i> </p> 
+<p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions that we get when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are used in the Content loss. </i> </p> 
 
 ![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
 ![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
@@ -56,21 +54,19 @@
 
 ### Style Cost
 
-<p align = "justify"> First, we need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are <i> G (i, j) = np.dot(vi, vj) </i>. In other words, <i> G (i, j) </i> compares how similar vi is to vj. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In NST, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with their transpose as shown below: </p>
+<p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are <i> G<sub>(i, j)</sub> = np.dot(v<sub>i</sub>, v<sub>j</sub>) </i>. In other words, <i> G (i, j) </i> compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
 
 ![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
 
-<p align = "justify"> The result is a matrix of dimension <i> (nC, nC) </i> where nC is the number of filters. The value <i> G (i, j) </i> measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as  G (i, i) also measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. 
+<p align = "justify"> The result is a matrix of dimension <i> (n<sub>C</sub>, n<sub>C</sub>) </i> where n<sub>C</sub> is the number of filters. The value <i> G (i, j) </i> measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G (i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Gram matrix G measures the <b> Style </b> of an image. </i>
 
-><p align = "justify"> <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together   G (i, j), the Gram matrix G measures the <b> style </b> of an image. </i> </p>
-
-<p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the "style" image S and that of the "generated" image G. Usually, we take more than one layers in the account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
+<p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the Style image S and that of the Output image G. Usually, we take more than one layers in account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
 
 ![4](https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG)
 
 ### Total Variation (TV) Cost
 
-<p align = "justify"> It acts like a regularizer which encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by [Gatys et al.](https://arxiv.org/pdf/1508.06576.pdf) but it can sometimes improve the results. For 2D signal (or image), it is defined as follows: </p> 
+<p align = "justify"> It acts like a regularizer which encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by Gatys et al., but it sometimes improve the results. For 2D signal (or image), it is defined as follows: </p> 
 
 ![5](https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG)
 
