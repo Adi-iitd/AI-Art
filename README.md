@@ -150,21 +150,25 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 ### Network Architecture
 
-<p align = "justify"> The GAN discriminator models high-frequency structure term, relying on an L1 term to force low-frequency correctness. In order to model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed <b> PatchGAN </b> – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The recpetive field of the discriminator used was 70 * 70 (and was performing best compared to smaller and larger receptive fields). </p>
+#### Generator:
 
-```
-The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512
-```
+<p align = "justify"> The input and output differ only in surface appearance and are renderings of the same underlying structure. Therefore, structure in the input is roughly aligned with the structure in the output. The generator architecture is designed around these considerations only. For many image translation problems, there is a great deal of low-level information shared between the input and output, and it would be desirable to shuttle this information directly across the net. To give the generator a means to circumvent the bottleneck for information like this, skip connections are added following the general shape of a <b>U-Net.</b> Specifically, skip connections are added between each layer i and layer n − i, where n is the total number of layers. Each skip connection simply concatenates all channels at layer i with those at layer n − i. The U-Net encoder-decoder architecture consists of::: <b>Encoder:</b> <code> C64-C128-C256-C512-C512-C512-C512-C512</code>, and <b>U-Net Decoder:</b> <code> CD1024-CD1024-CD1024-CD1024-CD512-CD256-CD128,</code> where Ck denote a <i>Convolution-BatchNorm-ReLU</i> layer with k filters, and CDk denotes a <i>Convolution-BatchNorm-Dropout-ReLU</i> layer with a dropout rate of 50%. </p>
 
-#### Optimization
+#### Discriminator:
 
-- Alternate between one gradient descent step on D, and one step on G. 
-- The objective function was divided by 2 while optimizing D, which slows down the rate at which D learns relative to G. 
-- Use **Adam solver**, with a learning rate of 2e-4, and momentum parameters β1 = 0.5, β2 = 0.999.
-- Use **Dropout** both at the training and test time.
-- Use **instance normalization** (normalization using the statistics of the test batch) instead of batch normalization.
-- Can work even with the much smaller datasets.
-- Both L1 and cGAN loss are important to reduce the artifacts in the final output.
+<p align = "justify"> The GAN discriminator models high-frequency structure term, and relies on the L1 term to force low-frequency correctness. To model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed <b> PatchGAN </b> – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The receptive field of the discriminator used was 70 * 70 and was performing best compared to other smaller and larger receptive fields. <code> The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512 </code> </p>
+
+### Training details
+
+- All convolution kernels are of size 4 × 4 and are applied with stride 2.
+- Convolutions in the encoder, and in the discriminator, downsample by a factor of 2, whereas in the decoder they upsample by a factor of 2.
+- **Instance normalization** is used instead of batch normalization.
+- Normalization is not applied to the first layer in the encoder and discriminator. 
+- All ReLUs in the encoder and discriminator are leaky, with slope 0.2, while ReLUs in the decoder are not leaky.
+- Objective function was divided by 2 while optimizing D, which slows down the rate at which D learns relative to G. 
+- **Adam solver** is used with a learning rate of 2e-4, and momentum parameters β1 = 0.5, β2 = 0.999.
+- **Dropout** is used both at the training and test time.
+- Both L1 and CGAN loss are important to reduce the artifacts in the final output.
 
 ***
 ***
