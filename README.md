@@ -14,7 +14,7 @@
 
 ***
 
-## Style Transfer
+## [Neural Style Transfer](https://arxiv.org/abs/1508.06576)
 
 <p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image G combines the Content of image C with the Style of image S. </p>
 
@@ -114,11 +114,11 @@ Here are the brush-strokes that we get after running the experiment taking diffe
 ***
 ***
 
-## Pix2pix
+## [Image-to-Image Translation with Conditional Adversarial Networks (Pix2Pix)](https://arxiv.org/pdf/1611.07004.pdf)
 
-![1](https://user-images.githubusercontent.com/41862477/49689620-be60cf00-fb49-11e8-97b4-6cf53801ad3d.JPG)
+<img width="1149" alt="Screenshot 2020-05-18 at 10 50 55 PM" src="https://user-images.githubusercontent.com/41862477/82241656-2aa84a80-995a-11ea-9968-686294f97414.png">
 
-<p align = "justify"> The authors investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems in this [paper](https://arxiv.org/pdf/1611.07004.pdf). These networks not only learn the mapping from input image to output image, but also learn a loss function to train this mapping. In analogy to automatic language translation, we define automatic image-to-image translation as the task of translating one possible representation of a scene into another, given sufficient training data. </p>
+<p align = "justify"> The authors investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems in this [paper](). These networks not only learn the mapping from input image to output image, but also learn a loss function to train this mapping. In analogy to automatic language translation, we define automatic image-to-image translation as the task of translating one possible representation of a scene into another, given sufficient training data. </p>
 
 <p align = "justify"> In Generative Adversarial Networks settings, we could specify only a high-level goal, like “make the output indistinguishable from reality”, and then it automatically learn a loss function appropriate for satisfying this goal. Like other GANs, Conditional GANs also have one discriminator (or critic depending on the loss function we are using) and one generator, and it tries to learn a conditional generative model which makes it suitable for Image-to-Image translation tasks, where we condition on an input image and generate a corresponding output image. </p>
 
