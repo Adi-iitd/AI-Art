@@ -110,7 +110,6 @@ Here are the brush-strokes that we get after running the experiment taking diffe
 ![res_4](https://user-images.githubusercontent.com/41862477/49685497-3d361780-fb0a-11e8-8f13-57d2965ccbd0.png)
 
 ***
-<br></br>
 
 ## [Image-to-Image Translation with Conditional Adversarial Networks (Pix2Pix)](https://arxiv.org/pdf/1611.07004.pdf)
 
@@ -273,19 +272,7 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![1](https://user-images.githubusercontent.com/41862477/50507839-2a798780-0aa5-11e9-99e6-7f7770ae8bdb.jpg)
 ![4](https://user-images.githubusercontent.com/41862477/50507840-2a798780-0aa5-11e9-9022-96e648314a86.jpg)
 
-***
-
-#### Monet Paintings -> Photo:
-
-![2](https://user-images.githubusercontent.com/41862477/50508108-6b25d080-0aa6-11e9-854c-abb7b70ac864.jpg)
-![3](https://user-images.githubusercontent.com/41862477/50508109-6bbe6700-0aa6-11e9-9065-81a591e9946d.jpg)
-
-#### Photo -> Monet Paintings:
-
-![4](https://user-images.githubusercontent.com/41862477/50508126-7aa51980-0aa6-11e9-8d28-bdbc0f4faf8e.jpg)
-![5](https://user-images.githubusercontent.com/41862477/50508127-7aa51980-0aa6-11e9-91b6-1e2094dd9ab9.jpg)
-
-***
+<br />
 
 #### Van_Gogh Paintings -> Photo:
 
@@ -298,7 +285,6 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
 
 ***
-***
 
 ## Deep Dream
 
@@ -309,7 +295,6 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![layer_9](https://user-images.githubusercontent.com/41862477/51070750-72370c00-166c-11e9-932d-2bb959ab04f1.jpg)
 ![layer_10](https://user-images.githubusercontent.com/41862477/51070751-72cfa280-166c-11e9-9668-06851dda4e01.jpg)
 
-***
 ***
 
 #### Many more to come soon!
