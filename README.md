@@ -168,7 +168,13 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 - All ReLUs in the encoder and discriminator are leaky, with slope 0.2, while ReLUs in the decoder are not leaky.
 - Objective function was divided by 2 while optimizing D, which slows down the rate at which D learns relative to G. 
 
-***
+### Results
+
+![1](https://user-images.githubusercontent.com/41862477/82577615-dcd55180-9ba8-11ea-9c8d-dbe958002e06.png)
+![2](https://user-images.githubusercontent.com/41862477/82577628-e1016f00-9ba8-11ea-9dbc-fe42d418a202.png)
+![3](https://user-images.githubusercontent.com/41862477/82577633-e2329c00-9ba8-11ea-889c-fc6d0ee29da2.png)
+![4](https://user-images.githubusercontent.com/41862477/82577637-e2cb3280-9ba8-11ea-81cf-53ff1a56039c.png)
+
 ***
 
 ## [CycleGAN](https://arxiv.org/pdf/1703.10593.pdf)
