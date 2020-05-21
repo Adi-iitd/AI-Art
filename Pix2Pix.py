@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 from skimage import io as io, transform as tfm; import PIL.Image as Image, warnings
@@ -16,17 +11,11 @@ from torch.utils.data import Dataset, DataLoader; from torch.utils.tensorboard i
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print(f"GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class Resize(object):
@@ -160,9 +149,6 @@ class Normalize(object):
         return {'image': image, 'label': label}
 
 
-# In[4]:
-
-
 class MyDataset(Dataset):
     
     def __init__(self, path = None, transforms = None):
@@ -222,9 +208,6 @@ class Helper(object):
         return tensor
 
 
-# In[5]:
-
-
 trn_path = "./Dataset/Vision/Pix2Pix/Trn/"; val_path = "./Dataset/Vision/Pix2Pix/Val/"; 
 trn_tfms = [Resize(286), RandomCrop(256), Random_Flip(), To_Tensor(), Normalize()]
 val_tfms = [Resize(256), To_Tensor(), Normalize()]
@@ -239,21 +222,11 @@ trn_dataloader = DataLoader(trn_dataset, batch_size = 10 * len(devices), shuffle
 val_dataloader = DataLoader(val_dataset, batch_size = 64, shuffle = False, num_workers = 0)
 
 
-# In[6]:
-
-
 helper = Helper(); rand_int = np.random.randint(0, len(trn_dataset)); sample = trn_dataset[rand_int]; 
 helper.show_image(sample['image']); helper.show_image(sample['label'])
 
-
-# In[7]:
-
-
 rand_int = np.random.randint(0, len(val_dataset)); sample = val_dataset[rand_int];
 helper.show_image(sample['image']); helper.show_image(sample['label'])
-
-
-# In[8]:
 
 
 class My_Conv(nn.Module):
@@ -354,9 +327,6 @@ class My_DeConv(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[9]:
-
-
 class UNetBlock(nn.Module):
     
     def __init__(self, input_channels: int, inner_channels: int, innermost: bool = False, outermost: bool = False,
@@ -413,9 +383,6 @@ class UNetBlock(nn.Module):
         return x
 
 
-# In[10]:
-
-
 class Generator(nn.Module):
     
     def __init__(self, in_channels: int = 3, out_channels: int = 64, nb_layers: int = 8, apply_dp: bool = True, 
@@ -462,9 +429,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[11]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels = 6, out_channels = 64, nb_layers = 3, norm_type: str = 'instance'):
@@ -502,9 +466,6 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x, y): return self.net(torch.cat([x, y], dim = 1))
-
-
-# In[12]:
 
 
 class Initializer:
@@ -555,15 +516,9 @@ class Initializer:
         return net
 
 
-# In[13]:
-
-
 init = Initializer(init_type = 'normal', init_gain = 0.02)
 gen  = init(Generator(in_channels = 3, out_channels = 64, nb_layers = 8, apply_dp = True, norm_type = 'instance'))
 dis  = init(Discriminator(in_channels = 6, out_channels = 64, nb_layers = 3, norm_type = 'instance'))
-
-
-# In[14]:
 
 
 class Pix2Pix:
@@ -741,21 +696,12 @@ class Pix2Pix:
         return fake_lab, real_lab, real_img
 
 
-# In[15]:
-
-
 root_dir = "./Results/Pix2Pix/Models/"; lambda_ = 100; loss_type = 'MSE'
 model = Pix2Pix(gen_model = gen, dis_model = dis, lambda_ = lambda_, loss_type = loss_type)
 
 
-# In[16]:
-
-
-# model.fit(nb_epochs = 200, root_dir = "./Results/Pix2Pix/Models/", load_model = None, epoch_decay = 100)
-fake_lab, real_lab, real_img = model.test(root_dir = root_dir, model_name = "model_400.pth")
-
-
-# In[17]:
+model.fit(nb_epochs = 200, root_dir = "./Results/Pix2Pix/Models/", load_model = None, epoch_decay = 100)
+fake_lab, real_lab, real_img = model.test(root_dir = root_dir, model_name = "model_200.pth")
 
 
 rand_int = np.random.randint(0, high = len(fake_lab)); figure = plt.figure(figsize = (14, 7)); 
@@ -764,17 +710,4 @@ plt.subplot(1, 3, 1); fake_lab_ = helper.show_image(fake_lab[rand_int], show = F
 plt.subplot(1, 3, 2); real_lab_ = helper.show_image(real_lab[rand_int], show = False); plt.imshow(real_lab_)
 plt.subplot(1, 3, 3); real_img_ = helper.show_image(real_img[rand_int], show = False); plt.imshow(real_img_)
 
-figure.savefig('6.png', bbox_inches = 'tight')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+figure.savefig('Output.png', bbox_inches = 'tight')
