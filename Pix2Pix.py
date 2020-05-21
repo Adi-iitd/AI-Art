@@ -362,13 +362,17 @@ class UNetBlock(nn.Module):
             layers = [self.conv, self.deconv]
         
         elif self.outermost:
-            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size                                     = 4, stride = 2, apply_nl = False, apply_norm = False)
-            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size                                     = 4, stride = 2, apply_nl = True,  apply_norm = False)
+            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size \
+                                    = 4, stride = 2, apply_nl = False, apply_norm = False)
+            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size \
+                                    = 4, stride = 2, apply_nl = True,  apply_norm = False)
             layers = [self.conv, submodule, self.deconv]
         
         else:
-            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size                                     = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type)
-            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size                                     = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type, 
+            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size \
+                                    = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type)
+            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size \
+                                    = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type, 
                                     apply_dp = apply_dp, drop_param = drop_param)
             layers = [self.conv, submodule, self.deconv]
         
@@ -606,7 +610,8 @@ class Pix2Pix:
         return start_epoch
     
     
-    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2:             float = 0.999, root_dir: str = None, load_model: str = None, keep_only: int = 3, epoch_decay = 100):
+    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2: \
+            float = 0.999, root_dir: str = None, load_model: str = None, keep_only: int = 3, epoch_decay = 100):
         
         """
         Parameters: 
