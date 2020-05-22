@@ -627,7 +627,8 @@ class Pix2Pix:
         return start_epoch
     
     
-    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2:             float = 0.999, model_name: str = None, keep_only: int = 3, epoch_decay = 100):
+    def fit(self, nb_epochs: int = 1, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2: \
+            float = 0.999, model_name: str = None, keep_only: int = 3, epoch_decay = 100):
         
         """
         Parameters: 
