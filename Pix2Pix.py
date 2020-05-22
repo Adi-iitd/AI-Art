@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 from skimage import io as io, transform as tfm; import PIL.Image as Image, warnings
@@ -16,17 +11,11 @@ from torch.utils.data import Dataset, DataLoader; from torch.utils.tensorboard i
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print(f"GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class Resize(object):
@@ -160,9 +149,6 @@ class Normalize(object):
         return {'image': image, 'label': label}
 
 
-# In[4]:
-
-
 class MyDataset(Dataset):
     
     def __init__(self, path = None, transforms = None):
@@ -226,7 +212,7 @@ class Helper(object):
         return tensor
 
 
-# In[5]:
+####################################################################################################################
 
 
 trn_path = "./Dataset/Vision/Pix2Pix/Facades/Trn/"; trn_batch_sz = 10 * len(devices)
@@ -249,28 +235,17 @@ val_dataloader = DataLoader(val_dataset, batch_size = val_batch_sz, shuffle = Fa
 tst_dataloader = DataLoader(tst_dataset, batch_size = val_batch_sz, shuffle = False, num_workers = 0)
 
 
-# In[6]:
-
-
 helper = Helper(); rand_int = np.random.randint(0, len(trn_dataset)); sample = trn_dataset[rand_int]; 
 helper.show_image(sample['image']); helper.show_image(sample['label'])
 
-
-# In[7]:
-
-
 rand_int = np.random.randint(0, len(val_dataset)); sample = val_dataset[rand_int];
 helper.show_image(sample['image']); helper.show_image(sample['label'])
-
-
-# In[8]:
-
 
 rand_int = np.random.randint(0, len(tst_dataset)); sample = tst_dataset[rand_int];
 helper.show_image(sample['image']); helper.show_image(sample['label'])
 
 
-# In[9]:
+####################################################################################################################
 
 
 class My_Conv(nn.Module):
@@ -371,9 +346,6 @@ class My_DeConv(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[10]:
-
-
 class UNetBlock(nn.Module):
     
     def __init__(self, input_channels: int, inner_channels: int, innermost: bool = False, outermost: bool = False,
@@ -409,13 +381,17 @@ class UNetBlock(nn.Module):
             layers = [self.conv, self.deconv]
         
         elif self.outermost:
-            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size                                     = 4, stride = 2, apply_nl = False, apply_norm = False)
-            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size                                     = 4, stride = 2, apply_nl = True,  apply_norm = False)
+            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size = 4, 
+                                    stride = 2, apply_nl = False, apply_norm = False)
+            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size = 4, 
+                                    stride = 2, apply_nl = True,  apply_norm = False)
             layers = [self.conv, submodule, self.deconv]
         
         else:
-            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size                                     = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type)
-            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size                                     = 4, stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type, 
+            self.conv   = My_Conv  (in_channels = 1 * input_channels, out_channels = inner_channels, kernel_size = 4, 
+                                    stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type)
+            self.deconv = My_DeConv(in_channels = f * inner_channels, out_channels = input_channels, kernel_size = 4, 
+                                    stride = 2, apply_nl = True, apply_norm = True, norm_type = norm_type, 
                                     apply_dp = apply_dp, drop_param = drop_param)
             layers = [self.conv, submodule, self.deconv]
         
@@ -428,9 +404,6 @@ class UNetBlock(nn.Module):
         else: x = torch.cat([x, self.net(x)], dim = 1) if self.add_skip_conn else self.net(x) 
         
         return x
-
-
-# In[11]:
 
 
 class Generator(nn.Module):
@@ -479,9 +452,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[12]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels = 6, out_channels = 64, nb_layers = 3, norm_type: str = 'instance'):
@@ -519,9 +489,6 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x, y): return self.net(torch.cat([x, y], dim = 1))
-
-
-# In[13]:
 
 
 class Initializer:
@@ -570,9 +537,6 @@ class Initializer:
         net.apply(self.init_module)
         
         return net
-
-
-# In[14]:
 
 
 class Pix2Pix:
@@ -752,49 +716,24 @@ class Pix2Pix:
         
         return fake_lab, real_lab, real_img
 
+                  
+####################################################################################################################
 
-# In[15]:
-
-
+                  
 init = Initializer(init_type = 'normal', init_gain = 0.02)
 gen  = init(Generator(in_channels = 3, out_channels = 64, nb_layers = 8, apply_dp = True, norm_type = 'instance'))
 dis  = init(Discriminator(in_channels = 6, out_channels = 64, nb_layers = 3, norm_type = 'instance'))
 
 
-# In[16]:
-
-
 root_dir = "./Results/Pix2Pix/Facades/B/"; lambda_ = 100; loss_type = 'MSE'
 model = Pix2Pix(root_dir = root_dir, lambda_ = lambda_, loss_type = loss_type, gen_model = gen, dis_model = dis)
 
-
-# In[17]:
-
-
-# model.fit(nb_epochs = 400, model_name = None, epoch_decay = 200)
+model.fit(nb_epochs = 400, model_name = None, epoch_decay = 200)
 fake_lab, real_lab, real_img = model.test(model_name = "model_400.pth")
 
-
-# In[21]:
-
-
+                  
 rand_int = np.random.randint(0, high = len(fake_lab)); figure = plt.figure(figsize = (14, 7)); 
-
 plt.subplot(1, 3, 1); fake_lab_ = helper.show_image(fake_lab[rand_int], show = False); plt.imshow(fake_lab_) 
 plt.subplot(1, 3, 2); real_lab_ = helper.show_image(real_lab[rand_int], show = False); plt.imshow(real_lab_)
 plt.subplot(1, 3, 3); real_img_ = helper.show_image(real_img[rand_int], show = False); plt.imshow(real_img_)
-
 figure.savefig('Output.png', bbox_inches = 'tight')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
