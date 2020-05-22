@@ -6,11 +6,9 @@
 
 <p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans and the world, an inevitable question follows: </p>
 
-> <i> Can a machine be creative, and will artificial intelligence ever be able to make art? </i>
+> <i> Can a machine be creative, and will artificial intelligence be able to make art? </i>
 
-<p align = "justify"> Recent art experiments use Deep Learning to teach themselves through their experimentations, rather than being programmed by humans. <i> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. </i> </p>
-
-<p align = "justify"> I will cover four different Deep Learning models in this tutorial to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN</b>, and <b>Deep Dream. </b> </p>
+<p align = "justify"> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. I will cover four different Deep Learning models in this tutorial to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN</b>, and <b>Deep Dream. </b> </p>
 
 ***
 
@@ -170,10 +168,18 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 ### Results
 
+<p align = "justify"> Generated image, True label, and Imput image from left to right. </p>
+
+#### Cityscapes:
+
 ![1](https://user-images.githubusercontent.com/41862477/82577615-dcd55180-9ba8-11ea-9c8d-dbe958002e06.png)
-![2](https://user-images.githubusercontent.com/41862477/82577628-e1016f00-9ba8-11ea-9dbc-fe42d418a202.png)
 ![3](https://user-images.githubusercontent.com/41862477/82577633-e2329c00-9ba8-11ea-889c-fc6d0ee29da2.png)
 ![4](https://user-images.githubusercontent.com/41862477/82577637-e2cb3280-9ba8-11ea-81cf-53ff1a56039c.png)
+
+#### Facades:
+![1](https://user-images.githubusercontent.com/41862477/82696095-fc8d7800-9c83-11ea-80c4-0d0ed3b745d3.png)
+![2](https://user-images.githubusercontent.com/41862477/82696106-01522c00-9c84-11ea-8aa2-c55788309f51.png)
+![3](https://user-images.githubusercontent.com/41862477/82696108-02835900-9c84-11ea-9ee0-6b8c98f0cd72.png)
 
 ***
 
@@ -183,7 +189,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 <p align = "justify"> Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in the paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
-<p align = "justify"> <i> The goal is to learn a mapping <b> G : X → Y </b> such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. Because this mapping is highly under-constrained, they coupled it with an inverse mapping <b> F : Y → X </b> and introduced a cycle consistency loss to enforce <b> F(G(X)) ≈ X </b> (and vice-versa). </i> </p>
+<p align = "justify"> <i> The goal is to learn a mapping <b> G : X → Y </b> such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. </i> Because this mapping is highly under-constrained, they coupled it with an inverse mapping <b> F : Y → X </b> and introduced a cycle consistency loss to enforce <b> F(G(X)) ≈ X </b> (and vice-versa). </p>
 
 ### Motivation:
 
@@ -193,7 +199,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 - <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. </p>
 - <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). </p> 
-- <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> <i> F(G(x)) ≈ x and G(F(y)) ≈ y </b> </i> </p>.
+- <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> F(G(x)) ≈ x and G(F(y)) ≈ y. </b> </p>
 
 ![2](https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg)
 
@@ -203,28 +209,19 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 <p align = "justify"> Adversarial loss is applied to both mapping functions -  G : X → Y and its discriminator DY and  F : Y → X and its discriminator DX, where G tries to generate images G(x) that look similar to images from domain Y , while DY aims to distinguish between translated samples G(x) and real samples y (similar condition holds for the other one). </p>
 
-- Generator (G) tries to minimize ``` E[x∼pdata(x)] (D(G(x)) − 1)** 2```
-- Discriminator (DY) tries to minimize ``` E[y∼pdata(y)] (D(y) − 1)**2 + E[x∼pdata(x)] D(G(x))**2```
-- Generator (F) tries to minimize ``` E[y∼pdata(y)] (D(G(y)) − 1)** 2```
-- Discriminator (DX) tries to minimize ``` E[x∼pdata(x)] (D(x) − 1)**2 + E[y∼pdata(y)] D(G(y))**2```
+- Generator (G) tries to minimize: <code> E<sub>[x∼p<sub>data</sub>(x)]</sub> (D(G(x)) − 1)<sup>2</sup> </code>
+- Discriminator (DY) tries to minimize: <code> E<sub>[y∼p<sub>data</sub>(y)]</sub> (D(y) − 1)<sup>2</sup> + E<sub>[x∼p<sub>data</sub>(x)]</sub> D(G(x))<sup>2</sup> </code>
+- Generator (F) tries to minimize <code> E<sub>[y∼p<sub>data</sub>(y)]</sub> (D(G(y)) − 1)<sup>2</sup> </code>
+- Discriminator (DX) tries to minimize: <code> E<sub>[x∼p<sub>data</sub>(x)]</sub> (D(x) − 1)<sup>2</sup> + E<sub>[y∼p<sub>data</sub>(y)]</sub> D(G(y))<sup>2</sup> </code>
 
 #### Cycle Consistency Loss:
 
-<p align = "justify"> Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent. </p>
+<p align = "justify"> Adversarial training can, in theory, learn mappings G and F that produce outputs identically distributed as target domains Y and X respectively (strictly speaking, this requires G and F to be stochastic functions). However, with large enough capacity, a network can map the same set of input images to any random permutation of images in the target domain, where any of the learned mappings can induce an output distribution that matches the target distribution. Thus, adversarial losses alone cannot guarantee that the learned function can map an individual input xi to a desired output yi. To further reduce the space of possible mapping functions, learned functions should be cycle-consistent. <code> L<sub>cyc</sub> (G, F) = E<sub>[x∼p<sub>data</sub>(x)]</sub> || F(G(x)) − x|| + E<sub>[y∼p<sub>data</sub>(y)]</sub> || G(F(y)) − y || </code> </p>
 
-``` 
-Lcyc (G, F) = E[x∼pdata(x)] || F(G(x)) − x|| + E[y∼pdata(y)] || G(F(y)) − y || 
-``` 
 
 #### Full Objective:
 
-The full objective is: 
-
-``` 
-L (G, F, DX, DY) = LGAN (G, DY , X, Y) + LGAN (F, DX, Y, X) + λLcyc(G, F)
-```
-
-, where lambda controls the relative importance of the two objectives.
+<p align = "justify"> The full objective is: <code> L (G, F, D<sub>X</sub>, D<sub>Y</sub>) = L<sub>GAN</sub> (G, D<sub>Y</sub> , X, Y) + L<sub>GAN</sub> (F, D<sub>X</sub>, Y, X) + λL<sub>cyc</sub>(G, F) </code> , where lambda controls the relative importance of the two objectives. </p>
 
 #### Insights:
 
@@ -256,15 +253,12 @@ Discriminator:
 - C64-C128-C256-C512
 ```
 
-> <p align = "justify"> <i> c7s1-k denote a 7×7 Convolution-InstanceNormReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution-InstanceNorm-ReLU layer with k filters and stride 2. Reflection padding was used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. **Do not** use InstanceNorm for the first C64 layer. Use leaky ReLUs with a slope of 0.2 </i>
+<p align = "justify"> <i> c7s1-k denote a 7×7 Convolution - InstanceNorm - ReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution - InstanceNorm - ReLU layer with k filters and stride 2. Reflection padding is used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. No InstanceNorm after the first C64 layer. Leaky ReLUs are used with a slope of 0.2 </i> </p>
 
 #### Application - Photo generation from paintings: 
 
-<p align = "justify"> For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples of the target domain are provided as the input to the generator i.e., </p>
+<p align = "justify"> For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples of the target domain are provided as the input to the generator i.e., <code> L<sub>identity</sub> (G, F) = E<sub>[y∼p<sub>data</sub>(y)]</sub> || G(y) − y || + E<sub>[x∼p<sub>data</sub>(x)]</sub> || F(x) − x || </code> </p>
 
-```
-Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) − x ||
-```
 
 ### Results:
 
@@ -302,7 +296,3 @@ Lidentity (G, F) = E[y∼pdata(y)] || G(y) − y || + E[x∼pdata(x)] || F(x) �
 ![layer_10](https://user-images.githubusercontent.com/41862477/51070751-72cfa280-166c-11e9-9668-06851dda4e01.jpg)
 
 ***
-
-#### Many more to come soon!
-
-***Thanks for going through this post! Any feedbacks are duly appreciated.***
