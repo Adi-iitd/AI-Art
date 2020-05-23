@@ -545,12 +545,11 @@ class Pix2Pix:
                  dis_model = None, lr_scheduler = 'linear', ):
         
         """
-        Parameters: 
-            root_dir:     Path to parent Directory where you want to save models and write summary 
+        Parameters:
             loss_type:    Type of Loss function - MSE, BCEwithLogits
             lambda_:      Weightage of Lasso (L1) loss
-            gen_model:    Object of Generator class
-            dis_model:    Object of Discriminator class
+            gen_model:    Generator object
+            dis_model:    Discriminator object
             lr_scheduler: Scheduler type - Linear decay or Exponential decay or cosine annealing
         """
         
