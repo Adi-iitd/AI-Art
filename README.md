@@ -177,7 +177,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 ![4](https://user-images.githubusercontent.com/41862477/82577637-e2cb3280-9ba8-11ea-81cf-53ff1a56039c.png)
 
 #### Facades:
-![1](https://user-images.githubusercontent.com/41862477/82696095-fc8d7800-9c83-11ea-80c4-0d0ed3b745d3.png)
+![2](https://user-images.githubusercontent.com/41862477/82696095-fc8d7800-9c83-11ea-80c4-0d0ed3b745d3.png)
 ![2](https://user-images.githubusercontent.com/41862477/82696106-01522c00-9c84-11ea-8aa2-c55788309f51.png)
 ![3](https://user-images.githubusercontent.com/41862477/82696108-02835900-9c84-11ea-9ee0-6b8c98f0cd72.png)
 
@@ -185,7 +185,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 ## [CycleGAN](https://arxiv.org/pdf/1703.10593.pdf)
 
-![1](https://user-images.githubusercontent.com/41862477/50483300-416e9a00-0a11-11e9-8b77-e91d30a409bb.jpg)
+<img width="995" align="center" alt="Screenshot 2020-05-23 at 11 40 22 AM" src="https://user-images.githubusercontent.com/41862477/82723149-4c9f2580-9cea-11ea-98cf-bf80e2428a4b.png">
 
 <p align = "justify"> Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in the paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
