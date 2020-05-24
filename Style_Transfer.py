@@ -264,6 +264,7 @@ class NeuralStyleTransfer:
     
 # ***********************************************************************************************************************
 
+
 con_img_fp = "Dataset/Vision/Content.jpg"; sty_img_fp = "Dataset/Vision/Style.jpg"
 img_loader = ImageLoader(size = (512, 512), resize = True, interpolation = 2);
 
@@ -278,22 +279,12 @@ img_loader.show_image(con_image, title = "Content Image")
 img_loader.show_image(sty_image, title = "Style Image")
 
 
-# ***********************************************************************************************************************
-
-
 con_layers = ["conv4_2"]; sty_layers = ["conv1_1", "conv2_1", "conv3_1", "conv4_1", "conv5_1"];
 
 _NST_ = NeuralStyleTransfer(con_image = con_image, sty_image = sty_image, size = (512, 512), con_layers = con_layers, 
-                            sty_layers = sty_layers, con_loss_wt = 1e-5, sty_loss_wt = 1e4, var_loss_wt = 1);
+                            sty_layers = sty_layers, con_loss_wt = 1e-5, sty_loss_wt = 1e4, var_loss_wt = 1)
 
 output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8, betas = (0.9, 0.999))
 
-
-# ***********************************************************************************************************************
-
-
 img_loader = ImageLoader(size = 512, resize = True); 
 img_loader.show_image(output_image, save_ = True, filename = "Stylized_Image.jpg")
-
-
-# ***********************************************************************************************************************
