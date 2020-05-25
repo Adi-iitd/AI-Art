@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 import itertools; from skimage import io as io; import PIL.Image as Image, warnings
@@ -17,17 +12,11 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print(f"GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class CustomDataset(Dataset):
@@ -106,10 +95,10 @@ class Helper(object):
         
         return dataset[np.random.randint(0, len(dataset) - 1)]
 
-
-# In[4]:
-
-
+    
+####################################################################################################################
+ 
+    
 trn_batch_sz = 8 * len(devices); val_batch_sz = 64; img_sz = 128; jitter_sz = 143 if img_sz == 128 else 286;
 normalize = T.Normalize(mean = [0.5] * 3, std = [0.5] * 3)
 
@@ -136,9 +125,6 @@ print(f"Total files in the Train dataset: {len(trn_dataset)}")
 print(f"Total files in the Valid dataset: {len(val_dataset)}")
 
 
-# In[5]:
-
-
 helper = Helper()
 
 image_a, image_b = helper.get_random_sample(trn_dataset)
@@ -153,7 +139,7 @@ image_b = helper.show_image(image_b, show = False); plt.subplot(1, 2, 2); plt.im
 plt.show(); print("Few Random samples from the Valid dataset")
 
 
-# In[6]:
+####################################################################################################################
 
 
 class My_Conv(nn.Module):
@@ -250,9 +236,6 @@ class My_DeConv(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[7]:
-
-
 class ResBlock(nn.Module):
     
     def __init__(self, in_channels: int, apply_dp: bool = True, drop_param: float = 0.5, norm_type = 'instance'):
@@ -288,9 +271,6 @@ class ResBlock(nn.Module):
     
     
     def forward(self, x): return x + self.net(x)
-
-
-# In[8]:
 
 
 class Generator(nn.Module):
@@ -355,9 +335,6 @@ class Generator(nn.Module):
     def forward(self, x): return F.tanh(self.net(x))
 
 
-# In[9]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels = 3, out_channels = 64, nb_layers = 3, norm_type: str = 'instance', 
@@ -406,9 +383,6 @@ class Discriminator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[10]:
-
-
 class Initializer:
     
     def __init__(self, init_type: str = 'normal', init_gain: float = 0.02): 
@@ -452,33 +426,6 @@ class Initializer:
         net.apply(self.init_module)
         
         return net
-
-
-# In[11]:
-
-
-init = Initializer(init_type = 'normal', init_gain = 0.02)
-
-dis_A = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3, padding_mode = 'zeros'))
-dis_B = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3, padding_mode = 'zeros'))
-
-gen_A2B = init(Generator(in_channels = 3, out_channels = 64))
-gen_B2A = init(Generator(in_channels = 3, out_channels = 64))
-
-
-# In[12]:
-
-
-print(dis_A.module.layers)
-
-
-# In[13]:
-
-
-print(gen_A2B.module.layers)
-
-
-# In[14]:
 
 
 class Losses:
@@ -560,9 +507,6 @@ class Losses:
         return gen_tot_loss
 
 
-# In[15]:
-
-
 class ImagePool:
     
     """
@@ -611,9 +555,6 @@ class ImagePool:
         images_to_return = torch.cat(images_to_return, dim = 0)
         
         return images_to_return
-
-
-# In[16]:
 
 
 class CycleGAN:
@@ -686,7 +627,8 @@ class CycleGAN:
         return start_epoch
 
     
-    def fit(self, nb_epochs: int = 200, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2:             float = 0.999, model_name: str = None, keep_only: int = 3, epoch_decay = 100):
+    def fit(self, nb_epochs: int = 200, dis_lr: float = 2e-4, gen_lr: float = 2e-4, beta_1: float = 0.5, beta_2: \
+            float = 0.999, model_name: str = None, keep_only: int = 3, epoch_decay = 100):
         
         """
         Parameters: 
@@ -721,10 +663,12 @@ class CycleGAN:
                 curr_iter += 1;
                 real_A, real_B = real_A.to(devices[0]), real_B.to(devices[0])
                 
+                  
                 # Forward pass
                 fake_B = self.gen_A2B(real_A); cyc_A = self.gen_B2A(fake_B); idt_A = self.gen_B2A(real_A)
                 fake_A = self.gen_B2A(real_B); cyc_B = self.gen_A2B(fake_A); idt_B = self.gen_A2B(real_B)
                 
+                  
                 # Generator's optimization step
                 with torch.no_grad(): 
                     dis_A_pred_fake_data = self.dis_A(fake_A)
@@ -770,9 +714,11 @@ class CycleGAN:
                     self.write_summary(self.writer, self.gen_B2A, gen_B2A_loss + tot_cyc_loss, dis_A_loss, 
                                        epoch, curr_iter, 'B2A')
                 
+            
             curr_iter = 0; gen_scheduler.step(); dis_scheduler.step(); print(f"After {epoch} epochs:") 
             print(f"D_A_Loss: {round(dis_A_loss.item(), 3)}, D_B_Loss: {round(dis_B_loss.item(), 3)}")
-            print(f"Gen_A2B_Loss: {round(gen_A2B_loss.item() + tot_cyc_loss.item(), 3)}, G_B2A_Loss:                  {round(gen_B2A_loss.item() + tot_cyc_loss.item(), 3)}", end = "\n\n")
+            print(f"Gen_A2B_Loss: {round(gen_A2B_loss.item() + tot_cyc_loss.item(), 3)}, G_B2A_Loss: \
+                    {round(gen_B2A_loss.item() + tot_cyc_loss.item(), 3)}", end = "\n\n")
             
             
             # Save models after every 10 epochs
@@ -823,20 +769,31 @@ class CycleGAN:
         
         return real_A, real_B, fake_A, fake_B
 
+                  
+####################################################################################################################
+                  
+                  
+init = Initializer(init_type = 'normal', init_gain = 0.02)
 
-# In[ ]:
+dis_A = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3, padding_mode = 'zeros'))
+dis_B = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3, padding_mode = 'zeros'))
 
+gen_A2B = init(Generator(in_channels = 3, out_channels = 64))
+gen_B2A = init(Generator(in_channels = 3, out_channels = 64))
+
+                  
+####################################################################################################################
+                  
 
 root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 200; epoch_decay = nb_epochs // 2;
 
 model = CycleGAN(root_dir = root_dir, gen_A2B = gen_A2B, gen_B2A = gen_B2A, dis_A = dis_A, dis_B = dis_B)
 model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
-
 # real_A, real_B, fake_A, fake_B = model.test(model_name = "model_160.pth")
-
-
-# In[ ]:
-
+                  
+                  
+####################################################################################################################
+                  
 
 # rand_int = np.random.randint(0, high = len(fake_A)); figure = plt.figure(figsize = (10, 5)); 
 # plt.subplot(1, 2, 1); fake_A_ = helper.show_image(fake_A[rand_int], show = False); plt.imshow(fake_A_) 
@@ -847,17 +804,3 @@ model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
 # plt.subplot(1, 2, 2); real_B_ = helper.show_image(real_B[rand_int], show = False); plt.imshow(real_B_)
 
 # figure.savefig('Output.png', bbox_inches = 'tight')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-    
-
