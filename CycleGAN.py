@@ -615,8 +615,8 @@ class CycleGAN:
             self.dis_optimizer.load_state_dict(checkpoint['d_opt'])
             self.gen_optimizer.load_state_dict(checkpoint['g_opt']) 
             
-            print(f"d_A_loss:: {checkpoint['d_A_loss']}, g_A2B_loss:: {checkpoint['g_A2B_loss']}")
-            print(f"d_B_loss:: {checkpoint['d_B_loss']}, g_B2A_loss:: {checkpoint['g_B2A_loss']}")
+            print(f"d_A_loss:: {checkpoint['d_A_loss']}, g_A2B_loss:: {checkpoint['gen_A2B_loss']}")
+            print(f"d_B_loss:: {checkpoint['d_B_loss']}, g_B2A_loss:: {checkpoint['gen_B2A_loss']}")
         
         self.dis_A.module.load_state_dict(checkpoint['d_A_model'])
         self.dis_B.module.load_state_dict(checkpoint['d_B_model'])
