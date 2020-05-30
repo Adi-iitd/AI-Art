@@ -615,7 +615,7 @@ class Pix2Pix:
 
         
         # Starts the training
-        for epoch in range(start_epoch + 1, nb_epochs + start_epoch + 1):
+        for epoch in range(start_epoch + 1, nb_epochs + 1):
             for data in trn_dataloader:
                 
                 curr_iter += 1;
