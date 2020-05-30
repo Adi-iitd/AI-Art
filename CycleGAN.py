@@ -614,7 +614,7 @@ class CycleGAN:
         self.saver = SaveModel(self.save_dir); self.tb = Tensorboard(summary_path)
         
         self.fake_pool_A = ImagePool(pool_sz = 50); self.fake_pool_B = ImagePool(pool_sz = 50)
-        self.loss = Loss('BCE'); self.d_A = d_A; self.d_B = d_B; self.g_A2B = g_A2B; self.g_B2A = g_B2A
+        self.loss = Loss('MSE'); self.d_A = d_A; self.d_B = d_B; self.g_A2B = g_A2B; self.g_B2A = g_B2A
         
         
     def load_state_dict(self, path = None, train = True):
