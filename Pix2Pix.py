@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 import itertools;  from skimage import io as io, transform as tfm;  import warnings
@@ -17,17 +12,11 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print("GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class Resize(object):
@@ -161,9 +150,6 @@ class Normalize(object):
         return {'A': A, 'B': B}
 
 
-# In[4]:
-
-
 class MyDataset(Dataset):
     
     def __init__(self, path = None, transforms = None):
@@ -233,7 +219,7 @@ class Helper(object):
         return dataset, dataloader
 
 
-# In[5]:
+######################################################################################################################
 
 
 root_dir = "./Dataset/Vision/Pix2Pix/Facades/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
@@ -247,9 +233,6 @@ trn_dataset, trn_dataloader = helper.get_data(trn_path, trn_tfms, trn_batch_sz, 
 val_dataset, val_dataloader = helper.get_data(val_path, val_tfms, val_batch_sz, is_train = False)
 
 
-# In[6]:
-
-
 sample = helper.get_random_sample(trn_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
@@ -257,7 +240,7 @@ sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
 
-# In[7]:
+######################################################################################################################
 
 
 class UNetBlock(nn.Module):
@@ -289,8 +272,10 @@ class UNetBlock(nn.Module):
         norm_layer = InstanceNorm if norm_type == 'instance' else BatchNorm
         
         if  innermost: 
-            dn_conv = Conv  (in_channels = input_channels, out_channels = inner_channels, kernel_size = 4, stride                              = 2, padding = 1, bias = True, padding_mode = 'zeros')
-            up_conv = Deconv(in_channels = inner_channels, out_channels = input_channels, kernel_size = 4, stride                              = 2, padding = 1, bias = bias, padding_mode = 'zeros')
+            dn_conv = Conv  (in_channels = input_channels, out_channels = inner_channels, kernel_size = 4, stride = 2, 
+                             padding = 1, bias = True, padding_mode = 'zeros')
+            up_conv = Deconv(in_channels = inner_channels, out_channels = input_channels, kernel_size = 4, stride = 2, 
+                             padding = 1, bias = bias, padding_mode = 'zeros')
             
             dn_layers = [nn.LeakyReLU(0.2, True), dn_conv]
             up_layers = [nn.ReLU(True), up_conv, norm_layer(input_channels)]
@@ -327,9 +312,6 @@ class UNetBlock(nn.Module):
         
         if self.outermost: return self.net(x)
         else: return torch.cat([x, self.net(x)], dim = 1) if self.add_skip_conn else self.net(x)
-
-
-# In[8]:
 
 
 class Generator(nn.Module):
@@ -377,9 +359,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[9]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels: int, out_channels: int, nb_layers = 3, norm_type: str = 'instance'):
@@ -419,9 +398,6 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x): return self.net(x)
-
-
-# In[10]:
 
 
 class Initializer:
@@ -472,9 +448,6 @@ class Initializer:
         return net
 
 
-# In[11]:
-
-
 class Tensorboard:
     
     def __init__(self, path: str): self.writer = SummaryWriter(path)
@@ -511,9 +484,6 @@ class Tensorboard:
         
         self.writer.add_scalar('d_loss', round(d_loss.item(), 4), n_iter)
         self.writer.add_scalar('g_loss', round(g_loss.item(), 4), n_iter)
-
-
-# In[12]:
 
 
 class Loss:
@@ -580,9 +550,6 @@ class Loss:
         return gen_tot_loss
 
 
-# In[13]:
-
-
 class SaveModel:
     
     def __init__(self, path: str, keep_only: int = 3): self.path = path; self.keep_only = keep_only
@@ -597,9 +564,6 @@ class SaveModel:
         filenames = [f for f in os.listdir(self.path) if not f.startswith('.')]
         if len(filenames) > self.keep_only:
             os.remove(self.path + sorted(filenames, key = lambda x: int(x[6 : -4]))[0])
-
-
-# In[14]:
 
 
 class Pix2Pix:
@@ -626,7 +590,8 @@ class Pix2Pix:
         return start_epoch
     
     
-    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name:             str = None, epoch_decay = 100):
+    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name: \
+            str = None, epoch_decay = 100):
         
         """
         Parameters: 
@@ -707,7 +672,7 @@ class Pix2Pix:
         return real_A, real_B, fake_B 
 
 
-# In[15]:
+######################################################################################################################
 
 
 init = Initializer(init_type = 'normal', init_gain = 0.02)
@@ -715,36 +680,20 @@ gen  = init(Generator(in_channels = 3, out_channels = 64, norm_type = 'instance'
 dis  = init(Discriminator(in_channels = 3, out_channels = 64, norm_type = 'instance'))
 
 
-# In[ ]:
-
-
 root_dir = "./Results/Pix2Pix/Facades/A/"; nb_epochs = 400; epoch_decay = nb_epochs // 2; is_train = True
 model = Pix2Pix(root_dir = root_dir, gen = gen, dis = dis)
 
+# Set is_train to False while running inference on the trained model
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
 else: real_A, real_B, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
 
 
-# In[ ]:
-
-
 rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (14, 7))
-
 plt.subplot(1, 3, 1); helper.show_image(real_A[rand_int].cpu().clone())
 plt.subplot(1, 3, 2); helper.show_image(real_B[rand_int].cpu().clone())
 plt.subplot(1, 3, 3); helper.show_image(fake_B[rand_int].cpu().clone()); plt.show()
 
 figure.savefig('Output.png', bbox_inches = 'tight')
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
+######################################################################################################################
 
