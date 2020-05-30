@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 import itertools;  from skimage import io as io, transform as tfm;  import warnings
@@ -17,17 +12,11 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
-# In[2]:
-
-
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print("GPU isn't available! :(")
-
-
-# In[3]:
 
 
 class Resize(object):
@@ -161,9 +150,6 @@ class Normalize(object):
         return {'A': A, 'B': B}
 
 
-# In[4]:
-
-
 class CustomDataset(Dataset):
     
     def __init__(self, path: str = None, transforms = None):
@@ -230,7 +216,7 @@ class Helper(object):
         return dataset, dataloader
 
 
-# In[5]:
+###################################################################################################################
 
 
 root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
@@ -246,9 +232,6 @@ val_dataset, val_dataloader = helper.get_data(val_path, val_tfms, val_batch_sz, 
 nb_trn_iters = len(trn_dataloader); nb_val_iters = len(val_dataloader)
 
 
-# In[6]:
-
-
 sample = helper.get_random_sample(trn_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
@@ -256,7 +239,7 @@ sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
 
-# In[7]:
+###################################################################################################################
 
 
 class ResBlock(nn.Module):
@@ -289,9 +272,6 @@ class ResBlock(nn.Module):
     
     
     def forward(self, x): return x + self.net(x)
-
-
-# In[8]:
 
 
 class Generator(nn.Module):
@@ -341,9 +321,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[9]:
-
-
 class Discriminator(nn.Module):
     
     def __init__(self, in_channels: int = 3, out_channels: int = 64, nb_layers: int = 3):
@@ -381,9 +358,6 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x): return self.net(x)
-
-
-# In[10]:
 
 
 class Initializer:
@@ -431,9 +405,6 @@ class Initializer:
         return net
 
 
-# In[11]:
-
-
 init = Initializer(init_type = 'normal', init_gain = 0.02)
 
 d_A = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3))
@@ -441,9 +412,6 @@ d_B = init(Discriminator(in_channels = 3, out_channels = 64, nb_layers = 3))
 
 g_A2B = init(Generator(in_channels = 3, out_channels = 64, apply_dp = True))
 g_B2A = init(Generator(in_channels = 3, out_channels = 64, apply_dp = True))
-
-
-# In[12]:
 
 
 class Tensorboard:
@@ -492,9 +460,6 @@ class Tensorboard:
         self.writer.add_scalar('g_loss'  , round(g_loss.item()  , 4), n_iter)
         self.writer.add_scalar('d_A_loss', round(d_A_loss.item(), 4), n_iter)
         self.writer.add_scalar('d_B_loss', round(d_B_loss.item(), 4), n_iter)
-
-
-# In[13]:
 
 
 class Loss:
@@ -576,9 +541,6 @@ class Loss:
         return gen_tot_loss
 
 
-# In[14]:
-
-
 class ImagePool:
     
     """
@@ -625,9 +587,6 @@ class ImagePool:
         return torch.cat(images_to_return, 0)
 
 
-# In[15]:
-
-
 class SaveModel:
     
     def __init__(self, path: str, keep_only: int = 3): 
@@ -637,16 +596,14 @@ class SaveModel:
     def save_model(self, epoch: int, d_A, d_B, g_A2B, g_B2A, d_A_opt, d_B_opt, g_opt):
         
         filename  = self.path + "Model_" + str(epoch) + ".pth"
-        torch.save({'epochs_': epoch, 'g_opt': g_opt.state_dict(), 'd_A_opt': d_A_opt.state_dict(), 'd_B_opt':                     d_B_opt.state_dict(), 'd_A': d_A.module.state_dict(), 'd_B': d_B.module.state_dict(), 
+        torch.save({'epochs_': epoch, 'g_opt': g_opt.state_dict(), 'd_A_opt': d_A_opt.state_dict(), 'd_B_opt': \
+                    d_B_opt.state_dict(), 'd_A': d_A.module.state_dict(), 'd_B': d_B.module.state_dict(), 
                     'g_A2B': g_A2B.module.state_dict(), 'g_B2A': g_B2A.module.state_dict()}, filename)
         
         
         filenames = [f for f in os.listdir(self.path) if not f.startswith('.')]
         if len(filenames) > self.keep_only:
             os.remove(self.path + sorted(filenames, key = lambda x: int(x[6 : -4]))[0])
-
-
-# In[16]:
 
 
 class CycleGAN:
@@ -678,7 +635,8 @@ class CycleGAN:
         return start_epoch
         
     
-    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name:             str = None, keep_only: int = 3, epoch_decay: int = 200):
+    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name: \
+            str = None, keep_only: int = 3, epoch_decay: int = 200):
         
         """
         Parameters: 
@@ -790,40 +748,26 @@ class CycleGAN:
         return real_A, real_B, fake_A, fake_B
 
 
-# In[ ]:
+###################################################################################################################
 
 
 root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 200; epoch_decay = nb_epochs // 2; is_train = True
 model = CycleGAN(root_dir = root_dir, g_A2B = g_A2B, g_B2A = g_B2A, d_A = d_A, d_B = d_B)
 
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
-else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
+else: 
+    real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
+    
+    rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
+    plt.subplot(1, 2, 1); helper.show_image(real_B[rand_int].cpu().clone())
+    plt.subplot(1, 2, 2); helper.show_image(fake_A[rand_int].cpu().clone())
 
+    rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (10, 5)); 
+    plt.subplot(1, 2, 1); helper.show_image(real_A[rand_int].cpu().clone()) 
+    plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
 
-# In[ ]:
+    figure.savefig('Output.png', bbox_inches = 'tight')
 
-
-helper = Helper()
-
-rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
-plt.subplot(1, 2, 1); helper.show_image(real_B[rand_int].cpu().clone())
-plt.subplot(1, 2, 2); helper.show_image(fake_A[rand_int].cpu().clone())
-
-rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (10, 5)); 
-plt.subplot(1, 2, 1); helper.show_image(real_A[rand_int].cpu().clone()) 
-plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
-
-figure.savefig('Output.png', bbox_inches = 'tight')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
+    
+###################################################################################################################
 
