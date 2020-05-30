@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 # In[1]:
 
 
@@ -230,7 +227,7 @@ class Helper(object):
         return dataset, dataloader
 
 
-# In[5]:
+###################################################################################################################
 
 
 root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
@@ -256,7 +253,7 @@ sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
 
-# In[7]:
+###################################################################################################################
 
 
 class ResBlock(nn.Module):
@@ -683,7 +680,8 @@ class CycleGAN:
         return start_epoch
         
     
-    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name:             str = None, keep_only: int = 3, epoch_decay: int = 200):
+    def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name: \
+            str = None, keep_only: int = 3, epoch_decay: int = 200):
         
         """
         Parameters: 
@@ -791,7 +789,7 @@ class CycleGAN:
         return real_A, real_B, fake_A, fake_B
 
 
-# In[ ]:
+###################################################################################################################
 
 
 root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 400; epoch_decay = nb_epochs // 2; is_train = True
@@ -816,15 +814,4 @@ plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
 
 figure.savefig('Output.png', bbox_inches = 'tight')
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+###################################################################################################################
