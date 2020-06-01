@@ -740,19 +740,23 @@ class CycleGAN:
                 self.g_opt.zero_grad(); g_tot_loss.backward(); self.g_opt.step()
                 
                 # Discriminator's optimization step
-                fake_A = self.fake_pool_A.push_and_pop(fake_A)
-                fake_B = self.fake_pool_B.push_and_pop(fake_B)
+                self.d_opt.zero_grad()
                 
+                fake_A = self.fake_pool_A.push_and_pop(fake_A)
                 d_A_pred_real_data = self.d_A(real_A)
                 d_A_pred_fake_data = self.d_A(fake_A.detach())
                 
+                d_A_loss = self.loss.get_dis_gan_loss(d_A_pred_real_data, d_A_pred_fake_data)
+                d_A_loss.backward()
+                
+                fake_B = self.fake_pool_B.push_and_pop(fake_B)
                 d_B_pred_real_data = self.d_B(real_B)
                 d_B_pred_fake_data = self.d_B(fake_B.detach())
                 
-                d_A_loss = self.loss.get_dis_gan_loss(d_A_pred_real_data, d_A_pred_fake_data)
                 d_B_loss = self.loss.get_dis_gan_loss(d_B_pred_real_data, d_B_pred_fake_data)
+                d_B_loss.backward() 
                 
-                self.d_opt.zero_grad(); d_A_loss.backward(); d_B_loss.backward(); self.d_opt.step()
+                self.d_opt.step()
                 
                 # Write statistics to the Tensorboard
                 if curr_iter % 10 == 0:
