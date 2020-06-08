@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np, pandas as pd,  matplotlib as mpl, matplotlib.pyplot as plt,  os
 import itertools, functools;  from skimage import io as io,  transform as tfm
@@ -17,7 +12,7 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 
 
-# In[2]:
+##########################################################################################################################
 
 
 if torch.cuda.is_available():
@@ -27,7 +22,7 @@ else:
     devices = [torch.device('cpu')]; print("GPU isn't available! :(")
 
 
-# In[3]:
+##########################################################################################################################
 
 
 class Resize(object):
@@ -161,9 +156,6 @@ class Normalize(object):
         return {'A': A, 'B': B}
 
 
-# In[4]:
-
-
 class CustomDataset(Dataset):
     
     def __init__(self, path: str = None, transforms = None):
@@ -228,7 +220,7 @@ class Helper(object):
         return dataset, dataloader
 
 
-# In[5]:
+##########################################################################################################################
 
 
 root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
@@ -245,9 +237,6 @@ nb_trn_iters = len(trn_dataloader); nb_val_iters = len(val_dataloader)
 print(f"Length of Training dataset: {len(trn_dataset)}, Validation dataset: {len(val_dataset)}")
 
 
-# In[6]:
-
-
 print(f"Few random samples from the Training dataset!")
 sample = helper.get_random_sample(trn_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
@@ -257,7 +246,7 @@ sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
 plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
 
 
-# In[7]:
+##########################################################################################################################
 
 
 class ResBlock(nn.Module):
@@ -291,8 +280,6 @@ class ResBlock(nn.Module):
     
     def forward(self, x): return x + self.net(x)
 
-
-# In[8]:
 
 
 class Generator(nn.Module):
@@ -342,8 +329,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[9]:
-
 
 class Discriminator(nn.Module):
     
@@ -382,9 +367,7 @@ class Discriminator(nn.Module):
         
         
     def forward(self, x): return self.net(x)
-
-
-# In[10]:
+    
 
 
 class Initializer:
@@ -432,7 +415,7 @@ class Initializer:
         return net
 
 
-# In[11]:
+##########################################################################################################################
 
 
 init = Initializer(init_type = 'normal', init_gain = 0.02)
@@ -444,7 +427,7 @@ g_A2B = init(Generator(in_channels = 3, out_channels = 64, apply_dp = False))
 g_B2A = init(Generator(in_channels = 3, out_channels = 64, apply_dp = False))
 
 
-# In[12]:
+##########################################################################################################################
 
 
 class Tensorboard:
@@ -493,8 +476,6 @@ class Tensorboard:
         self.writer.add_scalar('d_loss', round(d_loss.item(), 4), n_iter)
         self.writer.add_scalar('g_loss', round(g_loss.item(), 4), n_iter)
 
-
-# In[13]:
 
 
 class Loss:
@@ -576,8 +557,6 @@ class Loss:
         return gen_tot_loss
 
 
-# In[14]:
-
 
 class ImagePool:
     
@@ -625,8 +604,6 @@ class ImagePool:
         return torch.cat(images_to_return, 0)
 
 
-# In[15]:
-
 
 class SaveModel:
     
@@ -647,8 +624,6 @@ class SaveModel:
         if len(filenames) > self.keep_only:
             os.remove(self.path + sorted(filenames, key = lambda x: int(x[6 : -4]))[0])
 
-
-# In[16]:
 
 
 class CycleGAN:
@@ -695,7 +670,8 @@ class CycleGAN:
             for param in net.module.parameters(): param.requires_grad = requires_grad
         
     
-    def fit(self, nb_epochs: int = 200, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name:             str = None, keep_only: int = 3, epoch_decay: int = 200):
+    def fit(self, nb_epochs: int = 200, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name: \
+            str = None, keep_only: int = 3, epoch_decay: int = 200):
         
         """
         Parameters: 
@@ -819,7 +795,7 @@ class CycleGAN:
         return real_A, real_B, fake_A, fake_B
 
 
-# In[ ]:
+##########################################################################################################################
 
 
 root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 200; epoch_decay = nb_epochs // 2; is_train = True
@@ -827,9 +803,6 @@ model = CycleGAN(root_dir = root_dir, g_A2B = g_A2B, g_B2A = g_B2A, d_A = d_A, d
 
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
 else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_200.pth")
-
-
-# In[ ]:
 
 
 # rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
@@ -841,16 +814,3 @@ else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_200.pth")
 # plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
 
 # figure.savefig('Output.png', bbox_inches = 'tight')
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
