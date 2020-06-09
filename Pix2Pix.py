@@ -590,6 +590,21 @@ class Pix2Pix:
         return start_epoch
     
     
+    @staticmethod
+    def set_requires_grad(nets, requires_grad = False):
+        
+        """
+        Set requies_grad=Fasle for all the networks to avoid unnecessary computations
+        Parameters:
+            nets (network list)   -- a list of networks
+            requires_grad (bool)  -- whether the networks require gradients or not
+        """
+        
+        if not isinstance(nets, list): nets = [nets]
+        for net in nets:
+            for param in net.module.parameters(): param.requires_grad = requires_grad
+    
+    
     def fit(self, nb_epochs: int = 400, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, model_name: \
             str = None, epoch_decay = 100):
         
@@ -622,7 +637,9 @@ class Pix2Pix:
                 real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
                 
                 # Discriminator's optimization step
+                self.set_requires_grad([self.dis], requires_grad = True)
                 fake_B = self.gen(real_A)
+                
                 dis_pred_real_data = self.dis(torch.cat([real_A, real_B], 0))
                 dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B.detach()], 0))
 
@@ -630,8 +647,8 @@ class Pix2Pix:
                 self.d_opt.zero_grad(); dis_tot_loss.backward(); self.d_opt.step()
                 
                 # Generator's optimization step
-                with torch.no_grad(): 
-                    dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B], 0))
+                self.set_requires_grad([self.dis], requires_grad = False)
+                dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B], 0))
                 
                 gen_gan_loss = self.loss.get_gen_gan_loss(dis_pred_fake_data)
                 gen_rec_loss = self.loss.get_gen_rec_loss(real_B, fake_B)
@@ -669,7 +686,7 @@ class Pix2Pix:
         real_B = torch.cat(list_real_B, axis = 0)
         real_A = torch.cat(list_real_A, axis = 0)
         
-        return real_A, real_B, fake_B 
+        return real_A, real_B, fake_B
 
 
 ######################################################################################################################
