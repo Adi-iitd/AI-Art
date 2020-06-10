@@ -264,25 +264,21 @@ Discriminator:
 
 #### Photo -> Cezzane Paintings:
 
-![3](https://user-images.githubusercontent.com/41862477/50507793-fdc57000-0aa4-11e9-8981-365b56c92b73.jpg)
-![8](https://user-images.githubusercontent.com/41862477/50507795-fdc57000-0aa4-11e9-8da8-d92cb4775264.jpg)
+<p align = "center"> 
+<img width="850" alt="Paint_4" src="https://user-images.githubusercontent.com/41862477/84287053-0e648b80-ab5d-11ea-96b0-2be7ea6fc6fd.png">
+<img width="850" alt="Paint_5" src="https://user-images.githubusercontent.com/41862477/84287145-2b00c380-ab5d-11ea-9c66-3b7407c20d8b.png">
+<img width="850" alt="Paint_6" src="https://user-images.githubusercontent.com/41862477/84287067-115f7c00-ab5d-11ea-9629-eb1952ff154c.png">
+</p>
 
 #### Cezzane Paintings -> Photo:
 
-![1](https://user-images.githubusercontent.com/41862477/50507839-2a798780-0aa5-11e9-99e6-7f7770ae8bdb.jpg)
-![4](https://user-images.githubusercontent.com/41862477/50507840-2a798780-0aa5-11e9-9022-96e648314a86.jpg)
+<p align = "center"> 
+<img width="850" alt="Photo_1" src="https://user-images.githubusercontent.com/41862477/84286786-c6ddff80-ab5c-11ea-9701-283ba27ddc3b.png">
+<img width="850" alt="Photo_2" src="https://user-images.githubusercontent.com/41862477/84286855-dbba9300-ab5c-11ea-836c-a8397668067d.png">
+<img width="850" alt="Photo_3" src="https://user-images.githubusercontent.com/41862477/84286912-e83eeb80-ab5c-11ea-8347-59abf683107d.png">
+</p>
 
 <br />
-
-#### Van_Gogh Paintings -> Photo:
-
-![6](https://user-images.githubusercontent.com/41862477/50508433-ea67d400-0aa7-11e9-9c48-2f200b5f29c2.jpg)
-![8](https://user-images.githubusercontent.com/41862477/50508435-eb006a80-0aa7-11e9-8be6-52907c335052.jpg)
-
-#### Photo -> Van_Gogh Paintings:
-
-![1](https://user-images.githubusercontent.com/41862477/50508407-d1f7b980-0aa7-11e9-80c0-c32d24b35764.jpg)
-![4](https://user-images.githubusercontent.com/41862477/50508411-d328e680-0aa7-11e9-8422-53576a49d005.jpg)
 
 ***
 
