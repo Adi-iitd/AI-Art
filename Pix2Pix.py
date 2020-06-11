@@ -625,8 +625,8 @@ class Pix2Pix:
             fraction = (epoch - epoch_decay) / (nb_epochs + start_epoch - epoch_decay)
             return 1 if epoch < epoch_decay else 1 - fraction
         
-        d_scheduler = optim.lr_scheduler.LambdaLR(self.d_opt, lr_lambda)
-        g_scheduler = optim.lr_scheduler.LambdaLR(self.g_opt, lr_lambda)
+        d_scheduler = optim.lr_scheduler.LambdaLR(self.d_opt, lr_lambda, last_epoch = start_epoch - 1)
+        g_scheduler = optim.lr_scheduler.LambdaLR(self.g_opt, lr_lambda, last_epoch = start_epoch - 1)
 
         
         # Starts the training
