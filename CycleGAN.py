@@ -694,8 +694,8 @@ class CycleGAN:
             fraction = (epoch - epoch_decay) / (nb_epochs - epoch_decay)
             return 1 if epoch < epoch_decay else 1 - fraction
         
-        d_scheduler = optim.lr_scheduler.LambdaLR(self.d_opt, lr_lambda = lr_lambda)
-        g_scheduler = optim.lr_scheduler.LambdaLR(self.g_opt, lr_lambda = lr_lambda)
+        d_scheduler = optim.lr_scheduler.LambdaLR(self.d_opt, lr_lambda = lr_lambda, last_epoch = start_epoch - 1)
+        g_scheduler = optim.lr_scheduler.LambdaLR(self.g_opt, lr_lambda = lr_lambda, last_epoch = start_epoch - 1)
         
         
         for epoch in range(start_epoch + 1, nb_epochs + 1):
