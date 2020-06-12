@@ -14,7 +14,7 @@ mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 
 ##########################################################################################################################
 
-
+# Use GPU if available
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
@@ -222,6 +222,8 @@ class Helper(object):
 
 ##########################################################################################################################
 
+# 1) Correctly specify the Root directory which contains two folders: Train folder and Validation folder
+# 2) Image names should be labeled from 1 to len(dataset), o/w will throw an error while sorting the filenames
 
 root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
 trn_batch_sz = 1 * len(devices); val_batch_sz = 64; img_sz = 128; jitter_sz = int(img_sz * 1.12)
@@ -631,6 +633,9 @@ class CycleGAN:
     def __init__(self, root_dir: str, g_A2B, g_B2A, d_A, d_B):
         
         self.save_dir = root_dir + 'Models/'; summary_path = root_dir + 'Tensorboard/'
+        
+        if not os.path.exists(self.save_dir): os.makedirs(self.save_dir)
+        if not os.path.exists(summary_path ): os.makedirs(summary_path )
         self.saver = SaveModel(self.save_dir); self.tb = Tensorboard(summary_path)
         
         self.loss = Loss(loss_type = 'MSE', lambda_ = 10)
@@ -762,9 +767,8 @@ class CycleGAN:
                 
                 
                 # Writing statistics to the Tensorboard
-                if curr_iter % 150 == 0:
-                    self.tb.write_image(10, self.g_A2B, self.g_B2A, epoch, curr_iter)
-                    self.tb.write_loss (d_tot_loss, g_tot_loss, epoch, curr_iter)
+                self.tb.write_loss (d_tot_loss, g_tot_loss, epoch, curr_iter)
+                if curr_iter % 150 == 0: self.tb.write_image(10, self.g_A2B, self.g_B2A, epoch, curr_iter)
             
             
             curr_iter = 0; g_scheduler.step(); d_scheduler.step(); print(f"After {epoch} epochs:"); 
@@ -805,12 +809,14 @@ if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = e
 else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_200.pth")
 
 
-# rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
-# plt.subplot(1, 2, 1); helper.show_image(real_B[rand_int].cpu().clone())
-# plt.subplot(1, 2, 2); helper.show_image(fake_A[rand_int].cpu().clone())
+rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
+plt.subplot(1, 2, 1); helper.show_image(real_B[rand_int].cpu().clone())
+plt.subplot(1, 2, 2); helper.show_image(fake_A[rand_int].cpu().clone())
 
-# rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (10, 5)); 
-# plt.subplot(1, 2, 1); helper.show_image(real_A[rand_int].cpu().clone()) 
-# plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
+rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (10, 5)); 
+plt.subplot(1, 2, 1); helper.show_image(real_A[rand_int].cpu().clone()) 
+plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
 
-# figure.savefig('Output.png', bbox_inches = 'tight')
+figure.savefig('Output.png', bbox_inches = 'tight')
+
+##########################################################################################################################
