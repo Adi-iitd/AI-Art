@@ -12,12 +12,18 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
 
 
+########################################################################################################################
+
+
 if torch.cuda.is_available():
     devices = ['cuda:' + str(x) for x in range(torch.cuda.device_count())]
     print(f"Number of GPUs available: {len(devices)}")
 else:
     devices = [torch.device('cpu')]; print("GPU isn't available! :(")
-
+    
+    
+########################################################################################################################
+    
 
 class Resize(object):
     
@@ -221,6 +227,9 @@ class Helper(object):
 
 ######################################################################################################################
 
+
+# 1) Correctly specify the Root directory which contains two folders: Train folder and Validation folder
+# 2) Image names should be labeled from 1 to len(dataset), o/w will throw an error while sorting the filenames
 
 root_dir = "./Dataset/Vision/Pix2Pix/Facades/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
 trn_batch_sz = 16 * len(devices); val_batch_sz = 64; img_sz = 256; jitter_sz = int(img_sz * 1.12)
@@ -571,8 +580,10 @@ class Pix2Pix:
     def __init__(self, root_dir: str, gen, dis):
         
         self.dis = dis; self.gen = gen; self.loss = Loss()
-        
         self.save_dir = root_dir + 'Models/'; summary_path = root_dir + 'Tensorboard/'
+        
+        if not os.path.exists(self.save_dir): os.makedirs(self.save_dir)
+        if not os.path.exists(summary_path ): os.makedirs(summary_path )
         self.saver = SaveModel(self.save_dir); self.tb = Tensorboard(summary_path)
     
     
@@ -657,9 +668,8 @@ class Pix2Pix:
                 self.g_opt.zero_grad(); gen_tot_loss.backward(); self.g_opt.step()
                 
                 # Write statistics to the Tensorboard
-                if curr_iter % 10 == 0:
-                    self.tb.write_image(10, self.gen, epoch, curr_iter)
-                    self.tb.write_loss (dis_tot_loss, gen_tot_loss, epoch, curr_iter)
+                self.tb.write_loss (dis_tot_loss, gen_tot_loss, epoch, curr_iter)
+                if curr_iter % 10 == 0: self.tb.write_image(10, self.gen, epoch, curr_iter)
 
                 
             curr_iter = 0; d_scheduler.step(); g_scheduler.step(); print(f"After {epoch} epochs:")
