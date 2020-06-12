@@ -16,7 +16,7 @@
 
 <p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image G combines the Content of image C with the Style of image S. </p>
 
-![neural-style](https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png)
+<img src = https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png width = 1000>
 
 <p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
 
@@ -34,39 +34,47 @@
 
 <p align = "justify"> Let a(C) be the hidden layer activations which is a <b> N<sub>h</sub> * N<sub>w</sub> * N<sub>c</sub> </b> tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
-![3](https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG)
+<img src = https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG width = 500>
 
 <p align = "justify"> N<sub>h</sub>, N<sub>w</sub>, N<sub>c</sub> are the height, width, and the number of channels of the hidden layer chosen. To compute the cost J<sub>Content</sub> (C, G), it might also be convenient to unroll these 3D volumes into a 2D matrix, as shown below. </p>
 
-![1](https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG)
+<img src = https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG width = 1000>
 
 <p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions that we get when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are used in the Content loss. </i> </p> 
 
-![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
-![Con_recons_1_2](https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg)
-![Con_recons_2_2](https://user-images.githubusercontent.com/41862477/82235682-aac9b280-9950-11ea-8885-4b8775638bbe.jpg)
-![Con_recons_3_2](https://user-images.githubusercontent.com/41862477/82235683-abfadf80-9950-11ea-95b8-d9b8836ffa58.jpg)
-![Con_recons_4_2](https://user-images.githubusercontent.com/41862477/82235686-ac937600-9950-11ea-9fe3-14dd979106cc.jpg)
-![Con_recons_5_2](https://user-images.githubusercontent.com/41862477/82235688-ad2c0c80-9950-11ea-8a3b-d592d2bfee82.jpg)  
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235677-a8ffef00-9950-11ea-8e38-513055c487cf.jpg width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235682-aac9b280-9950-11ea-8885-4b8775638bbe.jpg width = 285></td>
+ </tr>
+</table>
 
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235683-abfadf80-9950-11ea-95b8-d9b8836ffa58.jpg width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235686-ac937600-9950-11ea-9fe3-14dd979106cc.jpg width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/82235688-ad2c0c80-9950-11ea-8a3b-d592d2bfee82.jpg width = 285></td>
+ </tr>
+</table>
 
 ### Style Cost
 
 <p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are <i> G<sub>(i, j)</sub> = np.dot(v<sub>i</sub>, v<sub>j</sub>) </i>. In other words, <i> G (i, j) </i> compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
 
-![2](https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG)
+<img src = https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG width = 1000>
 
 <p align = "justify"> The result is a matrix of dimension <i> (n<sub>C</sub>, n<sub>C</sub>) </i> where n<sub>C</sub> is the number of filters. The value <i> G (i, j) </i> measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G (i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Gram matrix G measures the <b> Style </b> of an image. </i>
 
 <p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the Style image S and that of the Output image G. Usually, we take more than one layers in account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
 
-![4](https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG)
+<img src = https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG width = 500>
 
 ### Total Variation (TV) Cost
 
 <p align = "justify"> It acts like a regularizer which encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by Gatys et al., but it sometimes improve the results. For 2D signal (or image), it is defined as follows: </p> 
 
-![5](https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG)
+<img src = https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG width = 500>
 
 ### Experiments
 
@@ -74,21 +82,32 @@
 
 <p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost. So, for a given <b> Style image </b>, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
 
-![6](https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg)
+<img src = https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg width = 1000>
 
 Here are the brush-strokes that we get after running the experiment taking different layers, one at a time!
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683611-e15d9580-faed-11e8-80d6-3d216487f678.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683613-e15d9580-faed-11e8-836f-b8d3dab32f03.png width = 285></td>
+ </tr>
+</table>
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683614-e1f62c00-faed-11e8-964f-6e0e4085cc3d.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683615-e1f62c00-faed-11e8-9583-a6ca7cfc058b.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683616-e1f62c00-faed-11e8-9cf2-cbc5c3f5e18b.png width = 285></td>
+ </tr>
+</table>
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683617-e1f62c00-faed-11e8-9e09-4147889c3b01.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683618-e28ec280-faed-11e8-92b3-f48787c98f8a.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png width = 285></td>
+ </tr>
+</table>
 
-![2_2](https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png)
-![3_1](https://user-images.githubusercontent.com/41862477/49683611-e15d9580-faed-11e8-80d6-3d216487f678.png)
-![3_2](https://user-images.githubusercontent.com/41862477/49683613-e15d9580-faed-11e8-836f-b8d3dab32f03.png)
-![3_3](https://user-images.githubusercontent.com/41862477/49683614-e1f62c00-faed-11e8-964f-6e0e4085cc3d.png)
-![4_1](https://user-images.githubusercontent.com/41862477/49683615-e1f62c00-faed-11e8-9583-a6ca7cfc058b.png)
-![4_3](https://user-images.githubusercontent.com/41862477/49683616-e1f62c00-faed-11e8-9cf2-cbc5c3f5e18b.png)
-![4_4](https://user-images.githubusercontent.com/41862477/49683617-e1f62c00-faed-11e8-9e09-4147889c3b01.png)
-![5_1](https://user-images.githubusercontent.com/41862477/49683618-e28ec280-faed-11e8-92b3-f48787c98f8a.png)
-![5_4](https://user-images.githubusercontent.com/41862477/49683619-e28ec280-faed-11e8-8076-85145ff382ea.png)
-
-> <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
+<p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
 <p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper could be one way. </p>
 
@@ -109,9 +128,9 @@ Here are the brush-strokes that we get after running the experiment taking diffe
 
 ***
 
-## [Image-to-Image Translation with Conditional Adversarial Networks (Pix2Pix)](https://arxiv.org/pdf/1611.07004.pdf)
+## [Pix2Pix](https://arxiv.org/pdf/1611.07004.pdf)
 
-<img width="1149" alt="Screenshot 2020-05-18 at 10 50 55 PM" src="https://user-images.githubusercontent.com/41862477/82241656-2aa84a80-995a-11ea-9968-686294f97414.png">
+<img width="1000" src="https://user-images.githubusercontent.com/41862477/82241656-2aa84a80-995a-11ea-9968-686294f97414.png">
 
 <p align = "justify"> The authors of this paper investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems. These networks not only learn the mapping from the input image to output image but also learn a loss function to train this mapping. If we take a naive approach and ask CNN to minimize just the Euclidean distance between predicted and ground truth pixels, it will tend to produce blurry results. This is because Euclidean distance is minimized by averaging all plausible outputs, which causes blurring. </p>
 
@@ -121,7 +140,7 @@ Here are the brush-strokes that we get after running the experiment taking diffe
 
 > <p align = "justify"> Mathematically, CGANs learn a mapping from observed image X and random noise vector z, to y, <i> G: {x,z} → y. </i> The generator G is trained to produce output that cannot be distinguished from the <b> real </b> images by an adversarially trained discriminator, D, which in turn is optimized to perform best at identifying the <b> fake </b> images generated by the generator. The figure shown below illustrates the working of GAN in the Conditional setting. </p>
 
-<img width="1079" alt="Screenshot 2020-05-18 at 11 17 51 PM" src="https://user-images.githubusercontent.com/41862477/82243881-f3d43380-995d-11ea-8877-5ccdf4828680.png">
+<img width="1000" src="https://user-images.githubusercontent.com/41862477/82243881-f3d43380-995d-11ea-8877-5ccdf4828680.png">
 
 
 ### Loss Function
@@ -172,20 +191,22 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 #### Cityscapes:
 
-![1](https://user-images.githubusercontent.com/41862477/82577615-dcd55180-9ba8-11ea-9c8d-dbe958002e06.png)
-![3](https://user-images.githubusercontent.com/41862477/82577633-e2329c00-9ba8-11ea-889c-fc6d0ee29da2.png)
-![4](https://user-images.githubusercontent.com/41862477/82577637-e2cb3280-9ba8-11ea-81cf-53ff1a56039c.png)
+<img src="https://user-images.githubusercontent.com/41862477/84529965-fb3df100-acff-11ea-85db-a98e65bc61ad.png" width = 1000>
+<img src="https://user-images.githubusercontent.com/41862477/84529974-fed17800-acff-11ea-81a4-28dbfd15b80c.png" width = 1000>
+<img src="https://user-images.githubusercontent.com/41862477/84529984-009b3b80-ad00-11ea-8b53-15a77459658a.png" width = 1000>
 
 #### Facades:
-![2](https://user-images.githubusercontent.com/41862477/82696095-fc8d7800-9c83-11ea-80c4-0d0ed3b745d3.png)
-![2](https://user-images.githubusercontent.com/41862477/82696106-01522c00-9c84-11ea-8aa2-c55788309f51.png)
-![3](https://user-images.githubusercontent.com/41862477/82696108-02835900-9c84-11ea-9ee0-6b8c98f0cd72.png)
+
+<img width="1000" alt="Image_1" src="https://user-images.githubusercontent.com/41862477/84530276-7bfced00-ad00-11ea-883f-a1ef5cecce12.png">
+<img width="1000" alt="Image_2" src="https://user-images.githubusercontent.com/41862477/84530281-80c1a100-ad00-11ea-8ddc-1d3eb77209bd.png">
+<img width="1000" alt="Image_4" src="https://user-images.githubusercontent.com/41862477/84530289-828b6480-ad00-11ea-9590-173c478b433e.png">
+<img width="1000" alt="Image_5" src="https://user-images.githubusercontent.com/41862477/84530294-84552800-ad00-11ea-9cc2-85bb268e9351.png">
 
 ***
 
 ## [CycleGAN](https://arxiv.org/pdf/1703.10593.pdf)
 
-<img width="995" align="center" alt="Screenshot 2020-05-23 at 11 40 22 AM" src="https://user-images.githubusercontent.com/41862477/82723149-4c9f2580-9cea-11ea-98cf-bf80e2428a4b.png">
+<img width="1000" src="https://user-images.githubusercontent.com/41862477/82723149-4c9f2580-9cea-11ea-98cf-bf80e2428a4b.png">
 
 <p align = "justify"> Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in the paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
@@ -201,7 +222,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 - <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). </p> 
 - <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> F(G(x)) ≈ x and G(F(y)) ≈ y. </b> </p>
 
-![2](https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg)
+<img src = https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg width = 1000>
 
 > <p align = "justify"> <i> As illustrated in figure, their model includes two mappings <b> G : X → Y and F : Y → X. </b> In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other. </i> </p>
 
