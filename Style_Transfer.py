@@ -5,8 +5,8 @@ import torchvision, torchvision.models as models, torchvision.transforms as T
 import numpy as np, pandas as pd, matplotlib as mpl, matplotlib.pyplot as plt 
 import PIL.Image as Image, warnings; from IPython.display import clear_output
 
-
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
 print(f"Device in use: {device}")
 
@@ -270,10 +270,6 @@ img_loader = ImageLoader(size = (512, 512), resize = True, interpolation = 2);
 
 con_image = img_loader.read_image(filepath = con_img_fp)
 sty_image = img_loader.read_image(filepath = sty_img_fp)
-
-print(f"Con_img shp: {con_image.shape},      Sty_img shp: {sty_image.shape}  \n ")
-print(f"Con_img max: {torch.max(con_image)}, Con_img min: {torch.min(con_image)}")
-print(f"Sty_img max: {torch.max(sty_image)}, Sty_img min: {torch.min(sty_image)}")
 
 img_loader.show_image(con_image, title = "Content Image")
 img_loader.show_image(sty_image, title = "Style Image")
