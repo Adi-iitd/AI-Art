@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 import numpy as np,  matplotlib as mpl, matplotlib.pyplot as plt
 import torchvision.transforms as T, torchvision.models as models
@@ -13,14 +8,12 @@ from PIL import Image
 mpl.rcParams["figure.figsize"] = (18, 9); mpl.rcParams["axes.grid"] = False
 
 
-# In[2]:
-
+#####################################################################################################################
 
 if torch.cuda.is_available(): device = torch.device('cuda'); print("Using GPU!")
 else: device = torch.device('cpu'); print("GPU isn't available! :(")
 
-
-# In[3]:
+#####################################################################################################################
 
 
 class Helper(object):
@@ -115,18 +108,7 @@ class Helper(object):
         if  denormalize:  tensor = self.denormalize(tensor.cpu().clone())
         tensor = np.asarray(tensor); plt.imshow(tensor); plt.title(title)
 
-
-# In[4]:
-
-
-root_path = "./Dataset/Vision/Deep_Dream/"; img_path = root_path + "IronMan.jpg"; img_sz = 512
-
-helper = Helper(img_sz = img_sz, resize = True, pres_aspect_ratio = True)
-image_ = helper.read_img(img_path); helper.show_img(image_)
-
-
-# In[5]:
-
+        
 
 class MyModel(nn.Module):
     
@@ -161,9 +143,6 @@ class MyModel(nn.Module):
             if int(name) in self.layers: feat_maps.append(tensor)
         
         return feat_maps
-
-
-# In[8]:
 
 
 class DeepDream(object):
@@ -255,21 +234,17 @@ class DeepDream(object):
         return dream_image
 
 
-# In[ ]:
+    
+#####################################################################################################################
 
+
+root_path = "./Dataset/Vision/Deep_Dream/"; img_path = root_path + "IronMan.jpg"; img_sz = 512
+
+helper = Helper(img_sz = img_sz, resize = True, pres_aspect_ratio = True)
+image_ = helper.read_img(img_path); helper.show_img(image_)
 
 dreamer = DeepDream(image_, layers = ["conv4_4"]); output = dreamer.deepdream()
 helper.show_img(output, denormalize = True)
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+#####################################################################################################################
