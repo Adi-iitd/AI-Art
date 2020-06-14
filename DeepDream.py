@@ -137,11 +137,12 @@ class MyModel(nn.Module):
       
     def forward(self, tensor: torch.Tensor):
         
-        feat_maps = []
+        feat_maps = []; last_layer = self.layers[-1]
         for name, layer in self.vgg19.named_children():
             tensor = layer(tensor)
             if int(name) in self.layers: feat_maps.append(tensor)
-        
+            if int(name) == last_layer : break
+            
         return feat_maps
 
 
