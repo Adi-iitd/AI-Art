@@ -305,11 +305,11 @@ Discriminator:
 
 ## Deep Dream
 
-![tony_stark](https://user-images.githubusercontent.com/41862477/51070752-72cfa280-166c-11e9-92de-e5805804602e.jpg)
-![layer_3](https://user-images.githubusercontent.com/41862477/51070747-72370c00-166c-11e9-9590-29b2afad65d7.jpg)
-![layer_4](https://user-images.githubusercontent.com/41862477/51070748-72370c00-166c-11e9-9539-e505346cc2fa.jpg)
-![layer_7](https://user-images.githubusercontent.com/41862477/51070749-72370c00-166c-11e9-9d8d-ee42be071f52.jpg)
-![layer_9](https://user-images.githubusercontent.com/41862477/51070750-72370c00-166c-11e9-932d-2bb959ab04f1.jpg)
-![layer_10](https://user-images.githubusercontent.com/41862477/51070751-72cfa280-166c-11e9-9668-06851dda4e01.jpg)
-
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/84597918-b1324800-ae84-11ea-82d4-aa4aaeb930d4.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84597932-bd1e0a00-ae84-11ea-8491-958e15b5f3fb.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84597928-ba231980-ae84-11ea-967b-e52363465bc7.png width = 285></td>
+ </tr>
+</table>
 ***
