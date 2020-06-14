@@ -305,6 +305,8 @@ Discriminator:
 
 ## Deep Dream
 
+<img src = https://user-images.githubusercontent.com/41862477/84598200-a8427600-ae86-11ea-8e9a-fcd25a5fe095.png height = 500 width = 1000>
+
 <table>
   <tr>
 <td><img src = https://user-images.githubusercontent.com/41862477/84597918-b1324800-ae84-11ea-82d4-aa4aaeb930d4.png width = 285></td>
@@ -312,4 +314,5 @@ Discriminator:
 <td><img src = https://user-images.githubusercontent.com/41862477/84597928-ba231980-ae84-11ea-967b-e52363465bc7.png width = 285></td>
  </tr>
 </table>
+
 ***
