@@ -30,9 +30,9 @@
 
 <p align = "justify"> Usually, each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, by minimizing the L2 distance between their activation maps.
  
-<i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image, but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
+<i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
 
-<p align = "justify"> Let a(C) be the hidden layer activations which is a <b> N<sub>h</sub>*N<sub>w</sub>*N<sub>c</sub> </b> tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
+<p align = "justify"> Let a(C) be the hidden layer activations which is a N<sub>h</sub>*N<sub>w</sub>*N<sub>c</sub> dimensional tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG width = 500>
 
@@ -40,7 +40,7 @@
 
 <img src = https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG width = 1000>
 
-<p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are chosen in the Content loss. </i> </p> 
+<p align = "justify"> <i> The first image is the original one, while the remaining ones are the reconstructions when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are chosen in the Content loss. </i> </p> 
 
 <table>
   <tr>
@@ -60,11 +60,11 @@
 
 ### Style Cost
 
-<p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are <i> G<sub>(i, j)</sub> = np.dot(v<sub>i</sub>, v<sub>j</sub>) </i>. In other words, <i> G (i, j) </i> compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
+<p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are G(i, j) = np.dot(v<sub>i</sub>, v<sub>j</sub>). In other words, G(i, j) compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG width = 1000>
 
-<p align = "justify"> The result is a matrix of dimension <i> (n<sub>C</sub>, n<sub>C</sub>) </i> where n<sub>C</sub> is the number of filters. The value <i> G (i, j) </i> measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G (i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G (i, i)  measures how common vertical textures are in the image as a whole. <i> By capturing the prevalence of different types of features G (i, i), as well as how much different features occur together G (i, j), the Gram matrix G measures the <b> Style </b> of an image. </i>
+<p align = "justify"> The result is a matrix of dimension (n<sub>C</sub>, n<sub>C</sub>) where n<sub>C</sub> is the number of filters. The value G(i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G(i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G(i, i)  measures how common vertical textures are in the image as a whole. <i> By capturing the prevalence of different types of features G(i, i), as well as how much different features occur together G(i, j), the Gram matrix G measures the <b> Style </b> of an image. </i>
 
 <p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the Style image S and that of the Output image G. Usually, we take more than one layers in account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
 
