@@ -310,8 +310,15 @@ Discriminator:
 <table>
   <tr>
 <td><img src = https://user-images.githubusercontent.com/41862477/84597918-b1324800-ae84-11ea-82d4-aa4aaeb930d4.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84597932-bd1e0a00-ae84-11ea-8491-958e15b5f3fb.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84597928-ba231980-ae84-11ea-967b-e52363465bc7.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84620003-66e8af80-aef4-11ea-8b70-69c8ed492f33.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84620018-74059e80-aef4-11ea-8f26-4f65002ed7c1.png width = 285></td>
+ </tr>
+</table>
+<table>
+  <tr>
+<td><img src = https://user-images.githubusercontent.com/41862477/84620032-8089f700-aef4-11ea-8453-755b00d867a1.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84620043-8c75b900-aef4-11ea-9858-5706ba5851b0.png width = 285></td>
+<td><img src = https://user-images.githubusercontent.com/41862477/84620048-8ed81300-aef4-11ea-8a07-7fdbd831fd32.png width = 285></td>
  </tr>
 </table>
 
