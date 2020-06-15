@@ -16,9 +16,9 @@
 
 <img src = https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png width = 1000>
 
-<p align = "justify"> <i>Style Transfer uses a pre-trained Convolutional Neural Network to get the content and style representations of the image, but why do these intermediate outputs within our pre-trained image classification network allow us to define style and content representations?</i> These pre-trained models trained on image classification tasks can understand the image. This requires taking the raw image as input pixels and building an internal representation that converts the raw image pixels into a complex understanding of the features present within the image. The first few feature maps represent low-level features like edges and textures. As we go deeper and deeper through the network, the activation maps represent higher-level features - objects like wheels, or eyes, or faces. </p>
-
-> Style Transfer incorporates <i> three </i> different kinds of losses:
+<p align = "justify"> <i>Style Transfer uses a pre-trained Convolutional Neural Network to get the content and style representations of the image, but why do these intermediate outputs within our pre-trained image classification network allow us to define style and content representations?</i> </p>
+ 
+<p>These pre-trained models trained on image classification tasks can understand the image. This requires taking the raw image as input pixels and building an internal representation that converts the raw image pixels into a complex understanding of the features present within the image. The first few feature maps represent low-level features like edges and textures. As we go deeper and deeper through the network, the activation maps represent higher-level features - objects like wheels, or eyes, or faces. Style Transfer incorporates <b> three </b> different kinds of losses: </p>
 
 - **Content Cost**: **J**<sub>Content</sub> (C, G)
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
@@ -28,11 +28,11 @@
 
 ###  Content Cost
 
-<p align = "justify"> Generally, each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. The first few layers of the ConvNet tend to detect low-level features such as edges and simple textures, and the last few layers tend to detect high-level features such as more complex textures as well as features specific to different classes. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, for which, we minimize the (<b>MSE</b>) loss between the feature maps of the respective images.
+<p align = "justify"> Usually, each layer in the network defines a non-linear filter bank whose complexity increases with the position of the layer in the network. <b>Content loss</b> tries to make sure that the Output image <b>G</b> has similar content as the Input image <b>C</b>, by minimizing the L2 distance between their activation maps.
  
 <i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image, but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
 
-<p align = "justify"> Let a(C) be the hidden layer activations which is a <b> N<sub>h</sub> * N<sub>w</sub> * N<sub>c</sub> </b> tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
+<p align = "justify"> Let a(C) be the hidden layer activations which is a <b> N<sub>h</sub>*N<sub>w</sub>*N<sub>c</sub> </b> tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG width = 500>
 
@@ -40,7 +40,7 @@
 
 <img src = https://user-images.githubusercontent.com/41862477/49682841-10b9d580-fae1-11e8-851f-ec9fbf37dd92.JPG width = 1000>
 
-<p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions that we get when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are used in the Content loss. </i> </p> 
+<p align = "justify"> <i> The first image is the original one, while the remaining are the reconstructions when layers <b> Conv_1_2, Conv_2_2, Conv_3_2, Conv_4_2, and Conv_5_2 </b> (left to right and top to bottom) are chosen in the Content loss. </i> </p> 
 
 <table>
   <tr>
