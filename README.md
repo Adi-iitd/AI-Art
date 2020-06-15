@@ -4,11 +4,9 @@
 
 ## Motivation
 
-<p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans and the world, an inevitable question follows: </p>
+<p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans, an inevitable question follows: <i> Can machines be creative? </i> </p>
 
-> <i> Can a machine be creative, and will artificial intelligence be able to make art? </i>
-
-<p align = "justify"> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. I will cover four different Deep Learning models in this tutorial to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN</b>, and <b>Deep Dream. </b> </p>
+<p align = "justify"> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. This tutorial will cover four different Deep Learning models to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN, </b> and <b>Deep Dream. </b> </p>
 
 ***
 
