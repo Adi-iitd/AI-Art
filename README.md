@@ -60,31 +60,31 @@
 
 ### Style Cost
 
-<p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are G(i, j) = np.dot(v<sub>i</sub>, v<sub>j</sub>). In other words, G(i, j) compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
+<p align = "justify"> To understand it better, we first need to know something about the <b> Gram Matrix </b>. In linear algebra, the Gram matrix G of a set of vectors  (v1, …, vn) is the matrix of dot products, whose entries are G(i, j) = np.dot(v<sub>i</sub>, v<sub>j</sub>). In other words, G(i, j) compares how similar v<sub>i</sub> is to v<sub>j</sub>. If they are highly similar, the outcome would be a large value, otherwise, it would be low suggesting a lower correlation. In Style Transfer, we can compute the Gram matrix by multiplying the <b> unrolled </b> filter matrix with its transpose as shown below: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682895-f8968600-fae1-11e8-8fbd-b754c625542a.JPG width = 1000>
 
-<p align = "justify"> The result is a matrix of dimension (n<sub>C</sub>, n<sub>C</sub>) where n<sub>C</sub> is the number of filters. The value G(i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G(i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G(i, i)  measures how common vertical textures are in the image as a whole. <i> By capturing the prevalence of different types of features G(i, i), as well as how much different features occur together G(i, j), the Gram matrix G measures the <b> Style </b> of an image. </i>
-
-<p align = "justify"> After we have the Gram matrix, we want to minimize the distance between the Gram matrix of the Style image S and that of the Output image G. Usually, we take more than one layers in account to calculate <b> Style cost </b> as opposed to Content cost (in which only one layer is sufficient), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
+<p align = "justify"> The result is a matrix of dimension (n<sub>C</sub>, n<sub>C</sub>) where n<sub>C</sub> is the number of filters. The value G(i, j) measures how similar the activations of filter i are to the activations of filter j. One important part of the gram matrix is that the diagonal elements such as G(i, i) measures how active filter i is. For example, suppose filter i is detecting vertical textures in the image, then G(i, i)  measures how common vertical textures are in the image as a whole. </p>
+ 
+<p align = "justify"> <i> By capturing the prevalence of different types of features G(i, i), as well as how much different features occur together G(i, j), the Gram matrix G measures the <b> Style </b> of an image. </i> Once we have the Gram matrix, we minimize the L2 distance between the Gram matrix of the Style image S and the Output image G. Usually, we take more than one layers in account to calculate the <b> Style cost </b> as opposed to Content cost (which only requires one layer), and the reason for doing so is discussed later on in the post. For a single hidden layer, the corresponding style cost is defined as: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49683030-54620e80-fae4-11e8-9f79-a500da7f12c3.JPG width = 500>
 
 ### Total Variation (TV) Cost
 
-<p align = "justify"> It acts like a regularizer which encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by Gatys et al., but it sometimes improve the results. For 2D signal (or image), it is defined as follows: </p> 
+<p align = "justify"> It acts like a regularizer that encourages spatial smoothness in the generated image (G). This was not used in the original paper proposed by Gatys et al., but it sometimes improves the results. For 2D signal (or image), it is defined as follows: </p> 
 
 <img src = https://user-images.githubusercontent.com/41862477/49683156-1b2a9e00-fae6-11e8-8321-34b3c1173175.JPG width = 500>
 
 ### Experiments
 
-> What will happen if we zero out the coefficients of the Content and TV loss, and take activation from only one layer  to compute the Style cost?
+> What happens if we zero out the coefficients of the Content and TV loss, and take activations from a single layer to compute the Style cost?
 
-<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost. So, for a given <b> Style image </b>, we would see what kind of brush-strokes will the model try to enforce in the final generated image (G). Remember, we started with only one layer's activation in the Style cost, so running the experiments for different layers would give different kind of brush-strokes that would be there in the final generated image. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
+<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost.  So, for a given <b> Style image </b>, we will see the different kinds of brush-strokes that the model will try to enforce in the final generated image (G). Remember, we started with a single layer's activations in the Style cost, so, running the experiments for different layers would give different kinds of brush-strokes. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg width = 1000>
 
-Here are the brush-strokes that we get after running the experiment taking different layers, one at a time!
+The brush-strokes that we get after running the experiment taking different layers one at a time are attached below.
 <table>
   <tr>
 <td><img src = https://user-images.githubusercontent.com/41862477/49683610-e15d9580-faed-11e8-8d3f-58de7ee88595.png width = 285></td>
@@ -109,7 +109,7 @@ Here are the brush-strokes that we get after running the experiment taking diffe
 
 <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
-<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing the weights as we go deeper and deeper could be one way. </p>
+<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are much more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing weights could be one way. </p>
 
 ### Results
 
