@@ -189,7 +189,7 @@ class DeepDream(object):
             grad_3 = gaussian_filter(grad, sigma = sigma * 2.0)
             grad = torch.tensor(grad_1 + grad_2 + grad_3, device = device)
             
-            image.data += lr / (torch.std(grad) + 1e-8) * grad
+            image.data += lr / torch.mean(torch.abs(grad)) * grad
             image.data = helper.clip(image.data)
             image.grad.data.zero_()
             
@@ -244,7 +244,7 @@ root_path = "./Dataset/Vision/Deep_Dream/"; img_path = root_path + "IronMan.jpg"
 helper = Helper(img_sz = img_sz, resize = True, pres_aspect_ratio = True)
 image_ = helper.read_img(img_path); helper.show_img(image_)
 
-dreamer = DeepDream(image_, layers = ["conv4_4"]); output = dreamer.deepdream()
+dreamer = DeepDream(image_, layers = ["conv4_4"]); output = dreamer.deepdream(lr = 5e-3)
 helper.show_img(output, denormalize = True)
 
 
