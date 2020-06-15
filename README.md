@@ -12,11 +12,11 @@
 
 ## [Neural Style Transfer](https://arxiv.org/abs/1508.06576)
 
-<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image G combines the Content of image C with the Style of image S. </p>
+<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image has content of image C painted in style of image S. </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png width = 1000>
 
-<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of it's simple and hierarchical design) which already can recognize a variety of <i> low-level features </i> (at the earlier layers) and <i> high-level features </i> (at the deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
+<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of its simplicity, and hierarchical design) which already can recognize a variety of <i> low-level features </i> (shallower layers) and <i> high-level features </i> (deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
 
 - **Content Cost**: **J**<sub>Content</sub> (C, G)
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
