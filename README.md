@@ -12,11 +12,13 @@
 
 ## [Neural Style Transfer](https://arxiv.org/abs/1508.06576)
 
-<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image has content of image C painted in style of image S. </p>
+<p align = "justify"> Style Transfer is one of the most fun techniques in Deep learning. It combines the two images, namely, a <b> Content </b> image (C) and a <b> Style </b> image (S), to create an <b> Output </b> image (G). The Output image has the content of image C painted in the style of image S. </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png width = 1000>
 
-<p align = "justify"> Style Transfer uses a pre-trained Convolutional Neural Network <b> VGG-19, </b> (because of its simplicity, and hierarchical design) which already can recognize a variety of <i> low-level features </i> (shallower layers) and <i> high-level features </i> (deeper layers). Style Transfer incorporates <i> three </i> different kinds of losses: </p>
+<p align = "justify"> <i>Style Transfer uses a pre-trained Convolutional Neural Network to get the content and style representations of the image, but why do these intermediate outputs within our pre-trained image classification network allow us to define style and content representations?</i> These pre-trained models trained on image classification tasks can understand the image. This requires taking the raw image as input pixels and building an internal representation that converts the raw image pixels into a complex understanding of the features present within the image. The first few feature maps represent low-level features like edges and textures. As we go deeper and deeper through the network, the activation maps represent higher-level features - objects like wheels, or eyes, or faces. </p>
+
+> Style Transfer incorporates <i> three </i> different kinds of losses:
 
 - **Content Cost**: **J**<sub>Content</sub> (C, G)
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
