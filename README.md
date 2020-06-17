@@ -203,8 +203,6 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 ### Results
 
-<p align = "justify"> Generated image, True label, and Imput image from left to right. </p>
-
 #### Cityscapes:
 
 <img src="https://user-images.githubusercontent.com/41862477/84529965-fb3df100-acff-11ea-85db-a98e65bc61ad.png" width = 1000>
