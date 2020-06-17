@@ -109,7 +109,7 @@ The brush-strokes that we get after running the experiment taking different laye
 
 <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
-<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weightage to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are much more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones (exponentially decreasing the weights could be one way). </p>
+<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weightage to the styles learned by different layers while calculating the <b> Total Style Cost. </b> Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are much more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones (exponentially decreasing the weightage could be one way). </p>
 
 ### Results
 
