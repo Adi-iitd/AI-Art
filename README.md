@@ -16,15 +16,15 @@
 
 <img src = https://user-images.githubusercontent.com/41862477/49682529-b23e2880-fadb-11e8-8625-82fc2b14c487.png width = 1000>
 
-<p align = "justify"> <i>Style Transfer uses a pre-trained Convolutional Neural Network to get the content and style representations of the image, but why do these intermediate outputs within our pre-trained image classification network allow us to define style and content representations?</i> </p>
+<p align = "justify"> <i>Style Transfer uses a pre-trained Convolutional Neural Network to get the content and style representations of the image, but why do these intermediate outputs within the pre-trained image classification network allow us to define style and content representations?</i> </p>
  
-<p>These pre-trained models trained on image classification tasks can understand the image. This requires taking the raw image as input pixels and building an internal representation that converts the raw image pixels into a complex understanding of the features present within the image. The first few feature maps represent low-level features like edges and textures. As we go deeper and deeper through the network, the activation maps represent higher-level features - objects like wheels, or eyes, or faces. Style Transfer incorporates <b> three </b> different kinds of losses: </p>
+<p>These pre-trained models trained on image classification tasks can understand the image very well. This requires taking the raw image as input pixels and building an internal representation that converts the raw image pixels into a complex understanding of the features present within the image. The activation maps of first few layers represent low-level features like edges and textures; as we go deeper and deeper through the network, the activation maps represent higher-level features - objects like wheels, or eyes, or faces. Style Transfer incorporates <b> three </b> different kinds of losses: </p>
 
 - **Content Cost**: **J**<sub>Content</sub> (C, G)
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
 - **Total Variation (TV) Cost**: **J**<sub>TV</sub> (G)
 
-*Putting all together*: **J**<sub>Total</sub> (G) = &alpha; * **J**<sub>Content</sub> (C, G) + &beta; * **J**<sub>Style</sub> (S, G) + &gamma; * **J**<sub>TV</sub> (G). Let's delve deeper to know more profoundly what's going on under the hood!
+*Putting all together*: **J**<sub>Total</sub> (G) = &alpha; x **J**<sub>Content</sub> (C, G) + &beta; x **J**<sub>Style</sub> (S, G) + &gamma; x **J**<sub>TV</sub> (G). Let's delve deeper to know more profoundly what's going on under the hood!
 
 ###  Content Cost
 
@@ -32,7 +32,7 @@
  
 <i> Practically, we get the most visually pleasing results if we choose a layer in the middle of the network - neither too shallow nor too deep. </i> The higher layers in the network capture the high-level content in terms of objects and their arrangement in the input image but do not constrain the exact pixel values of the reconstruction very much. In contrast, reconstructions from the lower layers simply reproduce the exact pixel values of the original image. 
 
-<p align = "justify"> Let a(C) be the hidden layer activations which is a N<sub>h</sub>*N<sub>w</sub>*N<sub>c</sub> dimensional tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
+<p align = "justify"> Let a(C) be the hidden layer activations which is a N<sub>h</sub> x N<sub>w</sub> x N<sub>c</sub> dimensional tensor, and let a(G) be the corresponding hidden layer activations of the Output image. Finally, the <b> Content Cost </b> function is defined as follows: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49682789-6772df80-fae0-11e8-8f7c-5805421e8121.JPG width = 500>
 
@@ -132,7 +132,9 @@ The brush-strokes that we get after running the experiment taking different laye
 
 <img width="1000" src="https://user-images.githubusercontent.com/41862477/82241656-2aa84a80-995a-11ea-9968-686294f97414.png">
 
-<p align = "justify"> The authors of this paper investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems. These networks not only learn the mapping from the input image to output image but also learn a loss function to train this mapping. If we take a naive approach and ask CNN to minimize just the Euclidean distance between predicted and ground truth pixels, it will tend to produce blurry results. This is because Euclidean distance is minimized by averaging all plausible outputs, which causes blurring. </p>
+> If you don't know what <b> Generative Adversarial networks</b> are, please refer to this [blog](https://lilianweng.github.io/lil-log/2017/08/20/from-GAN-to-WGAN.html) before moving ahead. It explains the intuition and mathematics behind the GANs. The conditional generative adversarial network, or cGAN for short, is a type of GAN that involves the conditional generation of images by a generator model. </p>
+
+<p align = "justify"> Authors of this paper investigated Conditional adversarial networks as a general-purpose solution to <b> Image-to-Image Translation </b> problems. These networks not only learn the mapping from the input image to output image but also learn a loss function to train this mapping. If we take a naive approach and ask CNN to minimize just the Euclidean distance between predicted and ground truth pixels, it will tend to produce blurry results. Minimizing Euclidean distance averages all plausible outputs, which causes blurring. </p>
 
 <p align = "justify"> In Generative Adversarial Networks settings, we could specify only a high-level goal, like “make the output indistinguishable from reality”, and then it automatically learns a loss function appropriate for satisfying this goal. Like other GANs, Conditional GAN has a discriminator (or critic depending on the loss function we are using) and a generator, and the overall goal is to learn a mapping, where we condition on an input image and generate a corresponding output image. In analogy to automatic language translation, automatic image-to-image translation is defined as the task of translating one possible representation of a scene into another, given sufficient training data. </p>
 
@@ -162,27 +164,41 @@ L<sub>L1</sub> (G) = E<sub>x,y,z</sub> [ ||y − G(x, z)||<sub>1</sub> ].
 G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G,D) + &lambda;L<sub>L1</sub> (G)
 </code></p>
 
-<p align = "justify"> The Min-Max objective mentioned above was proposed by <b> Ian Goodfellow </b> in 2014 in his original paper, but unfortunately, it doesn't perform well because of vanishing gradients problems. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulations (LS-GAN, WGAN, WGAN-GP) to alleviate vanishing gradients. I used <b> Least-square </b> objective function while optimizing the architecture. </p>
+<p align = "justify"> The Min-Max objective mentioned above was proposed by <b> Ian Goodfellow </b> in 2014 in his original paper, but unfortunately, it doesn't perform well because of vanishing gradients problem. Since then, there has been a lot of development, and many researchers have proposed different kinds of loss formulations (LS-GAN, WGAN, WGAN-GP) to alleviate vanishing gradients. Authors used <b> Least-square </b> objective function while optimizing the networks. </p>
 
 ### Network Architecture
 
 #### Generator:
 
-<p align = "justify"> The input and output differ only in surface appearance and are renderings of the same underlying structure. Therefore, structure in the input is roughly aligned with the structure in the output. The generator architecture is designed around these considerations only. For many image translation problems, there is a great deal of low-level information shared between the input and output, and it would be desirable to shuttle this information directly across the net. To give the generator a means to circumvent the bottleneck for information like this, skip connections are added following the general shape of a <b>U-Net.</b> Specifically, skip connections are added between each layer i and layer n − i, where n is the total number of layers. Each skip connection simply concatenates all channels at layer i with those at layer n − i. The U-Net encoder-decoder architecture consists of::: <b>Encoder:</b> <code> C64-C128-C256-C512-C512-C512-C512-C512</code>, and <b>U-Net Decoder:</b> <code> CD1024-CD1024-CD1024-CD1024-CD512-CD256-CD128,</code> where Ck denote a <i>Convolution-BatchNorm-ReLU</i> layer with k filters, and CDk denotes a <i>Convolution-BatchNorm-Dropout-ReLU</i> layer with a dropout rate of 50%. </p>
+<p align = "justify"> <b>Assumption:</b> The input and output differ only in surface appearance and are renderings of the same underlying structure. Therefore, structure in the input is roughly aligned with the structure in the output. The generator architecture is designed around these considerations only. For many image translation problems, there is a great deal of low-level information shared between the input and output, and it would be desirable to shuttle this information directly across the net. To give the generator a means to circumvent the bottleneck for information like this, skip connections are added following the general shape of a <b>U-Net.</b> </p> 
+
+<p align = "justify"> Specifically, skip connections are added between each layer i and layer n − i, where n is the total number of layers. Each skip connection simply concatenates all channels at layer i with those at layer n − i. The U-Net encoder-decoder architecture consists of <b>Encoder:</b> <code> C64-C128-C256-C512-C512-C512-C512-C512</code>, and <b>U-Net Decoder:</b> <code> CD1024-CD1024-CD1024-CD1024-CD512-CD256-CD128,</code> where Ck denote a <i>Convolution-BatchNorm-ReLU</i> layer with k filters, and CDk denotes a <i>Convolution-BatchNorm-Dropout-ReLU</i> layer with a dropout rate of 50%. </p>
 
 #### Discriminator:
 
-<p align = "justify"> The GAN discriminator models high-frequency structure term, and relies on the L1 term to force low-frequency correctness. To model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed <b> PatchGAN </b> – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. We run this discriminator convolutionally across the image, and average all responses to provide the ultimate output of D. Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The receptive field of the discriminator used was 70 * 70 and was performing best compared to other smaller and larger receptive fields. <code> The 70 × 70 discriminator architecture is: C64 - C128 - C256 - C512 </code> </p>
+<p align = "justify"> The GAN discriminator models high-frequency structure term, and relies on the L1 term to force low-frequency correctness. To model high-frequencies, it is sufficient to restrict the attention to the structure in local image patches. Therefore, discriminator architecture was termed <b> PatchGAN </b> – that only penalizes structure at the scale of patches. This discriminator tries to classify if each N × N patch in an image is real or fake. The discriminator is run convolutionally across the image, and the responses get averaged out to provide the ultimate output. </p>
 
-### Training details
+<p align = "justify"> Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The receptive field of the discriminator used was 70 x 70 and was performing best compared to other smaller and larger receptive fields. <code> The 70 x 70 discriminator architecture is: C64 - C128 - C256 - C512 </code> </p>
 
-- **Dropout** is used both at the training and test time.
-- **Instance normalization** is used instead of batch normalization.
-- All convolution kernels are of size 4 × 4 and are applied with stride 2.
+> The left [diagram](https://www.tensorflow.org/tutorials/generative/pix2pix) shows how the generator's loss gets computed, and the right one shows the same for the discriminator.
+
+<table>
+  <tr>
+<td><img width="450" src="https://user-images.githubusercontent.com/41862477/84929156-112b2780-b0ed-11ea-8fd2-51ea0de30261.png"></td>
+<td><img width="450" src="https://user-images.githubusercontent.com/41862477/84929163-138d8180-b0ed-11ea-8dc7-ed6eed7716c6.png"></td>
+   </tr>
+ </table>
+ 
+
+### Key Points
+
+- All convolution kernels are of size 4 × 4.
+- Dropout is used both at the training and <b>test</b> time.
+- **Instance** normalization is used instead of batch normalization.
 - Both L1 and CGAN loss are important to reduce the artifacts in the final output.
-- Normalization is not applied to the first layer in the encoder and discriminator. 
-- **Adam solver** is used with a learning rate of 2e-4, and momentum parameters β1 = 0.5, β2 = 0.999.
-- All ReLUs in the encoder and discriminator are leaky, with slope 0.2, while ReLUs in the decoder are not leaky.
+- Normalization is not applied to the first layer in the encoder and discriminator.
+- **Adam** is used with a learning rate of 2e-4, with momentum parameters β1 = 0.5, β2 = 0.999.
+- All ReLUs in the encoder and discriminator are leaky, with slope **0.2**, while ReLUs in the decoder are not leaky.
 - Objective function was divided by 2 while optimizing D, which slows down the rate at which D learns relative to G. 
 
 ### Results
