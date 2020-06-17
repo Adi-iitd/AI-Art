@@ -78,9 +78,9 @@
 
 ### Experiments
 
-> What happens if we zero out the coefficients of the Content and TV loss, and take activations from a single layer to compute the Style cost?
+> What happens if we zero out the coefficients of the Content and TV loss, and consider only a single layer to compute the Style cost?
 
-<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost.  So, for a given <b> Style image </b>, we will see the different kinds of brush-strokes that the model will try to enforce in the final generated image (G). Remember, we started with a single layer's activations in the Style cost, so, running the experiments for different layers would give different kinds of brush-strokes. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
+<p align = "justify"> As many of you might have guessed, the optimization algorithm will now only minimize the Style cost.  So, for a given <b> Style image </b>, we will see the different kinds of brush-strokes (depending on the layer used) that the model will try to enforce in the final generated image (G). Remember, we started with a single layer in the Style cost, so, running the experiments for different layers would give different kinds of brush-strokes. Suppose the style image is famous <b> The great wall of Kanagawa </b> shown below: </p>
 
 <img src = https://user-images.githubusercontent.com/41862477/49683530-af97ff00-faec-11e8-9d30-e3bc15e9fa88.jpg width = 1000>
 
@@ -109,7 +109,7 @@ The brush-strokes that we get after running the experiment taking different laye
 
 <p align = "justify"> <i> These are brush-strokes that the model learned when layers <b> Conv_2_2, Conv_3_1, Conv_3_2, Conv_3_3, Conv_4_1, Conv_4_3, Conv_4_4, Conv_5_1, and Conv_5_4 </b> (left to right and top to bottom) were used one at a time in the Style cost. </i> </p>
 
-<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weight to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are much more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones; exponentially decreasing weights could be one way. </p>
+<p align = "justify"> The reason behind running this experiment was that the authors of the original paper gave equal weightage to the styles learned by different layers while calculating the <b> Total Style Cost </b>. Now, that's not intuitive at all after looking at these images, because we can see that styles learned by the shallower layers are much more aesthetically pleasing, compared to what deeper layers learned. So, we would like to assign a lower weight to the deeper layers and higher to the shallower ones (exponentially decreasing the weights could be one way). </p>
 
 ### Results
 
