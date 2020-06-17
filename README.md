@@ -180,7 +180,7 @@ G<sup>∗</sup> = <b>arg</b> min<sub>G</sub> max<sub>D</sub> L<sub>cGAN</sub> (G
 
 <p align = "justify"> Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The receptive field of the discriminator used was 70 x 70 and was performing best compared to other smaller and larger receptive fields. <code> The 70 x 70 discriminator architecture is: C64 - C128 - C256 - C512 </code> </p>
 
-> The left [diagram](https://www.tensorflow.org/tutorials/generative/pix2pix) shows how the generator's loss gets computed, and the right one shows the same for the discriminator.
+> The [diagram](https://www.tensorflow.org/tutorials/generative/pix2pix) attached below shows how the generator's and discriminator's loss gets computed.
 
 <table>
   <tr>
