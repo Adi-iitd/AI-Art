@@ -24,7 +24,7 @@
 - **Style Cost**: **J**<sub>Style</sub> (S, G)
 - **Total Variation (TV) Cost**: **J**<sub>TV</sub> (G)
 
-*Putting all together*: **J**<sub>Total</sub> (G) = &alpha; x **J**<sub>Content</sub> (C, G) + &beta; x **J**<sub>Style</sub> (S, G) + &gamma; x **J**<sub>TV</sub> (G). Let's delve deeper to know more profoundly what's going on under the hood!
+<p align = "justify"> <i>Putting all together:</i> <b>J</b><sub>Total</sub> (G) = &alpha; x <b>J</b><sub>Content</sub> (C, G) + &beta; x <b>J</b><sub>Style</sub> (S, G) + &gamma; x <b>J</b><sub>TV</sub> (G). Let's delve deeper to know more profoundly what's going on under the hood! </p>
 
 ###  Content Cost
 
