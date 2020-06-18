@@ -689,7 +689,7 @@ class Pix2Pix:
         for idx, data in enumerate(val_dataloader):
             
             real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
-            list_real_A.append(data['A']);   list_real_B.append(data['B'])
+            list_real_A.append(data['A']);      list_real_B.append(data['B'])
             fake_B = self.gen(real_A).detach(); list_fake_B.append(fake_B)
             
         fake_B = torch.cat(list_fake_B, axis = 0)
