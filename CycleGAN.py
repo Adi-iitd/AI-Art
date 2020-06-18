@@ -785,7 +785,7 @@ class CycleGAN:
         _ = self.load_state_dict(path = self.save_dir + model_name, train = False) 
         list_real_A = []; list_fake_A = []; list_real_B = []; list_fake_B = []
         
-        for idx, data in enumerate(trn_dataloader):
+        for idx, data in enumerate(val_dataloader):
             
             real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
             fake_A = self.g_B2A(real_B).detach(); fake_B = self.g_A2B(real_A).detach()
