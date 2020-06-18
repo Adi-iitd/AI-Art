@@ -226,23 +226,19 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 
 <img width="1000" src="https://user-images.githubusercontent.com/41862477/82723149-4c9f2580-9cea-11ea-98cf-bf80e2428a4b.png">
 
-<p align = "justify"> Image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data will not be available. So, the authors in the paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
+<p align = "justify"> The image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data is not available, so, authors of this paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
-<p align = "justify"> <i> The goal is to learn a mapping <b> G : X → Y </b> such that the distribution of images from G(X) is indistinguishable from the distribution Y using an adversarial loss. </i> Because this mapping is highly under-constrained, they coupled it with an inverse mapping <b> F : Y → X </b> and introduced a cycle consistency loss to enforce <b> F(G(X)) ≈ X </b> (and vice-versa). </p>
+<p align = "justify"> <i> The goal is to learn a mapping <b> G: X → Y </b> such that the distribution of images G(X) is indistinguishable from the distribution Y using an adversarial loss. </i> Because this mapping is highly under-constrained, they coupled it with an inverse mapping <i><b> F: Y → X </b></i> and introduced a cycle consistency loss to enforce <i><b> F(G(X)) ≈ X </b></i>(and vice-versa). </p>
 
 ### Motivation:
 
-<p align = "justify"> Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like <b> artistic stylization </b> can be even more difficult since the desired output is highly complex, typically requiring artistic authoring. For many tasks, like <b> object transfiguration </b> (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is that there exists some underlying relationship between the domains. Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: <i> one set of images in domain X and a different set in domain Y. </i> </p>
+<p align = "justify"> Obtaining paired training data can be difficult and expensive. For example, only a couple of datasets exist for tasks like semantic segmentation, and they are relatively small. Obtaining input-output pairs for graphics tasks like <b> artistic stylization </b> can be even more difficult since the desired output is highly complex, and typically requires artistic authoring. For many tasks, like <b> object transfiguration </b> (e.g., zebra <-> horse), the desired output is not even well-defined. Therefore, the authors tried to present an algorithm that can learn to translate between domains without paired input-output examples. The primary assumption is that there exists some underlying relationship between the domains. </p>
 
-<p align = "justify"> The optimal G thereby translates the domain X to a domain Y <i> distributed identically to Y. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – there are infinitely many mappings G that will induce the same distribution over y </i>. Key points: </p>
+<p align = "justify"> Although there is a lack of supervision in the form of paired examples, supervision at the level of sets can still be exploited: <i> one set of images in domain X and a different set in domain Y. </i> The optimal <b>G</b> thereby translates the domain <b>X</b> to a domain <b>Y</b> distributed identically to <b>Y</b>. However, such a translation does not guarantee that an individual input x and output y are paired up in a meaningful way – <i>there are infinitely many mappings <b>G</b> that will induce the same distribution over <b>y.</b></i></p>
 
-- <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. </p>
-- <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). </p> 
-- <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> F(G(x)) ≈ x and G(F(y)) ≈ y. </b> </p>
+<img src = https://user-images.githubusercontent.com/41862477/85051305-f9b77180-b1b4-11ea-982a-e6b54f6d8fa9.png width = 1000>
 
-<img src = https://user-images.githubusercontent.com/41862477/50504160-b1bd0000-0a91-11e9-9909-29b2121449b8.jpg width = 1000>
-
-> <p align = "justify"> <i> As illustrated in figure, their model includes two mappings <b> G : X → Y and F : Y → X. </b> In addition, they introduced two adversarial discriminators DX and DY , where DX aims to distinguish between images {x} and translated images {F(y)}; in the same way, DY aims to discriminate between {y} and {G(x)}. So, final objective contains two types of terms: adversarial losses for matching the distribution of generated images to the data distribution in the target domain; and cycle consistency losses to prevent the learned mappings G and F from contradicting each other. </i> </p>
+<p align = "justify"> As illustrated in the figure, the model includes two mappings <b> G: X → Y and F: Y → X. </b> Besides, two adversarial discriminators are introduced, <b>D<sub>X</sub></b> and <b>D<sub>Y</sub></b>, where D<sub>X</sub> aims to distinguish images <b>x</b> from translated images <b>F(y)</b>, and D<sub>Y</sub> aims to discriminate <b>y</b> from <b>G(x)</b>. So, the final objective has two different loss terms: adversarial loss for matching the distribution of generated images to the data distribution in the target domain, and cycle consistency loss to prevent the learned mappings <b>G</b> and <b>F</b> from contradicting each other. </p>
 
 #### Adversarial Loss:
 
@@ -270,6 +266,11 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 - <p align = "justify"> The target distribution for the X → X autoencoder is the domain Y and for the Y → Y autoencoder is the domain X. </p>
 
 ## Implementation:
+
+#### Key points:
+- <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. </p>
+- <p align = "justify"> Exploited the property that translation should be <b> Cycle consistent </b>. Mathematically, translator G : X → Y and another translator F : Y → X, should be inverses of each other (and both mappings should be bijections). </p> 
+- <p align = "justify"> Enforcing the structural assumption by training both the mapping G and F simultaneously, and adding a cycle consistency loss that encourages <b> F(G(x)) ≈ x and G(F(y)) ≈ y. </b> </p>
 
 #### Training Details:
 
