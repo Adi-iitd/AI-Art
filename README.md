@@ -187,15 +187,14 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 
 <p align = "justify"> Patch GANs discriminator effectively models the image as a Markov random field, assuming independence between pixels separated by more than a patch diameter. The receptive field of the discriminator used was 70 x 70 and was performing best compared to other smaller and larger receptive fields. <code> The 70 x 70 discriminator architecture is: C64 - C128 - C256 - C512 </code> </p>
 
-> The [diagram](https://www.tensorflow.org/tutorials/generative/pix2pix) attached below shows how the generator's and discriminator's loss and gradients get computed.
+> The [diagrams](https://www.tensorflow.org/tutorials/generative/pix2pix) attached below show the forward and backward propagation through the generator and discriminator!
 
 <table>
   <tr>
-<td><img width="450" src="https://user-images.githubusercontent.com/41862477/84929156-112b2780-b0ed-11ea-8fd2-51ea0de30261.png"></td>
-<td><img width="450" src="https://user-images.githubusercontent.com/41862477/84929163-138d8180-b0ed-11ea-8dc7-ed6eed7716c6.png"></td>
-   </tr>
- </table>
- 
+<td><img width="450" height="500" src="https://user-images.githubusercontent.com/41862477/85034441-bc94b480-b19f-11ea-87ba-d2a7c5e8c559.png"></td>
+<td><img width="450" height="500" src="https://user-images.githubusercontent.com/41862477/85034450-be5e7800-b19f-11ea-8c81-1898f2d04442.png"></td>
+  </tr>
+</table>
 
 ### Key Points
 
