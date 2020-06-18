@@ -712,15 +712,7 @@ model = Pix2Pix(root_dir = root_dir, gen = gen, dis = dis)
 
 # Set is_train to False while running inference on the trained model
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
-else: 
-    real_A, real_B, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
-    rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (14, 7))
-    
-    plt.subplot(1, 3, 1); helper.show_image(real_A[rand_int].cpu().clone())
-    plt.subplot(1, 3, 2); helper.show_image(real_B[rand_int].cpu().clone())
-    plt.subplot(1, 3, 3); helper.show_image(fake_B[rand_int].cpu().clone()); plt.show()
-
-    figure.savefig('Output.png', bbox_inches = 'tight')
+else: real_A, real_B, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
 
 ######################################################################################################################
 
