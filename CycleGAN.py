@@ -806,17 +806,7 @@ root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 200; epoch_decay = nb_epoc
 model = CycleGAN(root_dir = root_dir, g_A2B = g_A2B, g_B2A = g_B2A, d_A = d_A, d_B = d_B)
 
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
-else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_200.pth")
+else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
 
-
-rand_int = np.random.randint(0, high = len(real_A)); figure = plt.figure(figsize = (10, 5)); 
-plt.subplot(1, 2, 1); helper.show_image(real_B[rand_int].cpu().clone())
-plt.subplot(1, 2, 2); helper.show_image(fake_A[rand_int].cpu().clone())
-
-rand_int = np.random.randint(0, high = len(fake_B)); figure = plt.figure(figsize = (10, 5)); 
-plt.subplot(1, 2, 1); helper.show_image(real_A[rand_int].cpu().clone()) 
-plt.subplot(1, 2, 2); helper.show_image(fake_B[rand_int].cpu().clone())
-
-figure.savefig('Output.png', bbox_inches = 'tight')
 
 ##########################################################################################################################
