@@ -302,8 +302,7 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 ***
 
 ## Deep Dream
-
-<img src = https://user-images.githubusercontent.com/41862477/84598200-a8427600-ae86-11ea-8e9a-fcd25a5fe095.png height = 500 width = 1000>
+<img src = https://user-images.githubusercontent.com/41862477/85164051-68fa9780-b281-11ea-87ae-2d255f910fed.png height = 500 width = 1000>
 
 <table>
   <tr>
