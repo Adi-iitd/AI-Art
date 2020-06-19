@@ -5,10 +5,14 @@ import torchvision, torchvision.models as models, torchvision.transforms as T
 import numpy as np, pandas as pd, matplotlib as mpl, matplotlib.pyplot as plt 
 import PIL.Image as Image, warnings; from IPython.display import clear_output
 
-mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
+mpl.rcParams["figure.figsize"] = (14, 7); mpl.rcParams["axes.grid"] = False
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu");
+# ***********************************************************************************************************************
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Device in use: {device}")
+
+# ***********************************************************************************************************************
 
 
 class ImageLoader:
@@ -73,7 +77,6 @@ class ImageLoader:
         plt.imshow(img);  plt.title(title);  plt.pause(0.001)
         
         if save_: img.save(fp = filename)
-
 
 
 class MyModel(nn.Module):
@@ -284,3 +287,6 @@ output_image = _NST_.fit(nb_epochs = 10, nb_iters = 1000, lr = 1e-2, eps = 1e-8,
 
 img_loader = ImageLoader(size = 512, resize = True); 
 img_loader.show_image(output_image, save_ = True, filename = "Stylized_Image.jpg")
+
+
+# ***********************************************************************************************************************
