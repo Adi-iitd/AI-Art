@@ -228,7 +228,7 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 
 <p align = "justify"> The image-to-Image translation is a class of vision and graphics problems where the goal is to learn the mapping between an input image and an output image using a training set of aligned image pairs. However, for many tasks, paired training data is not available, so, authors of this paper presented an approach for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples. </p> 
 
-<p align = "justify"> <i> The goal is to learn a mapping <b> G: X → Y </b> such that the distribution of images G(X) is indistinguishable from the distribution Y using an adversarial loss. </i> Because this mapping is highly under-constrained, they coupled it with an inverse mapping <i><b> F: Y → X </b></i> and introduced a cycle consistency loss to enforce <i><b> F(G(X)) ≈ X </b></i>(and vice-versa). </p>
+<p align = "justify"> <i> The goal is to learn a mapping <b> G: X → Y </b> such that the distribution of images G(X) is indistinguishable from the distribution Y using an adversarial loss. </i> Because this mapping is highly under-constrained, they coupled it with an inverse mapping <b> F: Y → X </b> and introduced a cycle consistency loss to enforce <b> F(G(X)) ≈ X </b>(and vice-versa). </p>
 
 ### Motivation:
 
@@ -238,13 +238,13 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 
 <img src = https://user-images.githubusercontent.com/41862477/85051305-f9b77180-b1b4-11ea-982a-e6b54f6d8fa9.png width = 1000>
 
-<p align = "justify"> As illustrated in the figure, the model includes two mappings <b> G: X → Y and F: Y → X. </b> Besides, two adversarial discriminators are introduced, <b>D<sub>X</sub></b> and <b>D<sub>Y</sub></b>, where D<sub>X</sub> aims to distinguish images <b>x</b> from translated images <b>F(y)</b>, and D<sub>Y</sub> aims to discriminate <b>y</b> from <b>G(x)</b>. So, the final objective has two different loss terms: adversarial loss for matching the distribution of generated images to the data distribution in the target domain, and cycle consistency loss to prevent the learned mappings <b>G</b> and <b>F</b> from contradicting each other. </p>
+<p align = "justify"> As illustrated in the figure, the model includes two mappings <b> G: X → Y</b> and <b>F: Y → X. </b> Besides, two adversarial discriminators are introduced, <b>D<sub>X</sub></b> and <b>D<sub>Y</sub></b>; task of D<sub>X</sub> is to discriminate images <b>x</b> from translated images <b>F(y)</b>, whereas D<sub>Y</sub> aims to discriminate <b>y</b> from <b>G(x)</b>. So, the final objective has two different loss terms: adversarial loss for matching the distribution of generated images to the data distribution in the target domain, and cycle consistency loss to prevent the learned mappings <b>G</b> and <b>F</b> from contradicting each other. </p>
 
 ### Loss Formulation
 
 #### Adversarial Loss:
 
-<p align = "justify"> Adversarial loss is applied to both the mapping functions -  G: X → Y and F: Y → X. <b>G</b> tries to generate images <b>G(x)</b> that look similar to images from domain <b>Y</b>, and <b>D<sub>Y</sub></b> tries to distinguish the translated samples <b>G(x)</b> from real samples y (similar argument holds for the other one). </p>
+<p align = "justify"> Adversarial loss is applied to both the mapping functions -  <b>G: X → Y</b> and <b>F: Y → X.</b> <b>G</b> tries to generate images <b>G(x)</b> that look similar to images from domain <b>Y</b>, and <b>D<sub>Y</sub></b> tries to distinguish the translated samples <b>G(x)</b> from real samples y (similar argument holds for the other one). </p>
 
 - Generator (G) tries to minimize: <code> E<sub>[x∼p<sub>data</sub>(x)]</sub> (D(G(x)) − 1)<sup>2</sup> </code>
 - Discriminator (D<sub>Y</sub>) tries to minimize: <code> E<sub>[y∼p<sub>data</sub>(y)]</sub> (D(y) − 1)<sup>2</sup> + E<sub>[x∼p<sub>data</sub>(x)]</sub> D(G(x))<sup>2</sup> </code>
@@ -257,32 +257,27 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 
 #### Full Objective:
 
-<p align = "justify"> The full objective is: <code> L (G, F, D<sub>X</sub>, D<sub>Y</sub>) = L<sub>GAN</sub> (G, D<sub>Y</sub> , X, Y) + L<sub>GAN</sub> (F, D<sub>X</sub>, Y, X) + λL<sub>cyc</sub>(G, F) </code> , where lambda controls the relative importance of the two objectives. </p>
+<p align = "justify"> The full objective is: <code> L (G, F, D<sub>X</sub>, D<sub>Y</sub>) = L<sub>GAN</sub> (G, D<sub>Y</sub> , X, Y) + L<sub>GAN</sub> (F, D<sub>X</sub>, Y, X) + λ L<sub>cyc</sub> (G, F) </code> , where lambda controls the relative importance of the two objectives. <i><b>λ</b> is set to 10 in the final loss equation.</i> For <b>painting → photo</b>, authors found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples of the target domain are provided as the input to the generator i.e., <code> L<sub>identity</sub> (G, F) = E<sub>[y∼p<sub>data</sub>(y)]</sub> || G(y) − y || + E<sub>[x∼p<sub>data</sub>(x)]</sub> || F(x) − x ||. </code></p>
 
 #### Key Takeaways:
 
-- <p align = "justify"> Difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. Both the mappings G and F are trained simultaneously to enforce the structural assumption.</p>
+- <p align = "justify"> It is difficult to optimize adversarial objective in isolation - standard procedures often lead to the well-known problem of mode collapse. Both the mappings G and F are trained simultaneously to enforce the structural assumption.</p>
 - <p align = "justify"> The translation should be <b> Cycle consistent; </b> mathematically, translator G: X → Y and another translator F: Y → X, should be inverses of each other (and both mappings should be bijections). </p>
-- <p align = "justify"> The model can be viewed as training two <b>autoencoders</b>: <b>F ◦ G: X → X</b> jointly with <b>G ◦ F: Y → Y</b>. These autoencoders have special internal structure - map an image to itself via an intermediate representation that is a translation of the image into another domain. </p>
-- <p align = "justify"> The model can also be viewed as a special case of <b> adversarial autoencoders </b>, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. </p>
+- <p align = "justify"> It is similar to training two <b>autoencoders</b> - <b>F ◦ G:</b> X → X jointly with <b>G ◦ F:</b> Y → Y. These autoencoders have special internal structure - map an image to itself via an intermediate repr that is a translation of the image into another domain. </p>
+- <p align = "justify"> It can also be treated as a special case of <b> adversarial autoencoders </b>, which use an adversarial loss to train the bottleneck layer of an autoencoder to match an arbitrary target distribution. </p>
 
 ### Network Architecture
 
 #### Generator:
-<p align = "justify"> Authors adopted the Generator's architecture from Johnson et al. who have shown impressive results for the neural style transfer and super-resolution. The network contains two stride-2 convolutions, several residual blocks, and two fractionally-strided convolutions with stride 1/2. 6 or 9 ResBlocks are used in the generator depending on the size of the training images. <b>Instance</b> normalization is used instead of <b>batch</b> normalization.
-<code> c7s1-64, d128, d256, [R256] * (6/9), u128, u64, c7s1-3 </code></p>
+<p align = "justify"> Authors adopted the Generator's architecture from the neural style transfer and super-resolution paper. The network contains two stride-2 convolutions, several residual blocks, and two fractionally-strided convolutions with stride 1/2. 6 or 9 ResBlocks are used in the generator depending on the size of the training images. <b>Instance</b> normalization is used instead of <b>batch</b> normalization.
+<code> <b>128 x 128</b> images: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3 </code>
+<code> <b>256 x 256</b> images: c7s1-64, d128, d256, R256, R256, R256, R256, R256, R256, R256, R256, R256, u128, u64, c7s1-3 </code> </p>
 
 #### Discriminator:
-<p align = "justify"> Same 70 x 70 PatchGAN discriminator is used, which aims to classify whether 70 x 70 overlapping image patches are real or fake (more parameter efficient compared to full-image discriminator). To reduce model oscillation, discriminators are updated using a history of generated images rather than the latest ones - an image buffer of 50 previously generated images is kept.<br />
-<code> C64-C128-C256-C512 </code></p>
+<p align = "justify"> The same 70 x 70 PatchGAN discriminator is used, which aims to classify whether 70 x 70 overlapping image patches are real or fake (more parameter efficient compared to full-image discriminator). To reduce model oscillations, discriminators are updated using a history of generated images rather than the latest ones with a probability of <b>0.5</b>.<code> <b>70 x 70 PatchGAN: </b>C64-C128-C256-C512 </code></p>
 
-<p align = "justify"> <i> c7s1-k denote a 7×7 Convolution - InstanceNorm - ReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution - InstanceNorm - ReLU layer with k filters and stride 2. Reflection padding is used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 1-dimensional output. No InstanceNorm after the first C64 layer. </i> </p>
+> <p align = "justify"> c7s1-k denote a 7×7 Convolution - InstanceNorm - ReLU Layer with k filters and stride 1. dk denotes a 3 × 3 Convolution - InstanceNorm - ReLU layer with k filters and stride 2. Reflection padding is used to reduce artifacts. Rk denotes a residual block that contains two 3 × 3 convolutional layers with the same number of filters on both layer. uk denotes a 3 × 3 fractional-strided-ConvolutionInstanceNorm-ReLU layer with k filters and stride 1/2. Ck denote a 4 × 4 Convolution-InstanceNorm-LeakyReLU layer with k filters and stride 2. After the last layer, a convolution is applied to produce a 3-channels output for generator and 1-channel output for discriminator. No InstanceNorm after the first C64 layer.</p>
 
-#### Training Details:
-
-- λ is set to 10 in total loss equation; Adam solver is used with a batch size of 1
-- Learning rate of 0.0002 is used for the first 100 epochs and is then linearly decayed to zero over the next 100 epochs.
-- <p align = "justify"> For painting → photo, they found that it was helpful to introduce an additional loss to encourage the mapping to preserve color composition between the input and output. In particular, they regularized the generator to be near an identity mapping when real samples of the target domain are provided as the input to the generator i.e., <code> L<sub>identity</sub> (G, F) = E<sub>[y∼p<sub>data</sub>(y)]</sub> || G(y) − y || + E<sub>[x∼p<sub>data</sub>(x)]</sub> || F(x) − x || </code> </p>
 
 ### Results:
 
