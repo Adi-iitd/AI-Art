@@ -808,5 +808,4 @@ model = CycleGAN(root_dir = root_dir, g_A2B = g_A2B, g_B2A = g_B2A, d_A = d_A, d
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
 else: real_A, real_B, fake_A, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
 
-
 ##########################################################################################################################
