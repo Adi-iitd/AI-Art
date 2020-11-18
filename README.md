@@ -1,6 +1,19 @@
 # AI Art
 
 ***
+### Edit 2020/11/20:
+
+> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN.
+> Why PyTorch Lightning?
+
+- Easier to reproduce
+- Scalable to any hardware without changing your model
+- More readable by decoupling the research code from the engineering
+- Less error prone by automating most of the training loop and tricky engineering
+- Keep all the flexibility (this is all pure PyTorch), but removes a ton of boilerplate
+
+
+***
 
 ## Motivation
 
