@@ -829,23 +829,30 @@ class CycleGAN(pl.LightningModule):
 ############################################################################################################################################################
 
 
-TRAIN   = True
-TEST    = False
-RESTORE = False
-checkpoint_path = None if TRAIN else "path/to/checkpoints/"
+TEST    = True
+TRAIN   = False
+RESTORE = not (TEST or TRAIN)
+checkpoint_path = None if TRAIN else "path/to/checkpoints/" #"./logs/version_0/checkpoints/epoch=299.ckpt"
 
+
+epochs = 300
+epoch_decay = epochs // 2
+
+model = CycleGAN(epoch_decay = epoch_decay)
+lr_logger = LearningRateMonitor(logging_interval = 'epoch')
+tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
+
+# you can change the gpus argument to how many you have (I had only 1 :( )
+trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger], 
+                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15)
+    
 
 if TEST == False:
-    epochs = 300; epoch_decay = epochs // 2
-    model = CycleGAN(epoch_decay = epoch_decay)
-    lr_logger = LearningRateMonitor(logging_interval = 'epoch')
-    tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
-
-    # you can change the gpus argument to how many you have (I had only 1 :( )
-    trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger],
-                         num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15)
     trainer.fit(model, datamodule)
-
+    
 else:
-    pass
-    # write the test code
+    model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
+    
+    datamodule.setup("test")
+    test_data = datamodule.test_dataloader()
+    trainer.test(model, test_dataloaders = test_data)
