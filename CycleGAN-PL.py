@@ -41,8 +41,7 @@ class RandomCrop(object):
 
         """
         Parameters:
-            image_size: Final size of the image (should be smaller than current size o/w
-                        returns the original image)
+            image_size: Final size of the image (should be smaller than current size o/w returns the original image)
         """
 
         if   isinstance(image_size, int):   self.image_size = (image_size, image_size)
@@ -223,8 +222,7 @@ class DataModule(pl.LightningDataModule):
                 zip_ref.extractall(self.processed_dir)
             print(f"Extraction done!")
 
-            # you might need to modify the below code; it's not generic, but works for most of the datasets
-            # listed in that url.
+            # you might need to modify the below code; it's not generic, but works for most of the datasets listed in that url.
             dwnld_dir = self.processed_dir + self.dataset[:-4] + "/"
             for folder in ["testA/", "testB/", "trainA/", "trainB/"]:
 
@@ -287,7 +285,7 @@ def get_random_sample(dataset):
     return dataset[np.random.randint(0, len(dataset))]
 
 
-############################################################################################################################
+############################################################################################################################################################
 
 
 img_sz = 256
@@ -314,7 +312,7 @@ plt.subplot(1, 2, 2); show_image(sample['B'])
 plt.show()
 
 
-############################################################################################################################
+############################################################################################################################################################
 
 
 class ResBlock(nn.Module):
@@ -655,8 +653,7 @@ class Loss:
 
 class CycleGAN(pl.LightningModule):
 
-    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999,
-                 epoch_decay: int = 200):
+    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999, epoch_decay: int = 200):
 
         super().__init__()
 
@@ -727,8 +724,7 @@ class CycleGAN(pl.LightningModule):
             g_A2B_loss, g_B2A_loss, g_tot_loss = self.loss.get_gen_loss(real_A, real_B, cyc_A, cyc_B,
                                                  idt_A, idt_B, d_A_pred_fake_data, d_B_pred_fake_data)
 
-            dict_ = {'g_tot_train_loss': g_tot_loss, 'g_A2B_train_loss': g_A2B_loss,
-                     'g_B2A_train_loss': g_B2A_loss}
+            dict_ = {'g_tot_train_loss': g_tot_loss, 'g_A2B_train_loss': g_A2B_loss, 'g_B2A_train_loss': g_B2A_loss}
             self.log_dict(dict_, on_step = True, on_epoch = True, prog_bar = True, logger = True)
 
             return g_tot_loss
@@ -785,9 +781,8 @@ class CycleGAN(pl.LightningModule):
         d_A_loss = self.loss.get_dis_loss(d_A_pred_real_data, d_A_pred_fake_data)
         d_B_loss = self.loss.get_dis_loss(d_B_pred_real_data, d_B_pred_fake_data)
 
-        dict_ = {f'g_tot_{stage}_loss': g_tot_loss, f'g_A2B_{stage}_loss': g_A2B_loss,
-                 f'g_B2A_{stage}_loss': g_B2A_loss, f'd_A_{stage}_loss'  : d_A_loss  ,
-                 f'd_B_{stage}_loss'  : d_B_loss}
+        dict_ = {f'g_tot_{stage}_loss': g_tot_loss, f'g_A2B_{stage}_loss': g_A2B_loss, f'g_B2A_{stage}_loss': g_B2A_loss, 
+                 f'd_A_{stage}_loss'  : d_A_loss  , f'd_B_{stage}_loss'  : d_B_loss}
         self.log_dict(dict_, on_step = False, on_epoch = True, prog_bar = True, logger = True)
 
         for i in range(12):
@@ -831,7 +826,7 @@ class CycleGAN(pl.LightningModule):
         return [g_opt, d_A_opt, d_B_opt], [g_sch, d_A_sch, d_B_sch]
 
 
-############################################################################################################################
+############################################################################################################################################################
 
 
 TRAIN   = True
@@ -847,9 +842,8 @@ if TEST == False:
     tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
 
     # you can change the gpus argument to how many you have (I had only 1 :( )
-    trainer = pl.Trainer(gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks =
-                         [lr_logger], num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint =
-                         checkpoint_path, log_every_n_steps = 15, accelerator = 'ddp')
+    trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger],
+                         num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15)
     trainer.fit(model, datamodule)
 
 else:
