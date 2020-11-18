@@ -15,7 +15,7 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset, random_split
 
 import pytorch_lightning as pl; from tqdm.auto import tqdm
 from pytorch_lightning import loggers as pl_loggers
-from pytorch_lightning.callbacks import LearningRateMonitor, Callback
+from pytorch_lightning.callbacks import LearningRateMonitor, Callback, ModelCheckpoint
 
 mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False
 
