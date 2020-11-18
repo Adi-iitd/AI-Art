@@ -225,9 +225,15 @@ class Helper(object):
 # 1) Correctly specify the Root directory which contains two folders: Train folder and Validation folder
 # 2) Image names should be labeled from 1 to len(dataset), o/w will throw an error while sorting the filenames
 
-root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
-trn_batch_sz = 1 * len(devices); val_batch_sz = 64; img_sz = 128; jitter_sz = int(img_sz * 1.12)
-helper = Helper()
+root_dir = "./Dataset/Vision/CycleGAN/Cezzane/"; 
+trn_path = root_dir + "Trn/"
+val_path = root_dir + "Val/"
+
+trn_batch_sz = 1 * len(devices)
+val_batch_sz = 64
+
+img_sz = 128
+jitter_sz = int(img_sz * 1.12)
 
 val_tfms = [Resize(img_sz), To_Tensor(), Normalize()]
 trn_tfms = [Resize(jitter_sz), RandomCrop(img_sz), Random_Flip(), To_Tensor(), Normalize()]
@@ -235,17 +241,23 @@ trn_tfms = [Resize(jitter_sz), RandomCrop(img_sz), Random_Flip(), To_Tensor(), N
 trn_dataset, trn_dataloader = helper.get_data(trn_path, trn_tfms, trn_batch_sz, is_train = True )
 val_dataset, val_dataloader = helper.get_data(val_path, val_tfms, val_batch_sz, is_train = False)
 
-nb_trn_iters = len(trn_dataloader); nb_val_iters = len(val_dataloader)
+nb_trn_iters = len(trn_dataloader)
+nb_val_iters = len(val_dataloader)
+
+helper = Helper()
 print(f"Length of Training dataset: {len(trn_dataset)}, Validation dataset: {len(val_dataset)}")
 
-
 print(f"Few random samples from the Training dataset!")
-sample = helper.get_random_sample(trn_dataset); A = sample['A']; B = sample['B']
-plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
+sample = helper.get_random_sample(trn_dataset)
+plt.subplot(1, 2, 1); helper.show_image(sample['A'])
+plt.subplot(1, 2, 2); helper.show_image(sample['B'])
+plt.show()
 
 print(f"Few random samples from the Validation dataset!")
-sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
-plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
+sample = helper.get_random_sample(val_dataset)
+plt.subplot(1, 2, 1); helper.show_image(sample['A'])
+plt.subplot(1, 2, 2); helper.show_image(sample['B'])
+plt.show()
 
 
 ##########################################################################################################################
@@ -305,14 +317,19 @@ class Generator(nn.Module):
             apply_dp:     If apply_dp is set to True, then activations are 0'ed out with prob 0.5
         """
         
-        super().__init__(); nb_downsampling = 2; f = 1; nb_resblks = 6 if img_sz == 128 else 9 
+        super().__init__()
+        
+        f = 1
+        nb_downsampling = 2
+        nb_resblks = 6 if img_sz == 128 else 9 
         
         conv = nn.Conv2d(in_channels = in_channels, out_channels = out_channels, kernel_size = 7, stride = 1)
         self.layers = [nn.ReflectionPad2d(3), conv, nn.InstanceNorm2d(out_channels), nn.ReLU(True)]
         
         for i in range(nb_downsampling):
             conv = nn.Conv2d(out_channels * f, out_channels * 2 * f, kernel_size = 3, stride = 2, padding = 1)
-            self.layers += [conv, nn.InstanceNorm2d(out_channels * 2 * f), nn.ReLU(True)]; f *= 2
+            self.layers += [conv, nn.InstanceNorm2d(out_channels * 2 * f), nn.ReLU(True)]
+            f *= 2
         
         for i in range(nb_resblks):
             res_blk = ResBlock(in_channels = out_channels * f, apply_dp = apply_dp)
@@ -320,7 +337,8 @@ class Generator(nn.Module):
         
         for i in range(nb_downsampling):
             conv = nn.ConvTranspose2d(out_channels * f, out_channels * (f//2), 3, 2, padding = 1, output_padding = 1)
-            self.layers += [conv, nn.InstanceNorm2d(out_channels * (f//2)), nn.ReLU(True)]; f = f // 2
+            self.layers += [conv, nn.InstanceNorm2d(out_channels * (f//2)), nn.ReLU(True)]
+            f = f // 2
         
         conv = nn.Conv2d(in_channels = out_channels, out_channels = in_channels, kernel_size = 7, stride = 1)
         self.layers += [nn.ReflectionPad2d(3), conv, nn.Tanh()]
@@ -348,7 +366,10 @@ class Discriminator(nn.Module):
             nb_layers:      Number of layers in the 70*70 Patch Discriminator
         """
         
-        super().__init__(); in_f = 1; out_f = 2
+        super().__init__()
+        
+        in_f  = 1
+        out_f = 2
         
         conv = nn.Conv2d(in_channels, out_channels, kernel_size = 4, stride = 2, padding = 1)
         self.layers = [conv, nn.LeakyReLU(0.2, True)]
@@ -356,7 +377,8 @@ class Discriminator(nn.Module):
         for idx in range(1, nb_layers):
             conv = nn.Conv2d(out_channels * in_f, out_channels * out_f, kernel_size = 4, stride = 2, padding = 1)
             self.layers += [conv, nn.InstanceNorm2d(out_channels * out_f), nn.LeakyReLU(0.2, True)]
-            in_f = out_f; out_f *= 2
+            in_f   = out_f
+            out_f *= 2
         
         out_f = min(2 ** nb_layers, 8)
         conv = nn.Conv2d(out_channels * in_f,  out_channels * out_f, kernel_size = 4, stride = 1, padding = 1)
@@ -446,7 +468,8 @@ class Tensorboard:
     @torch.no_grad()
     def write_image(self, nb_examples: int, g_A2B, g_B2A, epoch: int, curr_iter: int):
         
-        grid_A = []; grid_B = []
+        grid_A = []
+        grid_B = []
         n_iter = (epoch - 1) * nb_trn_iters + curr_iter
         
         for _ in range(nb_examples):
@@ -461,7 +484,8 @@ class Tensorboard:
             tensor = torch.cat([real_A, fake_B, cyc_A, real_B, fake_A, cyc_B])
             tensor = (tensor.cpu().clone() + 1) / 2
             
-            grid_A.append(tensor[:3]); grid_B.append(tensor[3:]) 
+            grid_A.append(tensor[:3])
+            grid_B.append(tensor[3:]) 
         
         grid_A = torchvision.utils.make_grid(torch.cat(grid_A, 0), nrow = 6)
         grid_B = torchvision.utils.make_grid(torch.cat(grid_B, 0), nrow = 6)
@@ -573,7 +597,10 @@ class ImagePool:
         Parameters:
             pool_sz: Size of the image buffer
         """
-        self.pool_sz = pool_sz; self.image_pool = []; self.nb_images = 0
+        
+        self.pool_sz = pool_sz
+        self.image_pool = []
+        self.nb_images = 0
         
     
     def push_and_pop(self, images):
@@ -610,7 +637,9 @@ class ImagePool:
 class SaveModel:
     
     def __init__(self, path: str, keep_only: int = 3): 
-        self.path = path; self.keep_only = keep_only
+        
+        self.path = path
+        self.keep_only = keep_only
     
     
     def save_model(self, epoch: int, d_A, d_B, g_A2B, g_B2A, d_opt, g_opt):
@@ -632,15 +661,20 @@ class CycleGAN:
     
     def __init__(self, root_dir: str, g_A2B, g_B2A, d_A, d_B):
         
-        self.save_dir = root_dir + 'Models/'; summary_path = root_dir + 'Tensorboard/'
+        self.save_dir = root_dir + 'Models/'
+        summary_path = root_dir + 'Tensorboard/'
         
         if not os.path.exists(self.save_dir): os.makedirs(self.save_dir)
         if not os.path.exists(summary_path ): os.makedirs(summary_path )
         self.saver = SaveModel(self.save_dir); self.tb = Tensorboard(summary_path)
         
+        self.d_A = d_A
+        self.d_B = d_B
+        self.g_A2B = g_A2B
+        self.g_B2A = g_B2A
+        self.fake_pool_A = ImagePool(pool_sz = 50)
+        self.fake_pool_B = ImagePool(pool_sz = 50)
         self.loss = Loss(loss_type = 'MSE', lambda_ = 10)
-        self.d_A = d_A; self.d_B = d_B; self.g_A2B = g_A2B; self.g_B2A = g_B2A
-        self.fake_pool_A = ImagePool(pool_sz = 50); self.fake_pool_B = ImagePool(pool_sz = 50)
         
         
     def load_state_dict(self, path: str = None, train: bool = True):
@@ -739,7 +773,9 @@ class CycleGAN:
                 g_tot_loss = g_A2B_loss + g_B2A_loss - tot_cyc_loss
                 
                 # Parameters' getting updated
-                self.g_opt.zero_grad(); g_tot_loss.backward(); self.g_opt.step()
+                self.g_opt.zero_grad()
+                g_tot_loss.backward()
+                self.g_opt.step()
                 
                 
                 # Discriminator's optimization step
@@ -763,7 +799,8 @@ class CycleGAN:
                 d_B_loss.backward() 
                 
                 # Parameters' getting updated
-                self.d_opt.step(); d_tot_loss = d_A_loss + d_B_loss
+                self.d_opt.step()
+                d_tot_loss = d_A_loss + d_B_loss
                 
                 
                 # Writing statistics to the Tensorboard
@@ -771,7 +808,11 @@ class CycleGAN:
                 if curr_iter % 150 == 0: self.tb.write_image(10, self.g_A2B, self.g_B2A, epoch, curr_iter)
             
             
-            curr_iter = 0; g_scheduler.step(); d_scheduler.step(); print(f"After {epoch} epochs:"); 
+            curr_iter = 0
+            g_scheduler.step()
+            d_scheduler.step()
+            
+            print(f"After {epoch} epochs:"); 
             print(f"G_Loss: {round(g_tot_loss.item(), 3)}, D_Loss: {round(d_tot_loss.item(), 3)}", end = "\n")
             
             # Save models after every 10 epochs
@@ -783,18 +824,27 @@ class CycleGAN:
     def eval_(self, model_name: str = None):
         
         _ = self.load_state_dict(path = self.save_dir + model_name, train = False) 
-        list_real_A = []; list_fake_A = []; list_real_B = []; list_fake_B = []
+        
+        list_real_A = []
+        list_fake_A = []
+        list_real_B = []
+        list_fake_B = []
         
         for idx, data in enumerate(val_dataloader):
             
             real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
-            fake_A = self.g_B2A(real_B).detach(); fake_B = self.g_A2B(real_A).detach()
+            fake_A = self.g_B2A(real_B).detach()
+            fake_B = self.g_A2B(real_A).detach()
             
-            list_real_A.append(real_A); list_real_B.append(real_B)
-            list_fake_A.append(fake_A); list_fake_B.append(fake_B)
+            list_real_A.append(real_A)
+            list_real_B.append(real_B)
+            list_fake_A.append(fake_A)
+            list_fake_B.append(fake_B)
         
-        real_A = torch.cat(list_real_A, axis = 0); fake_A = torch.cat(list_fake_A, axis = 0)
-        real_B = torch.cat(list_real_B, axis = 0); fake_B = torch.cat(list_fake_B, axis = 0)
+        real_A = torch.cat(list_real_A, axis = 0)
+        fake_A = torch.cat(list_fake_A, axis = 0)
+        real_B = torch.cat(list_real_B, axis = 0)
+        fake_B = torch.cat(list_fake_B, axis = 0)
         
         return real_A, real_B, fake_A, fake_B
 
@@ -802,7 +852,11 @@ class CycleGAN:
 ##########################################################################################################################
 
 
-root_dir = "./Results/CycleGAN/Cezzane/"; nb_epochs = 200; epoch_decay = nb_epochs // 2; is_train = True
+is_train = True
+nb_epochs = 200
+epoch_decay = nb_epochs // 2
+root_dir = "./Results/CycleGAN/Cezzane/"
+
 model = CycleGAN(root_dir = root_dir, g_A2B = g_A2B, g_B2A = g_B2A, d_A = d_A, d_B = d_B)
 
 if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
