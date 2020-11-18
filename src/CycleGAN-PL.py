@@ -835,35 +835,38 @@ class CycleGAN(pl.LightningModule):
 
 
 TEST    = True
-TRAIN   = False
-RESTORE = not (TEST or TRAIN)
+TRAIN   = True
+RESTORE = False
 checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/version_0/checkpoints/epoch=299.ckpt" for example
-
 
 epochs = 200
 epoch_decay = epochs // 2
 
 model = CycleGAN(epoch_decay = epoch_decay)
-lr_logger = LearningRateMonitor(logging_interval = 'epoch')
 tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
 
-# you can change the gpus argument to how many you have (I had only 1 :( )
-trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger], 
-                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15)
-    
+lr_logger = LearningRateMonitor(logging_interval = 'epoch')
+checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2)
+callbacks_list = [lr_logger, checkpoint_callback]
 
-if TEST == False:
+# you can change the gpus argument to how many you have (I had only 1 :( )
+trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks_list, 
+                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15, profiler = True)
+
+
+if TRAIN or RESTORE:
     trainer.fit(model, datamodule)
     
-else:
+if TEST:
     # this is one of the many ways to run inference, but I would recommend you to look into the docs for other options as well, 
     # so that you can use one which suits you best.
     
     # load the checkpoint that you want to load
     model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
+    model.eval()
+    
     # put the datamodule in test mode
     datamodule.setup("test")
-    
     test_data = datamodule.test_dataloader()
     trainer.test(model, test_dataloaders = test_data)
     # look tensorboard for the final results
