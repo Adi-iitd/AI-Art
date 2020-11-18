@@ -292,7 +292,7 @@ img_sz = 256
 url = "https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/cezanne2photo.zip"
 
 # You can decrease the num_workers argument in {train/val/test}_dataloader
-datamodule = DataModule(url, trn_batch_sz = 4, tst_batch_sz = 64)
+datamodule = DataModule(url, trn_batch_sz = 1, tst_batch_sz = 64)
 datamodule.prepare_data()
 datamodule.setup("fit")
 
@@ -699,11 +699,12 @@ class CycleGAN(pl.LightningModule):
 
 
     def forward(self, real_A, real_B):
+        
+        # this is different from the training step. You should treat this as the final inference code (final outputs that you are looking for!)
+        fake_B = self.g_A2B(real_A)
+        fake_A = self.g_B2A(real_B)
 
-        fake_B = self.g_A2B(real_A); cyc_A = self.g_B2A(fake_B)
-        fake_A = self.g_B2A(real_B); cyc_B = self.g_A2B(fake_A)
-
-        return fake_B, cyc_A, fake_A, cyc_B
+        return fake_B, fake_A
 
 
     def training_step(self, batch, batch_idx, optimizer_idx):
@@ -792,7 +793,8 @@ class CycleGAN(pl.LightningModule):
             tensor = (tensor.cpu() + 1) / 2
             grid_A.append(tensor[:3])
             grid_B.append(tensor[3:])
-
+        
+        # log the results on tensorboard
         grid_A = torchvision.utils.make_grid(torch.cat(grid_A, 0), nrow = 6)
         grid_B = torchvision.utils.make_grid(torch.cat(grid_B, 0), nrow = 6)
         self.logger.experiment.add_image('Grid_A', grid_A, self.current_epoch, dataformats = "CHW")
@@ -814,15 +816,18 @@ class CycleGAN(pl.LightningModule):
 
 
     def configure_optimizers(self):
-
+        
+        # define the optimizers here
         g_opt   = torch.optim.Adam(self.g_params  , lr = self.g_lr, betas = (self.beta_1, self.beta_2))
         d_A_opt = torch.optim.Adam(self.d_A_params, lr = self.d_lr, betas = (self.beta_1, self.beta_2))
         d_B_opt = torch.optim.Adam(self.d_B_params, lr = self.d_lr, betas = (self.beta_1, self.beta_2))
-
+        
+        # define the lr_schedulers here
         g_sch   = optim.lr_scheduler.LambdaLR(g_opt  , lr_lambda = self.lr_lambda)
         d_A_sch = optim.lr_scheduler.LambdaLR(d_A_opt, lr_lambda = self.lr_lambda)
         d_B_sch = optim.lr_scheduler.LambdaLR(d_B_opt, lr_lambda = self.lr_lambda)
-
+        
+        # first return value is a list of optimizers and second is a list of lr_schedulers (you can return empty list also)
         return [g_opt, d_A_opt, d_B_opt], [g_sch, d_A_sch, d_B_sch]
 
 
@@ -832,10 +837,10 @@ class CycleGAN(pl.LightningModule):
 TEST    = True
 TRAIN   = False
 RESTORE = not (TEST or TRAIN)
-checkpoint_path = None if TRAIN else "path/to/checkpoints/" #"./logs/version_0/checkpoints/epoch=299.ckpt"
+checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/version_0/checkpoints/epoch=299.ckpt" for example
 
 
-epochs = 300
+epochs = 200
 epoch_decay = epochs // 2
 
 model = CycleGAN(epoch_decay = epoch_decay)
@@ -851,8 +856,16 @@ if TEST == False:
     trainer.fit(model, datamodule)
     
 else:
-    model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
+    # this is one of the many ways to run inference, but I would recommend you to look into the docs for other options as well, 
+    # so that you can use one which suits you best.
     
+    # load the checkpoint that you want to load
+    model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
+    # put the datamodule in test mode
     datamodule.setup("test")
+    
     test_data = datamodule.test_dataloader()
     trainer.test(model, test_dataloaders = test_data)
+    # look tensorboard for the final results
+    
+    # You can also run an inference on a single image using the forward function defined above!!
