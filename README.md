@@ -7,9 +7,10 @@
 > Why PyTorch Lightning?
 
 - Easier to reproduce
-- Scalable to any hardware without changing your model
+- Mixed Precision (16 bit and 32 bit) training support
 - More readable by decoupling the research code from the engineering
 - Less error prone by automating most of the training loop and tricky engineering
+- Scalable to any hardware without changing your model (CPU, Single/Multi GPU, TPU)
 - Keep all the flexibility (this is all pure PyTorch), but removes a ton of boilerplate
 
 
