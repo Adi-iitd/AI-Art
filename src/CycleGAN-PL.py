@@ -847,8 +847,8 @@ lr_logger = LearningRateMonitor(logging_interval = 'epoch')
 tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
 
 # you can change the gpus argument to how many you have (I had only 1 :( )
-trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks_list, 
-                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = [lr_logger], log_every_n_steps = 15, profiler = True)
+trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger], 
+                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15, profiler = True)
 
 
 if TRAIN or RESTORE:
