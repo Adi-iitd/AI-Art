@@ -843,15 +843,12 @@ epochs = 200
 epoch_decay = epochs // 2
 
 model = CycleGAN(epoch_decay = epoch_decay)
-tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
-
 lr_logger = LearningRateMonitor(logging_interval = 'epoch')
-checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2)
-callbacks_list = [lr_logger, checkpoint_callback]
+tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
 
 # you can change the gpus argument to how many you have (I had only 1 :( )
 trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks_list, 
-                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15, profiler = True)
+                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = [lr_logger], log_every_n_steps = 15, profiler = True)
 
 
 if TRAIN or RESTORE:
@@ -862,6 +859,7 @@ if TEST:
     # so that you can use one which suits you best.
     
     # load the checkpoint that you want to load
+    checkpoint_path = "path/to/checkpoints/"
     model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
     model.eval()
     
