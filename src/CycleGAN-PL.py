@@ -841,13 +841,15 @@ checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/version
 
 epochs = 200
 epoch_decay = epochs // 2
-
 model = CycleGAN(epoch_decay = epoch_decay)
+
 lr_logger = LearningRateMonitor(logging_interval = 'epoch')
 tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
+checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2, save_last = True)
+callbacks = [lr_logger, checkpoint_callback]
 
 # you can change the gpus argument to how many you have (I had only 1 :( )
-trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = [lr_logger], 
+trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks, 
                      num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15, profiler = True)
 
 
@@ -859,7 +861,7 @@ if TEST:
     # so that you can use one which suits you best.
     
     # load the checkpoint that you want to load
-    checkpoint_path = "path/to/checkpoints/"
+    checkpoint_path = "path/to/checkpoints/"  #  "./logs/version_0/checkpoints/last.ckpt" for example
     model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
     model.eval()
     
