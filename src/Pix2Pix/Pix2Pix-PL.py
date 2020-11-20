@@ -3,7 +3,6 @@ from Imports import *
 warnings.simplefilter("ignore")
 
 
-
 class Resize(object):
 
     def __init__(self, image_size: (int, tuple) = 256):
@@ -82,7 +81,8 @@ class Random_Flip(object):
 
         A, B = sample['A'], sample['B']
         if np.random.uniform(low = 0., high = 1.0) > .5:
-            A = np.fliplr(A); B = np.fliplr(B)
+            A = np.fliplr(A)
+            B = np.fliplr(B)
 
         return {'A': A, 'B': B}
 
@@ -344,9 +344,13 @@ class UNetBlock(nn.Module):
             norm_type:      Type of Normalization layer - InstanceNorm2D or BatchNorm2D
         """
 
-        super().__init__(); self.outermost = outermost; self.add_skip_conn = add_skip_conn
+        super().__init__()
+        
+        self.outermost = outermost
+        self.add_skip_conn = add_skip_conn
 
-        bias = norm_type == 'instance'; f = 2 if add_skip_conn else 1
+        bias = norm_type == 'instance'
+        f = 2 if add_skip_conn else 1
         norm_layer = InstanceNorm if norm_type == 'instance' else BatchNorm
 
         if  innermost:
@@ -415,7 +419,10 @@ class Generator(nn.Module):
             norm_type:      Type of Normalization layer - InstanceNorm2D or BatchNorm2D
         """
 
-        super().__init__(); self.layers = []; f = 4;
+        super().__init__()
+        
+        f = 4
+        self.layers = []
 
         unet = UNetBlock(out_channels * 8, out_channels * 8, innermost = True, outermost = False, apply_dp = False,
                          submodule = None, add_skip_conn = add_skip_conn, norm_type = norm_type)
@@ -435,7 +442,8 @@ class Generator(nn.Module):
         self.net = unet
 
 
-    def forward(self, x): return self.net(x)
+    def forward(self, x): 
+        return self.net(x)
 
 
 
@@ -455,9 +463,12 @@ class Discriminator(nn.Module):
             nb_layers:      Number of layers in the 70*70 Patch Discriminator
         """
 
-        super().__init__(); in_f = 1; out_f = 2; bias = norm_type == 'instance'
+        super().__init__()
+        
+        in_f  = 1
+        out_f = 2
+        bias = norm_type == 'instance'
         norm_layer = InstanceNorm if norm_type == "instance" else BatchNorm
-
 
         conv = Conv(in_channels, out_channels, 4, stride = 2, padding = 1, bias = True)
         layers = [conv, nn.LeakyReLU(0.2, True)]
@@ -477,7 +488,8 @@ class Discriminator(nn.Module):
         self.net = nn.Sequential(*layers)
 
 
-    def forward(self, x): return self.net(x)
+    def forward(self, x): 
+        return self.net(x)
 
 
 
@@ -491,7 +503,8 @@ class Initializer:
             init_gain: Standard deviation of the normal distribution
         """
 
-        self.init_type = init_type; self.init_gain = init_gain
+        self.init_type = init_type
+        self.init_gain = init_gain
 
 
     def init_module(self, m):
