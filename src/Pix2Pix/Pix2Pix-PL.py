@@ -157,13 +157,14 @@ class CustomDataset(Dataset):
 
 
     def __len__(self):
-        return max(len(self.file_names_A), len(self.file_names_B))
+        assert len(self.file_names_A) == len(self.file_names_B)
+        return len(self.file_names_A)
 
 
     def __getitem__(self, idx):
 
-        A = io.imread(self.file_names_A[idx % len(self.file_names_A)])
-        B = io.imread(self.file_names_B[idx % len(self.file_names_B)])
+        A = io.imread(self.file_names_A[idx])
+        B = io.imread(self.file_names_B[idx])
         sample = self.transforms({'A': A, 'B': B})
 
         return sample
