@@ -1,14 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
 
 from Imports import *
 warnings.simplefilter("ignore")
 
-
-# In[2]:
 
 
 class Resize(object):
@@ -141,8 +134,6 @@ class Normalize(object):
         return {'A': A, 'B': B}
 
 
-# In[3]:
-
 
 class CustomDataset(Dataset):
 
@@ -178,14 +169,11 @@ class CustomDataset(Dataset):
         return sample
 
 
-# In[4]:
-
 
 class DataModule(pl.LightningDataModule):
 
     """
-    Download the dataset using the below link; you just need to specify the url while creating an object of 
-    this class
+    Download the dataset using the below link; you just need to specify the url while creating an object of this class
     https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/
     Authors don't follow a consistent format for all the datasets, so, it might not work for few
 
@@ -295,9 +283,6 @@ class DataModule(pl.LightningDataModule):
                           pin_memory = True)
 
 
-# In[5]:
-
-
 def show_image(image):
     plt.imshow(np.transpose((image + 1) / 2, (1, 2, 0)))
 
@@ -305,7 +290,7 @@ def get_random_sample(dataset):
     return dataset[np.random.randint(0, len(dataset))]
 
 
-# In[6]:
+###############################################################################################################################################
 
 
 img_sz = 256
@@ -315,9 +300,6 @@ url = "https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/facades.
 datamodule = DataModule(url, root_dir = "./Dataset/Pix2Pix/", trn_batch_sz = 1, tst_batch_sz = 64)
 datamodule.prepare_data()
 datamodule.setup("fit")
-
-
-# In[7]:
 
 
 print(f"Few random samples from the Training dataset!")
@@ -335,7 +317,7 @@ plt.subplot(1, 2, 2); show_image(sample['B'])
 plt.show()
 
 
-# In[8]:
+###############################################################################################################################################
 
 
 class UNetBlock(nn.Module):
@@ -409,8 +391,6 @@ class UNetBlock(nn.Module):
         else: return torch.cat([x, self.net(x)], dim = 1) if self.add_skip_conn else self.net(x)
 
 
-# In[9]:
-
 
 class Generator(nn.Module):
 
@@ -457,8 +437,6 @@ class Generator(nn.Module):
     def forward(self, x): return self.net(x)
 
 
-# In[10]:
-
 
 class Discriminator(nn.Module):
 
@@ -500,8 +478,6 @@ class Discriminator(nn.Module):
 
     def forward(self, x): return self.net(x)
 
-
-# In[11]:
 
 
 class Initializer:
@@ -550,8 +526,6 @@ class Initializer:
 
         return net
 
-
-# In[12]:
 
 
 class Loss:
@@ -632,13 +606,10 @@ class Loss:
         return gen_tot_loss
 
 
-# In[13]:
-
 
 class Pix2Pix(pl.LightningModule):
 
-    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999, 
-                 epoch_decay: int = 100):
+    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999, epoch_decay: int = 100):
 
         super().__init__()
 
@@ -678,8 +649,7 @@ class Pix2Pix(pl.LightningModule):
 
     def forward(self, real_A):
         
-        # this is different from the training step. You should treat this as the final inference code 
-        # (final outputs that you are looking for!)
+        # this is different from the training step. You should treat this as the final inference code (final outputs that you are looking for!)
         fake_B = self.gen(real_A)
 
         return fake_B
@@ -766,26 +736,22 @@ class Pix2Pix(pl.LightningModule):
         g_sch = optim.lr_scheduler.LambdaLR(g_opt, lr_lambda = self.lr_lambda)
         d_sch = optim.lr_scheduler.LambdaLR(d_opt, lr_lambda = self.lr_lambda)
         
-        # first return value is a list of optimizers and second is a list of lr_schedulers (you can 
-        # return empty list also)
-
+        # first return value is a list of optimizers and second is a list of lr_schedulers (you can return empty list also)
         return [g_opt, d_opt], [g_sch, d_sch]
 
 
-# In[14]:
+    
+###############################################################################################################################################
 
 
 TEST    = True
 TRAIN   = True
 RESTORE = False
-checkpoint_path = None if TRAIN else "path/to/checkpoints/" #  "./logs/version_0/checkpoints/epoch=299.ckpt"
+checkpoint_path = None if TRAIN else "path/to/checkpoints/" #  "./logs/version_0/checkpoints/epoch=199.ckpt"
 
 epochs = 200
 epoch_decay = epochs // 2
 model = Pix2Pix(epoch_decay = epoch_decay)
-
-
-# In[15]:
 
 
 lr_logger = LearningRateMonitor(logging_interval = 'epoch')
@@ -795,29 +761,20 @@ checkpoint_callback = ModelCheckpoint(monitor = "g_val_loss", save_top_k = 3, pe
 callbacks = [lr_logger, checkpoint_callback]
 
 # you can change the gpus argument to how many you have (I had only 1 :( )
-trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20,
-                     precision = 16, callbacks = callbacks, num_sanity_val_steps = 1, logger = tb_logger, 
-                     resume_from_checkpoint = checkpoint_path, log_every_n_steps = 25, profiler = True)
-
-
-# In[ ]:
-
+trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks, 
+                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 25, profiler = True)
 
 if TRAIN or RESTORE:
     trainer.fit(model, datamodule)
 
-
-# In[ ]:
-
-
 if TEST:
     
-    checkpoint_path = "./logs/version_0/checkpoints/last.ckpt"
+    checkpoint_path = "./logs/Pix2Pix/version_0/checkpoints/last.ckpt"
     # this is one of the many ways to run inference, but I would recommend you to look into the docs for other 
     # options as well, so that you can use one which suits you best.
     
     # load the checkpoint that you want to load
-    model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
+    model = Pix2Pix.load_from_checkpoint(checkpoint_path = checkpoint_path)
     model.eval()
     
     # put the datamodule in test mode
@@ -827,16 +784,4 @@ if TEST:
     
     # look tensorboard for the final results
     # You can also run an inference on a single image using the forward function defined above!!
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
 
