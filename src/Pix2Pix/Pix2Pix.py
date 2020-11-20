@@ -9,7 +9,9 @@ from torch.nn import InstanceNorm2d as InstanceNorm, BatchNorm2d as BatchNorm
 from torch.utils.tensorboard import SummaryWriter,  FileWriter,  RecordWriter
 from torch.utils.data import Dataset, DataLoader, ConcatDataset, TensorDataset
 
-mpl.rcParams["figure.figsize"] = (8, 4); mpl.rcParams["axes.grid"] = False; warnings.filterwarnings("ignore")
+mpl.rcParams["figure.figsize"] = (8, 4)
+mpl.rcParams["axes.grid"]      = False
+warnings.filterwarnings("ignore")
 
 
 ########################################################################################################################
@@ -104,7 +106,8 @@ class Random_Flip(object):
         
         A, B = sample['A'], sample['B'];
         if np.random.uniform(low = 0., high = 1.0) > .5:
-            A = np.fliplr(A); B = np.fliplr(B)
+            A = np.fliplr(A)
+            B = np.fliplr(B)
         
         return {'A': A, 'B': B}
 
@@ -185,7 +188,8 @@ class MyDataset(Dataset):
         
         sample = io.imread(fname = self.file_names[idx]); width = sample.shape[1]
         
-        B = sample[:, : width // 2, :]; A = sample[:, width // 2 :, :]
+        B = sample[:, : width // 2, :]
+        A = sample[:, width // 2 :, :]
         sample = self.transforms({'A': A, 'B': B})
         
         return sample
@@ -231,8 +235,15 @@ class Helper(object):
 # 1) Correctly specify the Root directory which contains two folders: Train folder and Validation folder
 # 2) Image names should be labeled from 1 to len(dataset), o/w will throw an error while sorting the filenames
 
-root_dir = "./Dataset/Vision/Pix2Pix/Facades/"; trn_path = root_dir + "Trn/"; val_path = root_dir + "Val/"
-trn_batch_sz = 16 * len(devices); val_batch_sz = 64; img_sz = 256; jitter_sz = int(img_sz * 1.12)
+root_dir = "./Dataset/Vision/Pix2Pix/Facades/"
+trn_path = root_dir + "Trn/"
+val_path = root_dir + "Val/"
+
+img_sz = 256
+jitter_sz = int(img_sz * 1.12)
+
+trn_batch_sz = 16 * len(devices)
+val_batch_sz = 64
 helper = Helper()
 
 val_tfms = [Resize(img_sz), To_Tensor(), Normalize()]
@@ -242,11 +253,15 @@ trn_dataset, trn_dataloader = helper.get_data(trn_path, trn_tfms, trn_batch_sz, 
 val_dataset, val_dataloader = helper.get_data(val_path, val_tfms, val_batch_sz, is_train = False)
 
 
-sample = helper.get_random_sample(trn_dataset); A = sample['A']; B = sample['B']
-plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
+sample = helper.get_random_sample(trn_dataset)
+plt.subplot(1, 2, 1); helper.show_image(sample['A'])
+plt.subplot(1, 2, 2); helper.show_image(sample['B'])
+plt.show()
 
-sample = helper.get_random_sample(val_dataset); A = sample['A']; B = sample['B']
-plt.subplot(1, 2, 1); helper.show_image(A); plt.subplot(1, 2, 2); helper.show_image(B); plt.show()
+sample = helper.get_random_sample(val_dataset)
+plt.subplot(1, 2, 1); helper.show_image(sample['A'])
+plt.subplot(1, 2, 2); helper.show_image(sample['B'])
+plt.show()
 
 
 ######################################################################################################################
@@ -275,9 +290,13 @@ class UNetBlock(nn.Module):
             norm_type:      Type of Normalization layer - InstanceNorm2D or BatchNorm2D
         """
         
-        super().__init__(); self.outermost = outermost; self.add_skip_conn = add_skip_conn
+        super().__init__()
         
-        bias = norm_type == 'instance'; f = 2 if add_skip_conn else 1
+        self.outermost = outermost
+        self.add_skip_conn = add_skip_conn
+        
+        bias = norm_type == 'instance'
+        f = 2 if add_skip_conn else 1
         norm_layer = InstanceNorm if norm_type == 'instance' else BatchNorm
         
         if  innermost: 
@@ -345,7 +364,10 @@ class Generator(nn.Module):
             norm_type:      Type of Normalization layer - InstanceNorm2D or BatchNorm2D
         """
         
-        super().__init__(); self.layers = []; f = 4;
+        super().__init__()
+        
+        f = 4
+        self.layers = []
         
         unet = UNetBlock(out_channels * 8, out_channels * 8, innermost = True, outermost = False, apply_dp = False,
                          submodule = None, add_skip_conn = add_skip_conn, norm_type = norm_type)
@@ -365,7 +387,8 @@ class Generator(nn.Module):
         self.net = unet
         
         
-    def forward(self, x): return self.net(x)
+    def forward(self, x): 
+        return self.net(x)
 
 
 class Discriminator(nn.Module):
@@ -384,9 +407,12 @@ class Discriminator(nn.Module):
             nb_layers:      Number of layers in the 70*70 Patch Discriminator
         """
         
-        super().__init__(); in_f = 1; out_f = 2; bias = norm_type == 'instance' 
-        norm_layer = InstanceNorm if norm_type == "instance" else BatchNorm
+        super().__init__()
         
+        in_f  = 1
+        out_f = 2
+        bias = norm_type == 'instance' 
+        norm_layer = InstanceNorm if norm_type == "instance" else BatchNorm
         
         conv = Conv(in_channels, out_channels, 4, stride = 2, padding = 1, bias = True)
         layers = [conv, nn.LeakyReLU(0.2, True)]
@@ -394,7 +420,8 @@ class Discriminator(nn.Module):
         for idx in range(1, nb_layers):
             conv = Conv(out_channels * in_f, out_channels * out_f, 4, stride = 2, padding = 1, bias = bias)
             layers += [conv, norm_layer(out_channels * out_f), nn.LeakyReLU(0.2, True)]
-            in_f = out_f; out_f *= 2
+            in_f   = out_f
+            out_f *= 2
         
         out_f = min(2 ** nb_layers, 8)
         conv = Conv(out_channels * in_f, out_channels * out_f, 4, stride = 1, padding = 1, bias = bias)
@@ -419,7 +446,8 @@ class Initializer:
             init_gain: Standard deviation of the normal distribution
         """
         
-        self.init_type = init_type; self.init_gain = init_gain
+        self.init_type = init_type
+        self.init_gain = init_gain
         
         
     def init_module(self, m):
@@ -471,7 +499,9 @@ class Tensorboard:
     @torch.no_grad()
     def write_image(self, nb_examples, gen, epoch: int, curr_iter: int):
         
-        grid = []; n_iter = (epoch - 1) * len(trn_dataloader) + curr_iter
+        grid = []
+        n_iter = (epoch - 1) * len(trn_dataloader) + curr_iter
+        
         for _ in range(nb_examples):
             
             sample = helper.get_random_sample(val_dataset)
@@ -480,7 +510,8 @@ class Tensorboard:
             
             fake_B = gen(real_A).detach()
             tensor = torch.cat([real_A, real_B, fake_B])
-            tensor = (tensor.cpu().clone() + 1) / 2; grid.append(tensor)
+            tensor = (tensor.cpu().clone() + 1) / 2
+            grid.append(tensor)
         
         grid = torchvision.utils.make_grid(torch.cat(grid, 0), nrow = 6)
         self.writer.add_image('Grid', grid, n_iter)
@@ -579,8 +610,11 @@ class Pix2Pix:
     
     def __init__(self, root_dir: str, gen, dis):
         
-        self.dis = dis; self.gen = gen; self.loss = Loss()
-        self.save_dir = root_dir + 'Models/'; summary_path = root_dir + 'Tensorboard/'
+        self.dis  = dis
+        self.gen  = gen
+        self.loss = Loss()
+        self.save_dir = root_dir + 'Models/'
+        summary_path = root_dir + 'Tensorboard/'
         
         if not os.path.exists(self.save_dir): os.makedirs(self.save_dir)
         if not os.path.exists(summary_path ): os.makedirs(summary_path )
@@ -589,7 +623,8 @@ class Pix2Pix:
     
     def load_state_dict(self, path, train = True):
         
-        checkpoint = torch.load(path); start_epoch = checkpoint['epochs_'] + 1
+        checkpoint  = torch.load(path)
+        start_epoch = checkpoint['epochs_'] + 1
         
         if train:
             self.d_opt.load_state_dict(checkpoint['d_opt'])
@@ -628,8 +663,10 @@ class Pix2Pix:
         self.d_opt = optim.Adam(self.dis.module.parameters(), lr = d_lr, betas = (beta_1, 0.999))
         self.g_opt = optim.Adam(self.gen.module.parameters(), lr = g_lr, betas = (beta_1, 0.999))
         
-        start_epoch = 0; curr_iter = 0;
-        if model_name is not None: start_epoch = self.load_state_dict(path = self.save_dir + model_name)
+        curr_iter   = 0
+        start_epoch = 0
+        if model_name is not None: 
+            start_epoch = self.load_state_dict(path = self.save_dir + model_name)
         
         # LrScheduler follows this lambda rule to decay the learning rate
         def lr_lambda(epoch):
@@ -644,7 +681,7 @@ class Pix2Pix:
         for epoch in range(start_epoch + 1, nb_epochs + 1):
             for data in trn_dataloader:
                 
-                curr_iter += 1;
+                curr_iter += 1
                 real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
                 
                 # Discriminator's optimization step
@@ -655,7 +692,9 @@ class Pix2Pix:
                 dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B.detach()], 0))
 
                 dis_tot_loss = self.loss.get_dis_gan_loss(dis_pred_real_data, dis_pred_fake_data)
-                self.d_opt.zero_grad(); dis_tot_loss.backward(); self.d_opt.step()
+                self.d_opt.zero_grad()
+                dis_tot_loss.backward()
+                self.d_opt.step()
                 
                 # Generator's optimization step
                 self.set_requires_grad([self.dis], requires_grad = False)
@@ -665,14 +704,20 @@ class Pix2Pix:
                 gen_rec_loss = self.loss.get_gen_rec_loss(real_B, fake_B)
                 gen_tot_loss = gen_gan_loss + gen_rec_loss
                 
-                self.g_opt.zero_grad(); gen_tot_loss.backward(); self.g_opt.step()
+                self.g_opt.zero_grad()
+                gen_tot_loss.backward()
+                self.g_opt.step()
                 
                 # Write statistics to the Tensorboard
                 self.tb.write_loss (dis_tot_loss, gen_tot_loss, epoch, curr_iter)
-                if curr_iter % 10 == 0: self.tb.write_image(10, self.gen, epoch, curr_iter)
-
+                if curr_iter % 10 == 0: 
+                    self.tb.write_image(10, self.gen, epoch, curr_iter)
                 
-            curr_iter = 0; d_scheduler.step(); g_scheduler.step(); print(f"After {epoch} epochs:")
+            curr_iter = 0
+            d_scheduler.step()
+            g_scheduler.step()
+            
+            print(f"After {epoch} epochs:")
             print(f"D_loss: {round(dis_tot_loss.item(), 3)}, G_loss: {round(gen_tot_loss.item(), 3)}")
             
             # Save the models after every 10 epochs
@@ -684,13 +729,18 @@ class Pix2Pix:
     def eval_(self, model_name: str = None):
         
         _ = self.load_state_dict(self.save_dir + model_name, train = False) 
-        list_fake_B = []; list_real_B = []; list_real_A = []
+        list_fake_B = []
+        list_real_B = []
+        list_real_A = []
         
         for idx, data in enumerate(val_dataloader):
             
             real_A, real_B = data['A'].to(devices[0]), data['B'].to(devices[0])
-            list_real_A.append(data['A']);      list_real_B.append(data['B'])
-            fake_B = self.gen(real_A).detach(); list_fake_B.append(fake_B)
+            list_real_A.append(data['A'])
+            list_real_B.append(data['B'])
+            
+            fake_B = self.gen(real_A).detach()
+            list_fake_B.append(fake_B)
             
         fake_B = torch.cat(list_fake_B, axis = 0)
         real_B = torch.cat(list_real_B, axis = 0)
@@ -707,12 +757,18 @@ gen  = init(Generator(in_channels = 3, out_channels = 64, norm_type = 'instance'
 dis  = init(Discriminator(in_channels = 3, out_channels = 64, norm_type = 'instance'))
 
 
-root_dir = "./Results/Pix2Pix/Facades/A/"; nb_epochs = 400; epoch_decay = nb_epochs // 2; is_train = True
+root_dir = "./Results/Pix2Pix/Facades/A/"
+
+is_train = True
+nb_epochs = 400
+epoch_decay = nb_epochs // 2
 model = Pix2Pix(root_dir = root_dir, gen = gen, dis = dis)
 
 # Set is_train to False while running inference on the trained model
-if is_train: model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
-else: real_A, real_B, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
+if is_train: 
+    model.fit(nb_epochs = nb_epochs, model_name = None, epoch_decay = epoch_decay)
+else: 
+    real_A, real_B, fake_B = model.eval_(model_name = "Model_" + str(nb_epochs) + ".pth")
 
 ######################################################################################################################
 
