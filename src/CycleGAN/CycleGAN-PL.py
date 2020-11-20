@@ -837,7 +837,7 @@ class CycleGAN(pl.LightningModule):
 TEST    = True
 TRAIN   = True
 RESTORE = False
-checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/version_0/checkpoints/epoch=299.ckpt" for example
+checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/CycleGAN/version_0/checkpoints/epoch=199.ckpt" for example
 
 epochs = 200
 epoch_decay = epochs // 2
@@ -861,7 +861,7 @@ if TEST:
     # so that you can use one which suits you best.
     
     # load the checkpoint that you want to load
-    checkpoint_path = "path/to/checkpoints/"  #  "./logs/version_0/checkpoints/last.ckpt" for example
+    checkpoint_path = "path/to/checkpoints/"  #  "./logs/CycleGAN/version_0/checkpoints/last.ckpt" for example
     model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
     model.eval()
     
