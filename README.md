@@ -3,7 +3,7 @@
 ***
 ### Edit 2020/11/20:
 
-> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN.
+> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN and Pix2Pix.
 > Why PyTorch Lightning?
 
 - Easier to reproduce
