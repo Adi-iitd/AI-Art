@@ -232,11 +232,11 @@ class DataModule(pl.LightningDataModule):
                 dest_dir = dwnld_dir
                 src_dir  = dwnld_dir + folder
 
-                dest_dir = dest_dir + "Train/" if folder[:-2] == "test" else dest_dir + "Test/"
-                dest_dir = dest_dir + "B/"     if folder[-2]  == "A"    else dest_dir + "A/"
+                dest_dir = dest_dir + "Train/" if folder[:-2] != "test" else dest_dir + "Test/"
+                dest_dir = dest_dir + "B/"     if folder[-2]  != "A"    else dest_dir + "A/"
                 os.makedirs(dest_dir, exist_ok = True)
 
-                orig_files = [src_dir  + file for file in os.listdir(src_dir)]
+                orig_files = [src_dir  + file for file in sorted(os.listdir(src_dir))]
                 modf_files = [dest_dir + "{:06d}.jpg".format(i) for i, file in enumerate(orig_files)]
 
                 for orig_file, modf_file in zip(orig_files, modf_files):
