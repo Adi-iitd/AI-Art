@@ -790,7 +790,7 @@ class CycleGAN(pl.LightningModule):
             rand_int = np.random.randint(0, len(real_A))
             tensor = torch.stack([real_A[rand_int], fake_B[rand_int], cyc_A[rand_int],
                                   real_B[rand_int], fake_A[rand_int], cyc_B[rand_int]])
-            tensor = (tensor.cpu() + 1) / 2
+            tensor = (tensor + 1) / 2
             grid_A.append(tensor[:3])
             grid_B.append(tensor[3:])
         
@@ -844,7 +844,7 @@ epoch_decay = epochs // 2
 model = CycleGAN(epoch_decay = epoch_decay)
 
 lr_logger = LearningRateMonitor(logging_interval = 'epoch')
-tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "", log_graph = True)
+tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "CycleGAN", log_graph = True)
 checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2, save_last = True)
 callbacks = [lr_logger, checkpoint_callback]
 
