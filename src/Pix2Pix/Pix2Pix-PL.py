@@ -664,7 +664,7 @@ class Pix2Pix(pl.LightningModule):
 
             # No need to calculate the gradients for Discriminators' parameters
             self.set_requires_grad([self.dis], requires_grad = False)
-            dis_pred_fake_data = self.dis(fake_B)
+            dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B], 0))
             
             # Gen loss
             g_loss = self.loss.get_gen_loss(dis_pred_fake_data, real_B, fake_B)
@@ -676,8 +676,8 @@ class Pix2Pix(pl.LightningModule):
         if optimizer_idx == 1:
             
             self.set_requires_grad([self.dis], requires_grad = True)
-            dis_pred_real_data = self.dis(real_B)
-            dis_pred_fake_data = self.dis(fake_B.detach())
+            dis_pred_real_data = self.dis(torch.cat([real_A, real_B], 0))
+            dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B.detach()], 0))
 
             # Dis loss
             d_loss = self.loss.get_dis_loss(dis_pred_real_data, dis_pred_fake_data)
@@ -692,8 +692,8 @@ class Pix2Pix(pl.LightningModule):
         real_A, real_B = batch['A'], batch['B']
 
         fake_B = self.gen(real_A)
-        dis_pred_fake_data = self.dis(fake_B)
-        dis_pred_real_data = self.dis(real_B)
+        dis_pred_fake_data = self.dis(torch.cat([real_A, fake_B], 0))
+        dis_pred_real_data = self.dis(torch.cat([real_A, real_B], 0))
 
         # Gen loss, # Dis loss
         g_loss = self.loss.get_gen_loss(dis_pred_fake_data, real_B, fake_B)
@@ -747,7 +747,7 @@ class Pix2Pix(pl.LightningModule):
 TEST    = True
 TRAIN   = True
 RESTORE = False
-checkpoint_path = None if TRAIN else "path/to/checkpoints/" #  "./logs/version_0/checkpoints/epoch=199.ckpt"
+checkpoint_path = None if TRAIN else "path/to/checkpoints/" #  "./logs/Pix2Pix/version_0/checkpoints/epoch=199.ckpt"
 
 epochs = 200
 epoch_decay = epochs // 2
@@ -769,7 +769,7 @@ if TRAIN or RESTORE:
 
 if TEST:
     
-    checkpoint_path = "./logs/Pix2Pix/version_0/checkpoints/last.ckpt"
+    checkpoint_path =  "path/to/checkpoints/" #  "./logs/Pix2Pix/version_0/checkpoints/epoch=199.ckpt"
     # this is one of the many ways to run inference, but I would recommend you to look into the docs for other 
     # options as well, so that you can use one which suits you best.
     
