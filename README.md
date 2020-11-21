@@ -3,9 +3,11 @@
 ***
 ### Edit 2020/11/20:
 
-> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN and Pix2Pix.
-> Why PyTorch Lightning?
+> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN and Pix2Pix. 
+Thanks to @[William Falcon](https://twitter.com/_willfalcon?lang=en) for this amazing library
 
+
+> Why PyTorch Lightning?
 - Easier to reproduce
 - Mixed Precision (16 bit and 32 bit) training support
 - More readable by decoupling the research code from the engineering
