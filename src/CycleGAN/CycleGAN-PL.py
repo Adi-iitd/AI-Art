@@ -660,6 +660,8 @@ class CycleGAN(pl.LightningModule):
 
         self.d_lr = d_lr
         self.g_lr = g_lr
+        # NOTE: Training batch size is one by default, but if you want to increase it, you should scale your LR too.
+        
         self.beta_1 = beta_1
         self.beta_2 = beta_2
         self.epoch_decay = epoch_decay
