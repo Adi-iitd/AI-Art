@@ -881,38 +881,49 @@ class CycleGAN(pl.LightningModule):
 TEST    = True
 TRAIN   = True
 RESTORE = False
-checkpoint_path = None if TRAIN else "path/to/checkpoints/"   #  "./logs/CycleGAN/version_0/checkpoints/epoch=199.ckpt" for example
-
-epochs = 200
-epoch_decay = epochs // 2
-model = CycleGAN(epoch_decay = epoch_decay)
-
-lr_logger = LearningRateMonitor(logging_interval = 'epoch')
-tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "CycleGAN", log_graph = True)
-checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2, save_last = True)
-callbacks = [lr_logger, checkpoint_callback]
-
-# you can change the gpus argument to how many you have (I had only 1 :( )
-trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, callbacks = callbacks, 
-                     num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = checkpoint_path, log_every_n_steps = 15, profiler = True)
+resume_from_checkpoint = None if TRAIN else "path/to/checkpoints/" # "./logs/CycleGAN/version_0/checkpoints/epoch=1.ckpt"
 
 
 if TRAIN or RESTORE:
+    
+    epochs = 4
+    epoch_decay = epochs // 2
+    
+    model = CycleGAN(epoch_decay = epoch_decay)
+    tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "CycleGAN", log_graph = True)
+    
+    lr_logger = LearningRateMonitor(logging_interval = 'epoch')
+    checkpoint_callback = ModelCheckpoint(monitor = "g_tot_val_loss", save_top_k = 3, period = 2, save_last = True)
+    callbacks = [lr_logger, checkpoint_callback]
+    
+    # you can change the gpus argument to how many you have (I had only 1 :( )
+    trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, 
+                         callbacks = callbacks, num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = 
+                         resume_from_checkpoint, log_every_n_steps = 25, profiler = True)
+    
     trainer.fit(model, datamodule)
     
-if TEST:
-    # this is one of the many ways to run inference, but I would recommend you to look into the docs for other options as well, 
-    # so that you can use one which suits you best.
     
+if TEST:
+    
+    """
+    This is one of the many ways to run inference, but I would recommend you to look into the docs for other 
+    options as well, so that you can use one which suits you best.
+    """
+    
+    trainer = pl.Trainer(gpus = -1, precision = 16, profiler = True)
     # load the checkpoint that you want to load
-    checkpoint_path = "path/to/checkpoints/"  #  "./logs/CycleGAN/version_0/checkpoints/last.ckpt" for example
+    checkpoint_path = "path/to/checkpoints/" # "./logs/CycleGAN/version_0/checkpoints/epoch=1.ckpt"
+    
     model = CycleGAN.load_from_checkpoint(checkpoint_path = checkpoint_path)
-    model.eval()
+    model.freeze()
     
     # put the datamodule in test mode
     datamodule.setup("test")
     test_data = datamodule.test_dataloader()
+
     trainer.test(model, test_dataloaders = test_data)
     # look tensorboard for the final results
-    
     # You can also run an inference on a single image using the forward function defined above!!
+    
+    
