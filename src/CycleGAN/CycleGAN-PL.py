@@ -288,7 +288,7 @@ def get_random_sample(dataset):
 ############################################################################################################################################################
 
 
-img_sz = 256
+img_sz = 512
 url = "https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/cezanne2photo.zip"
 
 # You can decrease the num_workers argument in {train/val/test}_dataloader
@@ -653,7 +653,8 @@ class Loss:
 
 class CycleGAN(pl.LightningModule):
 
-    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999, epoch_decay: int = 200):
+    def __init__(self, d_lr: float = 2e-4, g_lr: float = 2e-4, beta_1: float = 0.5, beta_2: float = 0.999, 
+                 epoch_decay: int = 200):
 
         super().__init__()
 
@@ -700,57 +701,100 @@ class CycleGAN(pl.LightningModule):
 
     def forward(self, real_A, real_B):
         
-        # this is different from the training step. You should treat this as the final inference code (final outputs that you are looking for!)
+        """
+        This is different from the training step. You should treat this as the final inference code 
+        (final outputs that you are looking for!), but you can definitely use it in the training_step 
+        to make some code reusable.
+        Parameters:
+            real_A -- real image of A
+            real_B -- real image of B
+        """
+        
         fake_B = self.g_A2B(real_A)
         fake_A = self.g_B2A(real_B)
 
         return fake_B, fake_A
+    
+    
+    def forward_gen(self, real_A, real_B, fake_A, fake_B):
+        
+        """
+        Gets the remaining output of both the generators for the training/validation step
+        Parameters:
+            real_A -- real image of A
+            real_B -- real image of B
+            fake_A -- fake image of A
+            fake_B -- fake image of B
+        """
+        
+        cyc_A = self.g_B2A(fake_B)
+        idt_A = self.g_B2A(real_A)
+        
+        cyc_B = self.g_A2B(fake_A)
+        idt_B = self.g_A2B(real_B)
+        
+        return cyc_A, idt_A, cyc_B, idt_B
+    
+    
+    @staticmethod
+    def forward_dis(dis, real_data, fake_data):
+        
+        """
+        Gets the Discriminator output
+        Parameters:
+            dis       -- Discriminator
+            real_data -- real image
+            fake_data -- fake image
+        """
+        
+        pred_real_data = dis(real_data)
+        pred_fake_data = dis(fake_data)
+        
+        return pred_real_data, pred_fake_data
 
 
     def training_step(self, batch, batch_idx, optimizer_idx):
 
         real_A, real_B = batch['A'], batch['B']
-
-        fake_B = self.g_A2B(real_A); cyc_A = self.g_B2A(fake_B)
-        fake_A = self.g_B2A(real_B); cyc_B = self.g_A2B(fake_A)
-        idt_A  = self.g_B2A(real_A); idt_B = self.g_A2B(real_B)
-
+        fake_B, fake_A = self(real_A, real_B)
+        
+        
         if optimizer_idx == 0:
-
+            
+            cyc_A, idt_A, cyc_B, idt_B = self.forward_gen(real_A, real_B, fake_A, fake_B)
+            
             # No need to calculate the gradients for Discriminators' parameters
             self.set_requires_grad([self.d_A, self.d_B], requires_grad = False)
             d_A_pred_fake_data = self.d_A(fake_A)
             d_B_pred_fake_data = self.d_B(fake_B)
 
-            g_A2B_loss, g_B2A_loss, g_tot_loss = self.loss.get_gen_loss(real_A, real_B, cyc_A, cyc_B,
-                                                 idt_A, idt_B, d_A_pred_fake_data, d_B_pred_fake_data)
+            g_A2B_loss, g_B2A_loss, g_tot_loss = self.loss.get_gen_loss(real_A, real_B, cyc_A, cyc_B, idt_A, idt_B, 
+                                                                        d_A_pred_fake_data, d_B_pred_fake_data)
 
             dict_ = {'g_tot_train_loss': g_tot_loss, 'g_A2B_train_loss': g_A2B_loss, 'g_B2A_train_loss': g_B2A_loss}
             self.log_dict(dict_, on_step = True, on_epoch = True, prog_bar = True, logger = True)
 
             return g_tot_loss
-
-
-        if optimizer_idx != 0:
-            self.set_requires_grad([self.d_A, self.d_B], requires_grad = True)
+        
 
         if optimizer_idx == 1:
-
+            
+            self.set_requires_grad([self.d_A], requires_grad = True)
             fake_A = self.fake_pool_A.push_and_pop(fake_A)
-            d_A_pred_real_data = self.d_A(real_A)
-            d_A_pred_fake_data = self.d_A(fake_A.detach())
+            d_A_pred_real_data, d_A_pred_fake_data = self.forward_dis(self.d_A, real_A, fake_A.detach())
 
             # GAN loss
             d_A_loss = self.loss.get_dis_loss(d_A_pred_real_data, d_A_pred_fake_data)
             self.log("d_A_train_loss", d_A_loss, on_step = True, on_epoch = True, prog_bar = True, logger = True)
 
             return d_A_loss
+        
 
         if optimizer_idx == 2:
-
+            
+            self.set_requires_grad([self.d_B], requires_grad = True)
             fake_B = self.fake_pool_B.push_and_pop(fake_B)
-            d_B_pred_real_data = self.d_B(real_B)
-            d_B_pred_fake_data = self.d_B(fake_B.detach())
+            d_B_pred_real_data, d_B_pred_fake_data = self.forward_dis(self.d_B, real_B, fake_B.detach())
 
             # GAN loss
             d_B_loss = self.loss.get_dis_loss(d_B_pred_real_data, d_B_pred_fake_data)
@@ -763,20 +807,18 @@ class CycleGAN(pl.LightningModule):
 
         grid_A = []
         grid_B = []
+        
         real_A, real_B = batch['A'], batch['B']
-
-        fake_B = self.g_A2B(real_A); cyc_A = self.g_B2A(fake_B)
-        fake_A = self.g_B2A(real_B); cyc_B = self.g_A2B(fake_A)
-        idt_A  = self.g_B2A(real_A); idt_B = self.g_A2B(real_B)
-
-        d_A_pred_fake_data = self.d_A(fake_A)
-        d_A_pred_real_data = self.d_A(real_A)
-        d_B_pred_fake_data = self.d_B(fake_B)
-        d_B_pred_real_data = self.d_B(real_B)
-
+        
+        fake_B, fake_A = self(real_A, real_B)
+        cyc_A , idt_A , cyc_B, idt_B = self.forward_gen(real_A, real_B, fake_A, fake_B)
+        
+        d_A_pred_real_data, d_A_pred_fake_data = self.forward_dis(self.d_A, real_A, fake_A)
+        d_B_pred_real_data, d_B_pred_fake_data = self.forward_dis(self.d_B, real_B, fake_B)
+        
         # G_A2B loss, G_B2A loss, G loss
-        g_A2B_loss, g_B2A_loss, g_tot_loss = self.loss.get_gen_loss(real_A, real_B, cyc_A, cyc_B,
-                                             idt_A, idt_B, d_A_pred_fake_data, d_B_pred_fake_data)
+        g_A2B_loss, g_B2A_loss, g_tot_loss = self.loss.get_gen_loss(real_A, real_B, cyc_A, cyc_B, idt_A, idt_B, 
+                                                                    d_A_pred_fake_data, d_B_pred_fake_data)
 
         # D_A loss, D_B loss
         d_A_loss = self.loss.get_dis_loss(d_A_pred_real_data, d_A_pred_fake_data)
@@ -827,8 +869,10 @@ class CycleGAN(pl.LightningModule):
         d_A_sch = optim.lr_scheduler.LambdaLR(d_A_opt, lr_lambda = self.lr_lambda)
         d_B_sch = optim.lr_scheduler.LambdaLR(d_B_opt, lr_lambda = self.lr_lambda)
         
-        # first return value is a list of optimizers and second is a list of lr_schedulers (you can return empty list also)
+        # first return value is a list of optimizers and second is a list of lr_schedulers 
+        # (you can return empty list also)
         return [g_opt, d_A_opt, d_B_opt], [g_sch, d_A_sch, d_B_sch]
+
 
 
 ############################################################################################################################################################
