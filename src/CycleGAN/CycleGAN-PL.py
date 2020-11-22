@@ -886,7 +886,7 @@ resume_from_checkpoint = None if TRAIN else "path/to/checkpoints/" # "./logs/Cyc
 
 if TRAIN or RESTORE:
     
-    epochs = 4
+    epochs = 200
     epoch_decay = epochs // 2
     
     model = CycleGAN(epoch_decay = epoch_decay)
