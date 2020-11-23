@@ -777,6 +777,7 @@ if TRAIN or RESTORE:
     callbacks = [lr_logger, checkpoint_callback]
     
     # you can change the gpus argument to how many you have (I had only 1 :( )
+    # Setting deterministic flag to True for full reproducibility
     trainer = pl.Trainer(accelerator = 'ddp', gpus = -1, max_epochs = epochs, progress_bar_refresh_rate = 20, precision = 16, 
                          callbacks = callbacks, num_sanity_val_steps = 1, logger = tb_logger, resume_from_checkpoint = 
                          resume_from_checkpoint, log_every_n_steps = 25, profiler = True, deterministic = True)
