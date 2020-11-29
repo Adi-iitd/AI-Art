@@ -3,17 +3,15 @@
 ***
 ### Edit 2020/11/20:
 
-> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to CycleGAN and Pix2Pix. 
-Thanks to @[William Falcon](https://twitter.com/_willfalcon?lang=en) for this amazing library
+> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to Neural Style Transfer, CycleGAN and Pix2Pix. Thanks to @[William Falcon](https://twitter.com/_willfalcon?lang=en)!!
 
 
 > Why PyTorch Lightning?
-- Easier to reproduce
+- Easy to reproduce results
 - Mixed Precision (16 bit and 32 bit) training support
 - More readable by decoupling the research code from the engineering
 - Less error prone by automating most of the training loop and tricky engineering
-- Keep all the flexibility (this is all pure PyTorch), but removes a ton of boilerplate
-- Scalable to any hardware without changing your model (CPU, Single/Multi GPU, TPU)
+- Scalable to any hardware without changing the model (CPU, Single/Multi GPU, TPU)
 
 
 ***
