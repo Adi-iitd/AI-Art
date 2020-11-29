@@ -260,7 +260,7 @@ class ExtractFeatureMaps(pl.LightningModule):
 
 class Loss(pl.LightningModule):
 
-    def __init__(self, con_target: list, sty_target: list, con_wt: float, sty_wt: float, var_wt: float,
+    def __init__(self, con_target: list, sty_target: list, con_wt: float, sty_wt: float, var_wt: float, 
                  con_layer_wts: list = None, sty_layer_wts: list = None):
 
         """
@@ -397,9 +397,8 @@ class Loss(pl.LightningModule):
 
 class StyleTransfer(pl.LightningModule):
 
-    def __init__(self, con_img: torch.tensor, sty_img: torch.tensor, con_layers: list, sty_layers: list,
-                 lr: float, beta_1: float, beta_2: float, con_wt: float, sty_wt: float, var_wt: float,
-                 con_layer_wts: list = None, sty_layer_wts: list = None):
+    def __init__(self, con_img: torch.tensor, sty_img: torch.tensor, con_layers: list, sty_layers: list, lr: float, beta_1: float, 
+                 beta_2: float, con_wt: float, sty_wt: float, var_wt: float, con_layer_wts: list = None, sty_layer_wts: list = None):
 
         """
         Parameters:
@@ -431,7 +430,7 @@ class StyleTransfer(pl.LightningModule):
         con_targets  = con_img_dict["Con_feat_maps"]
         sty_targets  = sty_img_dict["Sty_feat_maps"]
 
-        self.loss = Loss(con_targets, sty_targets, con_wt = con_wt, sty_wt = sty_wt, var_wt = var_wt,
+        self.loss = Loss(con_targets, sty_targets, con_wt = con_wt, sty_wt = sty_wt, var_wt = var_wt, 
                          con_layer_wts = con_layer_wts, sty_layer_wts = sty_layer_wts)
 
         self.var_img = nn.Parameter(con_img.clone())
@@ -476,8 +475,7 @@ tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "StyleTransfer", log_gr
 model = StyleTransfer(con_img = con_img, sty_img = sty_img, con_layers = con_layers, sty_layers = sty_layers,
                       lr = 2e-2, beta_1 = 0.9, beta_2 = 0.999, con_wt = 1e-5, sty_wt = 1e4, var_wt = 1e-5)
 
-trainer = pl.Trainer(accelerator = 'ddp', gpus = 1, max_epochs = epochs, progress_bar_refresh_rate = 1,
-                     num_sanity_val_steps = 1, logger = tb_logger, profiler = True)
+trainer = pl.Trainer(accelerator = 'ddp', gpus = 1, max_epochs = epochs, progress_bar_refresh_rate = 1, logger = tb_logger, profiler = True)
 trainer.fit(model, dm)
 
 final_img = model.var_img.detach().cpu().numpy()
