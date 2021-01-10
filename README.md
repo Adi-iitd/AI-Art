@@ -3,7 +3,7 @@
 ***
 ### Edit 2020/11/20:
 
-> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to Neural Style Transfer, CycleGAN and Pix2Pix. Thanks to @[William Falcon](https://twitter.com/_willfalcon?lang=en)!!
+> Support of [PyTorch Lightning](https://www.pytorchlightning.ai/) added to Neural Style Transfer, CycleGAN and Pix2Pix. Thanks to @[William](https://twitter.com/_willfalcon?lang=en)!
 
 
 > Why PyTorch Lightning?
@@ -20,7 +20,7 @@
 
 <p align = "justify"> Creativity is something we closely associate with what it means to be human. But with digital technology now enabling machines to recognize, learn from, and respond to humans, an inevitable question follows: <i> Can machines be creative? </i> </p>
 
-<p align = "justify"> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. This tutorial will cover four different Deep Learning models to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN, </b> and <b>Deep Dream. </b> </p>
+<p align = "justify"> It could be argued that the ability of machines to learn what things look like, and then make convincing new examples marks the advent of creative AI. This tutorial will cover four different Deep Learning models to create novel arts, solely by code - <b> Style Transfer, Pix2Pix, CycleGAN. </b> </p>
 
 ***
 
@@ -331,25 +331,5 @@ min L<sub>LSGAN</sub> (G) = 1/2 <b>E</b><sub>x,z</sub> [(D(x, G(x, z)) - 1)<sup>
 </p>
 
 <br />
-
-***
-
-## Deep Dream
-<img src = https://user-images.githubusercontent.com/41862477/85164051-68fa9780-b281-11ea-87ae-2d255f910fed.png height = 500 width = 1000>
-
-<table>
-  <tr>
-<td><img src = https://user-images.githubusercontent.com/41862477/84597918-b1324800-ae84-11ea-82d4-aa4aaeb930d4.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84620003-66e8af80-aef4-11ea-8b70-69c8ed492f33.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84620018-74059e80-aef4-11ea-8f26-4f65002ed7c1.png width = 285></td>
- </tr>
-</table>
-<table>
-  <tr>
-<td><img src = https://user-images.githubusercontent.com/41862477/84620032-8089f700-aef4-11ea-8453-755b00d867a1.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84620043-8c75b900-aef4-11ea-9858-5706ba5851b0.png width = 285></td>
-<td><img src = https://user-images.githubusercontent.com/41862477/84620048-8ed81300-aef4-11ea-8a07-7fdbd831fd32.png width = 285></td>
- </tr>
-</table>
 
 ***
