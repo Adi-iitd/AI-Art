@@ -197,7 +197,7 @@ con_img, sty_img = dm.train[0]["A"], dm.train[0]["B"]
 plt.figure(figsize = (12, 6))
 plt.subplot(1, 2, 1); helper(con_img, title = "Content Image")
 plt.subplot(1, 2, 2); helper(sty_img, title = "Style Image"  )
-plt.show())
+plt.show()
 
 
 ######################################################################################################################################
@@ -436,7 +436,7 @@ class StyleTransfer(pl.LightningModule):
         self.var_img = nn.Parameter(con_img.clone())
 
 
-    def training_step(self, batch, batch_idx):
+    def training_step(self, batch,):
 
         pred_dict = self.extractor(self.var_img)
         con_preds = pred_dict["Con_feat_maps"]
@@ -452,7 +452,7 @@ class StyleTransfer(pl.LightningModule):
         return loss
 
 
-    def on_train_epoch_end(self, outputs):
+    def on_train_epoch_end(self, *args, **kwargs):
 
         self.var_img.data.clamp_(0, 1)
 
@@ -475,7 +475,7 @@ tb_logger = pl_loggers.TensorBoardLogger('logs/', name = "StyleTransfer", log_gr
 model = StyleTransfer(con_img = con_img, sty_img = sty_img, con_layers = con_layers, sty_layers = sty_layers,
                       lr = 2e-2, beta_1 = 0.9, beta_2 = 0.999, con_wt = 1e-5, sty_wt = 1e4, var_wt = 1e-5)
 
-trainer = pl.Trainer(accelerator = 'ddp', gpus = 1, max_epochs = epochs, progress_bar_refresh_rate = 1, logger = tb_logger, profiler = True)
+trainer = pl.Trainer(accelerator = 'ddp', gpus = 1, max_epochs = epochs, progress_bar_refresh_rate = 1, logger = tb_logger)
 trainer.fit(model, dm)
 
 final_img = model.var_img.detach().cpu().numpy()
