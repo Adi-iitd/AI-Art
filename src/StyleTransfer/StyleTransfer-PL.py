@@ -197,7 +197,7 @@ con_img, sty_img = dm.train[0]["A"], dm.train[0]["B"]
 plt.figure(figsize = (12, 6))
 plt.subplot(1, 2, 1); helper(con_img, title = "Content Image")
 plt.subplot(1, 2, 2); helper(sty_img, title = "Style Image"  )
-plt.show())
+plt.show()
 
 
 ######################################################################################################################################
